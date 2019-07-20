@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_lay" />
+
+    <TextView
+        android:id="@+id/tvSelectTypeDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/select_type_des"
+        android:textColor="@color/secondary_color"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <RelativeLayout
+        android:id="@+id/rlDrive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/tvSelectTypeDesc"
+        app:layout_constraintVertical_weight="1"
+        android:background="@color/primary_color">
+
+        <TextView
+            android:id="@+id/tvDriverText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/select_type_driver_text"
+            android:textSize="21sp"
+            android:textStyle="bold"
+            android:textColor="@color/secondary_color" />
+
+        <TextView
+            android:id="@+id/tvDriverdesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/select_type_driver_desc"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/secondary_color"
+            android:layout_below="@+id/tvDriverText"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:id="@+id/rlNonDrive"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/rlDrive"
+        app:layout_constraintVertical_weight="1"
+        android:background="@color/primary_color">
+
+        <TextView
+            android:id="@+id/tvNonDriverText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/select_type_non_driver_text"
+            android:textSize="21sp"
+            android:textStyle="bold"
+            android:textColor="@color/secondary_color" />
+
+        <TextView
+            android:id="@+id/tvNonDriverdesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/select_type_non_driver_desc"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/secondary_color"
+            android:layout_below="@+id/tvNonDriverText"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

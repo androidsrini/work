@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/vehicleTypeRelativeLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <TextView
+                    android:id="@+id/vehicleTypeTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:textColor="@color/secondary_color"
+                    android:hint="@string/vehicle_type"
+                    android:textColorHint="@color/dark_grey" />
+
+                <ImageView
+                    android:id="@+id/vehicleTypeArrowImageView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/shipping_address_spinner_arrow"
+                    android:layout_alignParentEnd="true"
+                    tools:ignore="ContentDescription" />
+
+
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="3dp"
+                android:background="@color/primary_color"
+                android:layout_below="@+id/vehicleTypeRelativeLayout"
+                app:layout_constraintTop_toBottomOf="@+id/vehicleTypeRelativeLayout" />
+
+            <EditText
+                android:id="@+id/etVehicleName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:singleLine="true"
+                android:background="@android:color/transparent"
+                app:layout_constraintTop_toBottomOf="@+id/view"
+                android:hint="@string/vehicle_name"
+                android:layout_below="@+id/view"
+                android:imeOptions="actionNext"
+                android:backgroundTint="@color/primary_color"
+                android:textColorHint="@color/dark_grey"
+                android:textColor="@color/secondary_color" />
+
+            <View
+                android:id="@+id/view1"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="3dp"
+                android:background="@color/primary_color"
+                android:layout_below="@+id/etVehicleName"
+                app:layout_constraintTop_toBottomOf="@+id/etVehicleName" />
+
+            <EditText
+                android:id="@+id/etVehicleNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:singleLine="true"
+                android:background="@android:color/transparent"
+                app:layout_constraintTop_toBottomOf="@+id/view1"
+                android:layout_below="@+id/view1"
+                android:hint="@string/vehicle_number"
+                android:imeOptions="actionNext"
+                android:backgroundTint="@color/primary_color"
+                android:textColorHint="@color/dark_grey"
+                android:textColor="@color/secondary_color" />
+
+            <View
+                android:id="@+id/view2"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="3dp"
+                android:background="@color/primary_color"
+                android:layout_below="@+id/etVehicleNumber"
+                app:layout_constraintTop_toBottomOf="@+id/etVehicleNumber" />
+
+            <EditText
+                android:id="@+id/etDriverName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:singleLine="true"
+                android:background="@android:color/transparent"
+                app:layout_constraintTop_toBottomOf="@+id/view2"
+                android:layout_below="@+id/view2"
+                android:hint="@string/add_vehicle_driver_name"
+                android:imeOptions="actionNext"
+                android:backgroundTint="@color/primary_color"
+                android:textColorHint="@color/dark_grey"
+                android:textColor="@color/secondary_color" />
+
+            <View
+                android:id="@+id/view3"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="3dp"
+                android:background="@color/primary_color"
+                android:layout_below="@+id/etVehicleNumber"
+                app:layout_constraintTop_toBottomOf="@+id/etDriverName" />
+
+            <EditText
+                android:id="@+id/etDriverContNum"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:singleLine="true"
+                android:background="@android:color/transparent"
+                app:layout_constraintTop_toBottomOf="@+id/view3"
+                android:layout_below="@+id/view3"
+                android:hint="@string/add_vehicle_driver_contact"
+                android:imeOptions="actionNext"
+                android:backgroundTint="@color/primary_color"
+                android:textColorHint="@color/dark_grey"
+                android:textColor="@color/secondary_color" />
+
+            <View
+                android:id="@+id/view4"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="3dp"
+                android:background="@color/primary_color"
+                android:layout_below="@+id/etVehicleNumber"
+                app:layout_constraintTop_toBottomOf="@+id/etDriverContNum" />
+
+            <EditText
+                android:id="@+id/etDriverEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:singleLine="true"
+                android:background="@android:color/transparent"
+                app:layout_constraintTop_toBottomOf="@+id/view4"
+                android:layout_below="@+id/view3"
+                android:hint="@string/add_vehicle_driver_email"
+                android:imeOptions="actionNext"
+                android:backgroundTint="@color/primary_color"
+                android:textColorHint="@color/dark_grey"
+                android:textColor="@color/secondary_color" />
+
+            <View
+                android:id="@+id/view5"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="3dp"
+                android:background="@color/primary_color"
+                android:layout_below="@+id/etVehicleNumber"
+                app:layout_constraintTop_toBottomOf="@+id/etDriverEmail" />
+
+            <EditText
+                android:id="@+id/etDriverPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:singleLine="true"
+                android:background="@android:color/transparent"
+                app:layout_constraintTop_toBottomOf="@+id/view5"
+                android:layout_below="@+id/view5"
+                android:hint="@string/add_vehicle_password"
+                android:imeOptions="actionNext"
+                android:backgroundTint="@color/primary_color"
+                android:textColorHint="@color/dark_grey"
+                android:textColor="@color/secondary_color" />
+
+            <View
+                android:id="@+id/view6"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="3dp"
+                android:background="@color/primary_color"
+                android:layout_below="@+id/etVehicleNumber"
+                app:layout_constraintTop_toBottomOf="@+id/etDriverPassword" />
+
+
+            <EditText
+                android:id="@+id/etDriverConPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:singleLine="true"
+                android:background="@android:color/transparent"
+                app:layout_constraintTop_toBottomOf="@+id/view6"
+                android:layout_below="@+id/view6"
+                android:hint="@string/add_vehicle_confirm_password"
+                android:imeOptions="actionNext"
+                android:backgroundTint="@color/primary_color"
+                android:textColorHint="@color/dark_grey"
+                android:textColor="@color/secondary_color" />
+
+            <View
+                android:id="@+id/view7"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginTop="3dp"
+                android:background="@color/primary_color"
+                android:layout_below="@+id/etVehicleNumber"
+                app:layout_constraintTop_toBottomOf="@+id/etDriverConPassword" />
+
+
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btnAddVehicle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="@string/upload_doc_text"
+        android:textSize="21sp"
+        android:textStyle="bold"
+        android:layout_alignParentBottom="true"
+        android:textAllCaps="false"
+        android:stateListAnimator="@null"
+        android:textColor="@color/secondary_color"
+        android:background="@drawable/button_primary_full_filled" />
+
+
+</RelativeLayout>

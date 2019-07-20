@@ -1,0 +1,369 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">DriverApp</string>
+
+    <!--color-->
+    <color name="background_color">#ffffff</color>
+    <color name="secondary_color">#000000</color>
+    <color name="low_contrast">#cccccc</color>
+    <color name="primary_color">#f7950e</color>
+    <color name="dim_secondary">#191919</color>
+    <color name="high_contrast">#FF0000</color>
+    <color name="third_color">#808080</color>
+    <color name="fourth_color">#0000FF</color>
+    <color name="light_blue_color">#D6EAF8</color>
+    <color name="dark_grey">#515A5A</color>
+    <color name="background_document_status">#FA8072</color>
+
+    <!--LaunchScreen-->
+    <string name="welcome_text_prefix">Welcome to the </string>
+    <string name="welcome_text_sufix">" "VAVA</string>
+    <string name="driver_text">Driver app</string>
+    <string name="sign_in_button">SIGN IN</string>
+    <string name="register_button">REGISTER</string>
+    <string name="or_ride_with_vava">Or Ride with VAVA</string>
+
+    <!--Register-->
+    <string name="register_des_text">Let\'s start with creating \n your account </string>
+    <string name="first_name_text">First Name</string>
+    <string name="last_name_text">Last Name</string>
+    <string name="email_text">Email address</string>
+    <string name="phone_text">Phone Number</string>
+    <string name="password_text">Password</string>
+    <string name="city_text">City</string>
+    <string name="invite_text">Invite Code</string>
+    <string name="register_policy_text_first_prefix1">By proceeding, I agree to</string>
+    <string name="register_policy_app_name">" "VAVA\'s</string>
+    <string name="register_policy_text_prefix2">Terms of Use</string>
+    <string name="register_policy_text_first_sufix1">and acknowledge that I have read the </string>
+    <string name="register_policy_text_first_sufix2"> Privacy Policy</string>
+    <string name="register_policy_text_second">I also agree that <b>VAVA</b> or representatives may contact me by Email, Phone or SMS(including by automated means) at the email address or number provide, including for marketing purposes.</string>
+
+    <!--Verify Mobile-->
+    <string name="verify_title">Verify Mobile</string>
+    <string name="verify_mobile_text">Enter the 4-digit code to sent to you at</string>
+    <string name="edit_number_text">Edit Number</string>
+    <string name="resend_text">Resend OTP</string>
+
+    <!--Select Type-->
+    <string name="select_type_title">Select Type</string>
+    <string name="select_type_des">Please choose how would like to partner with us.</string>
+    <string name="select_type_driver_text">Driver cum owner</string>
+    <string name="select_type_driver_desc">Choose this option if you own the vehicle and plan to drive yourself too</string>
+    <string name="select_type_non_driver_text">Non-Driver Partner</string>
+    <string name="select_type_non_driver_desc">Choose this option if you own the vehicle, but you don\'t drive. You have driver under</string>
+
+
+    <!--Legal agreement-->
+
+    <string name="legal_title">Legal Agreement</string>
+    <string name="legal_text">I understand that the information provided by me may be used by     ,or its affiliates(\'   \'),Authbridge Research Servies Private Limited or its affiliates(being a third party agency appointed by    ), or any other third party appointed by Uber from time-time, to verify and validate the information I have provided as</string>
+    <string name="legal_checkbox_text">By clicking "I accept" or signing below (as such may be required by applicable law), Driver expressly acknowledges that he or she(i) has read and understood this Addendum;(ii) has had the opportunity to consult with other(including an attorney)regarding this Addendum;(iii)agree to be bound by term and condition this Addendum:and(iv)is legally competent to enter into this Addendum</string>
+    <string name="legal_button">I ACCEPT/CONTINUE</string>
+
+
+    <!--Side Drawer-->
+    <string name="drawer_signout">Sign out</string>
+    <string name="drawermenuitem_count">8</string>
+    <array name="drawermenuitem_1">
+        <item></item>
+        <!-- Section Title -->
+        <item>Check Status</item>
+        <!-- Menu Label -->
+        <item>checkstatus</item>
+        <!-- Enums - This field not editable -->
+        <item></item>
+        <!-- URL -->
+        <item></item>
+        <!-- Internal / External browser -->
+        <item></item>
+        <!-- video url / website url -->
+        <item>Check Status</item>
+        <!-- Screen Page Title Label -->
+        <item>@drawable/documents_icon</item>
+        <!-- sso configuration -->
+        <item>Guest</item>
+        <!-- Login non login configuration-->
+        <!-- Olo Menu icon -->
+    </array>
+    <array name="drawermenuitem_2">
+        <item></item>
+        <!-- Section Title -->
+        <item>Manage Vehicle</item>
+        <!-- Menu Label -->
+        <item>managevehicle</item>
+        <!-- Enums - This field not editable -->
+        <item></item>
+        <!-- URL -->
+        <item></item>
+        <!-- Internal / External browser -->
+        <item></item>
+        <!-- video url / website url -->
+        <item>Manage Vehicle</item>
+        <!-- Screen Page Title Label -->
+        <item>@drawable/documents_icon</item>
+        <!-- sso configuration -->
+        <item>SignedIn</item>
+        <!-- Login non login configuration-->
+        <!-- Olo Menu icon -->
+    </array>
+    <array name="drawermenuitem_3">
+        <item></item>
+        <!-- Section Title -->
+        <item>Manage Document</item>
+        <!-- Menu Label -->
+        <item>managedocument</item>
+        <!-- Enums - This field not editable -->
+        <item></item>
+        <!-- URL -->
+        <item></item>
+        <!-- Internal / External browser -->
+        <item></item>
+        <!-- video url / website url -->
+        <item>Manage Document</item>
+        <!-- Screen Page Title Label -->
+        <item>@drawable/documents_icon</item>
+        <!-- sso configuration -->
+        <item>SignedIn</item>
+        <!-- Login non login configuration-->
+        <!-- Olo Menu icon -->
+    </array>
+
+    <array name="drawermenuitem_4">
+        <item></item>
+        <!-- Section Title -->
+        <item>Your trips</item>
+        <!-- Menu Label -->
+        <item>yourtrip</item>
+        <!-- Enums - This field not editable -->
+        <item></item>
+        <!-- URL -->
+        <item></item>
+        <!-- Internal / External browser -->
+        <item></item>
+        <!-- video url / website url -->
+        <item>Your trips</item>
+        <!-- Screen Page Title Label -->
+        <item>@drawable/documents_icon</item>
+        <!-- sso configuration -->
+        <item>SignedIn</item>
+        <!-- Login non login configuration-->
+        <!-- Olo Menu icon -->
+    </array>
+    <array name="drawermenuitem_5">
+        <item></item>
+        <!-- Section Title -->
+        <item>Earning Reports</item>
+        <!-- Menu Label -->
+        <item>earningreports</item>
+        <!-- Enums - This field not editable -->
+        <item></item>
+        <!-- URL -->
+        <item></item>
+        <!-- Internal / External browser -->
+        <item></item>
+        <!-- video url / website url -->
+        <item>Earning Reports</item>
+        <!-- Screen Page Title Label -->
+        <item>@drawable/documents_icon</item>
+        <!-- sso configuration -->
+        <item>SignedIn</item>
+        <!-- Login non login configuration-->
+        <!-- Olo Menu icon -->
+    </array>
+    <array name="drawermenuitem_6">
+        <item></item>
+        <!-- Section Title -->
+        <item>Refer and Earn</item>
+        <!-- Menu Label -->
+        <item>referearn</item>
+        <!-- Enums - This field not editable -->
+        <item></item>
+        <!-- URL -->
+        <item></item>
+        <!-- Internal / External browser -->
+        <item></item>
+        <!-- video url / website url -->
+        <item>Refer and Earn</item>
+        <!-- Screen Page Title Label -->
+        <item>@drawable/documents_icon</item>
+        <!-- sso configuration -->
+        <item>SignedIn</item>
+        <!-- Login non login configuration-->
+        <!-- Olo Menu icon -->
+    </array>
+    <array name="drawermenuitem_7">
+        <item></item>
+        <!-- Section Title -->
+        <item>Live Tracking</item>
+        <!-- Menu Label -->
+        <item>livetracking</item>
+        <!-- Enums - This field not editable -->
+        <item></item>
+        <!-- URL -->
+        <item></item>
+        <!-- Internal / External browser -->
+        <item></item>
+        <!-- video url / website url -->
+        <item>Your trips</item>
+        <!-- Screen Page Title Label -->
+        <item>@drawable/documents_icon</item>
+        <!-- sso configuration -->
+        <item>SignedIn</item>
+        <!-- Login non login configuration-->
+        <!-- Olo Menu icon -->
+    </array>
+
+    <array name="drawermenuitem_8">
+        <item></item>
+        <!-- Section Title -->
+        <item>Setting</item>
+        <!-- Menu Label -->
+        <item>setting</item>
+        <!-- Enums - This field not editable -->
+        <item></item>
+        <!-- URL -->
+        <item></item>
+        <!-- Internal / External browser -->
+        <item></item>
+        <!-- video url / website url -->
+        <item>Setting</item>
+        <!-- Screen Page Title Label -->
+        <item>@drawable/documents_icon</item>
+        <!-- sso configuration -->
+        <item>SignedIn</item>
+        <!-- Login non login configuration-->
+    </array>
+    <!--Upload Documents-->
+
+    <integer name="upload_document_count">3</integer>
+    <string-array name="upload_document_item_0">
+        <item>Recommended next step</item>
+        <item>Driver\'s license</item>
+    </string-array>
+
+    <string-array name="upload_document_item_1">
+        <item>Recommended next step</item>
+        <item>Driver\'s license Backside</item>
+    </string-array>
+    <string-array name="upload_document_item_2">
+        <item>Recommended next step</item>
+        <item>Driver\'s Profile Image</item>
+    </string-array>
+
+
+    <integer name="upload_document2_count">3</integer>
+    <string-array name="upload_document2_item_0">
+        <item>Recommended next step</item>
+        <item>Vehicle Certification of Registration</item>
+    </string-array>
+
+    <string-array name="upload_document2_item_1">
+        <item>Recommended next step</item>
+        <item>Vehicle Commercial Insurance</item>
+    </string-array>
+    <string-array name="upload_document2_item_2">
+        <item>Recommended next step</item>
+        <item>Vehicle Permit</item>
+    </string-array>
+
+    <string name="upload_doc_text">Upload Documents</string>
+    <string name="upload_remaining_text">Remaining Steps</string>
+    <string name="vehicle_type">Vehicle Type</string>
+    <string name="vehicle_name">Vehicle Name</string>
+    <string name="vehicle_number">Vehicle Number</string>
+    <string name="recommended_next_step">Recommended next step</string>
+    <string name="driver_license">Driver\'s license</string>
+    <string name="driver_license_back_side">Driver\'s license Backside</string>
+    <string name="driver_profile_image">Driver\'s Profile Image</string>
+    <string name="vehicle_registration">Vehicle Certification of Registration</string>
+    <string name="vehicle_commerical_insurance">Vehicle Commercial Insurance</string>
+    <string name="vehicle_permit">Vehicle Permit</string>
+    <string name="verify_btn">Verify</string>
+
+
+    <string-array name="vehicleType">
+        <item>Shift</item>
+        <item>Honda</item>
+    </string-array>
+
+
+    <!--Document Status-->
+
+    <integer name="document_status_count">4</integer>
+    <string-array name="document_status_item_0">
+        <item>Completed</item>
+        <item>Legal Agreement</item>
+    </string-array>
+
+    <string-array name="document_status_item_1">
+        <item>Verification Pending</item>
+        <item>Driver\'s License - Front side</item>
+    </string-array>
+    <string-array name="document_status_item_2">
+        <item>Verification Pending</item>
+        <item>Driver\'s License - Back side</item>
+    </string-array>
+    <string-array name="document_status_item_3">
+        <item>Verification Pending</item>
+        <item>Vehicle Commercial Insurance</item>
+    </string-array>
+    <string name="document_status_title">Document Status</string>
+    <string name="document_status_completed">Completed</string>
+    <string name="document_verification_pending">Verification Pending</string>
+    <string name="docstatus_legal_agreement">Legal Agreement</string>
+    <string name="docstatus_licence_front_side">Driver\'s License - Front side</string>
+    <string name="docstatus_licence_back_side">Driver\'s License - Back side</string>
+    <string name="docstatus_vehicle_commerical">Vehicle Commercial Insurance</string>
+    <string name="update_document_text">Update Documents</string>
+
+
+    <!--Vehicle List-->
+    <string name="vehicle_list_title">Vehicle</string>
+    <string name="add_vehicle_text">Add Vehicle</string>
+    <string name="name">Ravi</string>
+    <string name="vehicle_no">TN 01 1234</string>
+
+    <!--Add Vehicle-->
+    <string name="add_vehicle_title">Add Vehicle</string>
+    <string name="add_vehicle_driver_name">Driver Name</string>
+    <string name="add_vehicle_driver_contact">Driver Contact Number</string>
+    <string name="add_vehicle_driver_email">Driver Email Address</string>
+    <string name="add_vehicle_password">Password</string>
+    <string name="add_vehicle_confirm_password">Confirm Password</string>
+
+    <!--Online-->
+    <string name="online_text">Online</string>
+    <string name="cancel_button">Cancel</string>
+    <string name="arrived_button">Arrived</string>
+    <!--<string name="pick_up_location_title">Pickup Location</string>-->
+
+
+    <!--Pick Up Location Accept-->
+
+    <string name="pick_up_location_title">Pick Up Location</string>
+    <string name="pick_up_destination_address">Destination Address</string>
+    <string name="reject_button">Reject</string>
+    <string name="accept_button">Accept</string>
+
+    <string name="slide_to_end">Slide to End Trip</string>
+
+
+    <!--Payment Type-->
+    <string name="payment_type_title">Payment Type</string>
+    <string name="payment_type_prepaid_text">Prepaid</string>
+    <string name="payment_type_postpaid_text">Postpaid</string>
+    <string name="payment_type_prepaid_des">Choose this option when you are paying earlier</string>
+    <string name="payment_type_postpaid_des">Choose this option for final payment</string>
+    <string name="paymentButton_text">Submit</string>
+
+
+    <!--Setting-->
+    <string name="setting_title">Setting</string>
+    <string name="setting_add_bank">Add Bank Details</string>
+    <string name="setting_type_pay">Type of Payment</string>
+
+    <string name="invite_friends_title">Invite Friends</string>
+    <string name="invite_friend_share_code_text">SHARE YOUR INVITE CODE</string>
+    <string name="invite_friend_share_desc">Invite your friends by sharing above invite code and earn the referral amount</string>
+    <string name="invite_friend_button">Invite Friends</string>
+</resources>

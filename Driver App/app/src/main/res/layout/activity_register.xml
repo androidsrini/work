@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar_lay" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvRegisterDes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textSize="30sp"
+                android:textColor="@color/secondary_color"
+                android:text="@string/register_des_text" />
+
+
+            <LinearLayout
+                android:id="@+id/ll_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="1"
+                app:layout_constraintTop_toBottomOf="@+id/tvRegisterDes">
+
+                <EditText
+                    android:id="@+id/etFirstName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:backgroundTint="@color/primary_color"
+                    android:textColorHint="@color/secondary_color"
+                    android:hint="@string/first_name_text"
+                    android:singleLine="true"
+                    android:imeOptions="actionNext"
+                    android:textSize="18sp"
+                    android:textColor="@color/secondary_color" />
+
+                <EditText
+                    android:id="@+id/etLastName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:textSize="18sp"
+                    android:singleLine="true"
+                    android:layout_marginStart="5dp"
+                    android:hint="@string/last_name_text"
+                    android:imeOptions="actionNext"
+                    android:backgroundTint="@color/primary_color"
+                    android:textColorHint="@color/secondary_color"
+                    android:textColor="@color/secondary_color" />
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/etEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:singleLine="true"
+                app:layout_constraintTop_toBottomOf="@+id/ll_name"
+                android:hint="@string/email_text"
+                android:imeOptions="actionNext"
+                android:backgroundTint="@color/primary_color"
+                android:textColorHint="@color/secondary_color"
+                android:textColor="@color/secondary_color" />
+
+            <EditText
+                android:id="@+id/etPhoneNumber"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                app:layout_constraintTop_toBottomOf="@+id/etEmail"
+                android:hint="@string/phone_text"
+                android:singleLine="true"
+                android:imeOptions="actionNext"
+                android:backgroundTint="@color/primary_color"
+                android:textColorHint="@color/secondary_color"
+                android:textColor="@color/secondary_color" />
+
+            <EditText
+                android:id="@+id/etPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                app:layout_constraintTop_toBottomOf="@+id/etPhoneNumber"
+                android:hint="@string/password_text"
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+                android:backgroundTint="@color/primary_color"
+                android:textColorHint="@color/secondary_color"
+                android:textColor="@color/secondary_color" />
+
+            <EditText
+                android:id="@+id/etCity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                app:layout_constraintTop_toBottomOf="@+id/etPassword"
+                android:hint="@string/city_text"
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+                android:backgroundTint="@color/primary_color"
+                android:textColorHint="@color/secondary_color"
+                android:textColor="@color/secondary_color" />
+
+            <EditText
+                android:id="@+id/etInviteCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:singleLine="true"
+                android:imeOptions="actionDone"
+                app:layout_constraintTop_toBottomOf="@+id/etCity"
+                android:hint="@string/invite_text"
+                android:backgroundTint="@color/primary_color"
+                android:textColorHint="@color/secondary_color"
+                android:textColor="@color/secondary_color" />
+
+            <TextView
+                android:id="@+id/tvPrivacyPolicy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/secondary_color"
+                app:layout_constraintTop_toBottomOf="@+id/etInviteCode"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/tvPrivacyPolicy2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/secondary_color"
+                android:text="@string/register_policy_text_second"
+                app:layout_constraintTop_toBottomOf="@+id/tvPrivacyPolicy"
+                app:layout_constraintStart_toStartOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fbNext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        android:src="@drawable/right_arrow"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:tint="@color/secondary_color"
+        app:backgroundTint="@color/primary_color"
+        app:layout_anchorGravity="bottom|right|end" />
+</android.support.constraint.ConstraintLayout>

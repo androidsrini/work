@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/headerViewLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:orientation="vertical"
+    android:background="@color/primary_color">
+
+    <ImageView
+        android:id="@+id/imgProfile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:src="@drawable/profile" />
+
+    <TextView
+        android:id="@+id/UserName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/imgProfile"
+        android:paddingBottom="10dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/secondary_color"
+        android:textSize="23sp"
+        android:text="Vijay"
+        android:paddingLeft="15dp"
+        android:layout_marginTop="15dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/UserName"
+        android:layout_toEndOf="@+id/imgProfile"
+        android:paddingBottom="10dp"
+        android:text="offline"
+        android:paddingLeft="15dp"
+        android:layout_marginBottom="20dp"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/dark_grey"
+        android:textSize="16sp"
+        android:textStyle="normal" />
+
+
+</RelativeLayout>

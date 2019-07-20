@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:id="@+id/rlDriverMain"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@color/background_document_status">
+
+        <RelativeLayout
+            android:id="@+id/rlDriverVehicle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintVertical_weight="1"
+            android:background="@color/light_blue_color">
+
+            <TextView
+                android:id="@+id/tvVehicleStatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/document_verification_pending"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/third_color" />
+
+            <TextView
+                android:id="@+id/tvVehicledesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/docstatus_vehicle_commerical"
+                android:textSize="21sp"
+                android:textStyle="bold"
+                android:textColor="@color/secondary_color"
+                android:layout_below="@+id/tvVehicleStatusText"
+                app:layout_constraintLeft_toLeftOf="parent" />
+
+            <ImageView
+                android:id="@+id/imgRightArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+</android.support.constraint.ConstraintLayout>

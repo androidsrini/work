@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rlUserVehcleMain"
+        android:background="@color/background_document_status"
+
+        >
+
+        <RelativeLayout
+            android:id="@+id/rlUserVehicle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/light_blue_color">
+
+            <TextView
+                android:id="@+id/tvStatusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/document_verification_pending"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="@color/third_color" />
+
+            <ImageView
+                android:id="@+id/imgVehicle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tvStatusText"
+                android:src="@drawable/car_icon" />
+
+            <TextView
+                android:id="@+id/tvVehicleNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/vehicle_no"
+                android:textSize="21sp"
+                android:textStyle="bold"
+                android:textColor="@color/secondary_color"
+                android:layout_below="@+id/tvStatusText"
+                android:layout_toEndOf="@+id/imgVehicle" />
+
+            <ImageView
+                android:id="@+id/imgPerson"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/imgVehicle"
+                android:src="@drawable/driver_icon" />
+
+            <TextView
+                android:id="@+id/tvVehicleName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="@string/name"
+                android:textSize="21sp"
+                android:textStyle="bold"
+                android:layout_toEndOf="@+id/imgPerson"
+                android:textColor="@color/secondary_color"
+                android:layout_below="@+id/tvVehicleNum" />
+
+
+            <ImageView
+                android:id="@+id/imgRightArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/right_only_bg"
+                android:layout_alignParentEnd="true" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+</RelativeLayout>

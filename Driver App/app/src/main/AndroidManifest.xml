@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.codesense.driverapp">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <application
+        android:name=".base.BaseApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyBDjZ8yAkQrA4vWlYu3Og1Nxcntp7388uQ" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity
+            android:name=".ui.launchscreen.LaunchScreenActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.register.RegisterActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.verifymobile.VerifyMobileActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.selecttype.SelectTypeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.legalagreement.LegalAgreementActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.uploaddocument.UploadDocumentActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.uploaddocument.UploadDocumentSecondActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.documentstatus.DocumentStatusActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.vehicle.VehicleListActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.addvehicle.AddVehicleActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.online.OnlineActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.pickuplocationaccept.PickUpLocationAcceptActivity"
+            android:configChanges="orientation"
+            android:hardwareAccelerated="true"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.paymentType.PaymentActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".ui.setting.SettingActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.invitefriends.InviteFriendsActivity"
+            android:screenOrientation="portrait" />
+
+        <service android:name=".ui.helper.LocationMonitoringService" />
+
+    </application>
+
+</manifest>
