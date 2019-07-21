@@ -7,13 +7,10 @@ import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
-import com.codesense.driverapp.binder.DriverAppUI;
-
 import dagger.android.support.DaggerAppCompatActivity;
 
 public abstract class BaseActivity extends DaggerAppCompatActivity {
 
-    DriverAppUI driverAppUI;
     public int screenWidth, screenHeight;
 
     @LayoutRes
@@ -23,10 +20,7 @@ public abstract class BaseActivity extends DaggerAppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(layoutRes());
-        driverAppUI = DriverAppUI.activityBinder(this);
-
         calculateScreenSize();
-
     }
 
     private void calculateScreenSize() {

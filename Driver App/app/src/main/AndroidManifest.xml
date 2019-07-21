@@ -26,6 +26,10 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
+        <meta-data
+            android:name="com.codesense.driverapp.API_KEY"
+            android:value="4eb708abeccb276a446bdf6c75a065e332f1f77a76048ef97e200d0d55c7165bf392565391b328cc649c6e5506da693077ed4043de414a487be57e5f255437db"/>
+
         <activity
             android:name=".ui.launchscreen.LaunchScreenActivity"
             android:screenOrientation="portrait">

@@ -2,6 +2,7 @@ package com.codesense.driverapp.ui.launchscreen;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -9,16 +10,21 @@ import android.widget.TextView;
 
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.base.BaseActivity;
+import com.codesense.driverapp.di.utils.Utility;
+import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.ui.register.RegisterActivity;
 import com.product.annotationbuilder.ProductBindView;
 import com.product.process.annotation.Initialize;
 import com.product.process.annotation.Onclick;
 
-/*import com.codesense.driverapp.annotations.Initialize;
-import com.codesense.driverapp.annotations.OnClick;*/
+import javax.inject.Inject;
 
+/**
+ * Launch screen of the application and get public-key
+ */
 public class LaunchScreenActivity extends BaseActivity {
 
+    private static final String TAG = "Driver";
 
     @Initialize(R.id.tvWelcomeScreen)
     TextView tvWelcomeScreen;
@@ -36,6 +42,10 @@ public class LaunchScreenActivity extends BaseActivity {
     View view;
     @Initialize(R.id.tvAppName)
     TextView tvAppName;
+    @Inject
+    protected LaunchScreenViewModel launchScreenViewModel;
+    @Inject
+    protected Utility utility;
 
     @Override
     protected int layoutRes() {
@@ -46,13 +56,29 @@ public class LaunchScreenActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ProductBindView.bind(this);
+        launchScreenViewModel.getApiResponseMutableLiveData().observe(this, this::profileApiResponse);
+        launchScreenViewModel.loadArticleDetails();
         setDynamicValue();
     }
 
+    private void profileApiResponse(ApiResponse apiResponse) {
+        switch (apiResponse.status) {
+            case LOADING:
+                utility.showProgressDialog(this);
+                break;
+            case SUCCESS:
+                utility.dismissDialog();
+                Log.d(TAG, "Success data: " + apiResponse.data);
+                break;
+            case ERROR:
+                utility.dismissDialog();
+                Log.d(TAG, "Error data: " + apiResponse.data);
+                break;
+        }
+    }
+
     private void setDynamicValue() {
-
         int topBottomSpace = (int) (screenHeight * 0.0089);
-
 
         LinearLayout.LayoutParams tvWelcomeScreenLayoutParams = (LinearLayout.LayoutParams) tvWelcomeScreen.getLayoutParams();
         tvWelcomeScreenLayoutParams.setMargins(topBottomSpace * 3, topBottomSpace, 0, 0);
@@ -85,7 +111,6 @@ public class LaunchScreenActivity extends BaseActivity {
         LinearLayout.LayoutParams tvRideLayoutParams = (LinearLayout.LayoutParams) tvRide.getLayoutParams();
         tvRideLayoutParams.setMargins(topBottomSpace * 2, topBottomSpace * 2, 0, 0);
         tvRide.setLayoutParams(tvRideLayoutParams);
-
     }
 
     @Onclick(R.id.btnRegister)
@@ -93,6 +118,4 @@ public class LaunchScreenActivity extends BaseActivity {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
     }
-
-
 }

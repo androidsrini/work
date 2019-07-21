@@ -12,9 +12,12 @@ import dagger.android.support.DaggerApplication;
 @Singleton
 public class BaseApplication extends DaggerApplication {
 
+    private static BaseApplication baseApplication;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        baseApplication = this;
     }
 
     @Override
@@ -24,5 +27,9 @@ public class BaseApplication extends DaggerApplication {
         component.inject(this);
 
         return component;
+    }
+
+    public static BaseApplication getBaseApplication() {
+        return baseApplication;
     }
 }

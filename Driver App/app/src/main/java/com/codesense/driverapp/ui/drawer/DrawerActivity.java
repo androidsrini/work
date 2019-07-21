@@ -32,7 +32,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codesense.driverapp.R;
-import com.codesense.driverapp.binder.DriverAppUI;
 import com.codesense.driverapp.ui.invitefriends.InviteFriendsActivity;
 
 import java.util.ArrayList;
@@ -62,7 +61,6 @@ public class DrawerActivity extends DaggerAppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     String[] getItemValues;
     public int screenWidth, screenHeight;
-    DriverAppUI driverAppUI;
     ImageView drawerMenuIconSignOut;
     RelativeLayout drawerSignOutRelativeLayout;
     public static boolean isSignedIn;
@@ -72,7 +70,6 @@ public class DrawerActivity extends DaggerAppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        driverAppUI = DriverAppUI.activityBinder(this);
         setContentView(R.layout.activity_drawer);
 
         toolBar = findViewById(R.id.toolBar);
