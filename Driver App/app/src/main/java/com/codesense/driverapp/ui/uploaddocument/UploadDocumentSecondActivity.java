@@ -36,7 +36,6 @@ public class UploadDocumentSecondActivity extends DrawerActivity implements View
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View contentView = inflater.inflate(R.layout.activity_upload_document_second, null, false);
         frameLayout.addView(contentView);
-        ProductBindView.bind(this);
         arraylist = new ArrayList<>();
         titleTextView.setText(getResources().getString(R.string.upload_doc_text));
         initially();

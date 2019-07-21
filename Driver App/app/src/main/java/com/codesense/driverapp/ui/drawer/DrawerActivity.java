@@ -297,10 +297,10 @@ public class DrawerActivity extends DaggerAppCompatActivity {
                     if (currentPosition != position) {
                         selectItem(getItemValues, position);
                     }
-                    drawerLayout.closeDrawer(drawerList);
+                    drawerLayout.closeDrawers();
                 } else {
                     if (txtView_section != null && txtView_section.getText().toString().trim().equals("")) {
-                        drawerLayout.closeDrawer(drawerList);
+                        drawerLayout.closeDrawers();
                     }
                 }
             }
