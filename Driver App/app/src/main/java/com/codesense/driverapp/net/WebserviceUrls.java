@@ -5,4 +5,5 @@ public class WebserviceUrls {
     public static final String API_INFO = "api_info";
     public static final String COUNTRIES_LIST = "countries";
     public static final String CITIES_LIST = "cities";
+    public static final String REGISTER_NEW_OWNER = "signup_owner";
 }

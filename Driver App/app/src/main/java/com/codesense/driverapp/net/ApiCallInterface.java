@@ -1,8 +1,10 @@
 package com.codesense.driverapp.net;
 
+import com.codesense.driverapp.request.RegisterNewUser;
 import com.google.gson.JsonElement;
 
 import io.reactivex.Observable;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 
@@ -17,4 +19,7 @@ public interface ApiCallInterface {
 
     @GET(WebserviceUrls.CITIES_LIST)
     Observable<JsonElement> fetchCityListRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey);
+
+    @GET(WebserviceUrls.REGISTER_NEW_OWNER)
+    Observable<JsonElement> registerNewOwnerRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Body RegisterNewUser registerNewUser);
 }

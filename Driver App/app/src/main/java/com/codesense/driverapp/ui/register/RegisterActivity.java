@@ -22,10 +22,21 @@ import com.codesense.driverapp.R;
 import com.codesense.driverapp.base.BaseActivity;
 import com.codesense.driverapp.data.CitiesItem;
 import com.codesense.driverapp.data.CountriesItem;
+import com.codesense.driverapp.di.utils.ApiUtility;
+import com.codesense.driverapp.di.utils.Utility;
+import com.codesense.driverapp.net.ApiResponse;
+import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.request.RegisterNewUser;
 import com.codesense.driverapp.ui.verifymobile.VerifyMobileActivity;
 import com.product.annotationbuilder.ProductBindView;
 import com.product.process.annotation.Initialize;
 import com.product.process.annotation.Onclick;
+
+import javax.inject.Inject;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class RegisterActivity extends BaseActivity {
 
@@ -62,6 +73,11 @@ public class RegisterActivity extends BaseActivity {
     ImageView toolbarClose;
     @Initialize(R.id.etCountry)
     EditText etCountry;
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+    @Inject
+    protected RequestHandler requestHandler;
+    @Inject
+    protected Utility utility;
 
 
     @Override
@@ -225,6 +241,81 @@ public class RegisterActivity extends BaseActivity {
         textView.setText(spanText, TextView.BufferType.SPANNABLE);
     }
 
+    public String getEtFirstName() {
+        return etFirstName.getText().toString().trim();
+    }
+
+    public String getEtLastName() {
+        return etLastName.getText().toString().trim();
+    }
+
+    public String getEtEmail() {
+        return etEmail.getText().toString().trim();
+    }
+
+    public String getEtPhoneNumber() {
+        return etPhoneNumber.getText().toString().trim();
+    }
+
+    public String getEtPassword() {
+        return etPassword.getText().toString().trim();
+    }
+
+    public String getEtCity() {
+        return etCity.getText().toString().trim();
+    }
+
+    public String getEtInviteCode() {
+        return etInviteCode.getText().toString().trim();
+    }
+
+    public String getEtCountry() {
+        return etCountry.getText().toString().trim();
+    }
+
+    private RegisterNewUser createRegisterNewUserObject() {
+        RegisterNewUser registerNewUser = new RegisterNewUser();
+        registerNewUser.setFirstName(getEtFirstName());
+        registerNewUser.setLastName(getEtLastName());
+        registerNewUser.setMobileNumber(getEtPhoneNumber());
+        registerNewUser.setPassword(getEtPassword());
+        if (null != countriesItem) {
+            registerNewUser.setCountryId(countriesItem.countryId);
+        }
+        if (null != citiesItem) {
+            registerNewUser.setCityId(citiesItem.getCityId());
+        }
+        registerNewUser.setInviteCode(getEtInviteCode());
+        registerNewUser.setEmailId(getEtEmail());
+        return registerNewUser;
+    }
+
+    private void registerNewUserRequest() {
+        compositeDisposable.add(requestHandler.registerNewOwnerRequest(ApiUtility.getInstance().getApiKeyMetaData(), createRegisterNewUserObject())
+                .doOnSubscribe(d->registerApiResponse(ApiResponse.loading()))
+        .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result->registerApiResponse(ApiResponse.success(result)),
+                        error->registerApiResponse(ApiResponse.error(error))));
+    }
+
+    private void registerApiResponse(ApiResponse apiResponse) {
+        switch (apiResponse.status) {
+            case LOADING:
+                utility.showProgressDialog(this);
+                break;
+            case SUCCESS:
+                utility.dismissDialog();
+                if (apiResponse.isValidResponse()) {
+                    startActivity(new Intent(this, VerifyMobileActivity.class));
+                }
+                break;
+            case ERROR:
+                utility.dismissDialog();
+                break;
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -260,8 +351,10 @@ public class RegisterActivity extends BaseActivity {
 
     @Onclick(R.id.fbNext)
     public void fbNext(View v) {
-        Intent intent = new Intent(this, VerifyMobileActivity.class);
-        startActivity(intent);
+        //Update new uer to server.
+        registerNewUserRequest();
+        /*Intent intent = new Intent(this, VerifyMobileActivity.class);
+        startActivity(intent);*/
     }
 
     @Onclick(R.id.toolbarClose)

@@ -1,5 +1,6 @@
 package com.codesense.driverapp.net;
 
+import com.codesense.driverapp.request.RegisterNewUser;
 import com.google.gson.JsonElement;
 
 import io.reactivex.Observable;
@@ -28,5 +29,9 @@ public class RequestHandler {
 
     public Observable<JsonElement> fetchCityListRequest(String apiKey) {
         return apiCallInterface.fetchCityListRequest(apiKey);
+    }
+
+    public Observable<JsonElement> registerNewOwnerRequest(String apiKey, RegisterNewUser registerNewUser) {
+        return apiCallInterface.registerNewOwnerRequest(apiKey, registerNewUser);
     }
 }
