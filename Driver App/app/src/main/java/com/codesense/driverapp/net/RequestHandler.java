@@ -21,4 +21,12 @@ public class RequestHandler {
     public Observable<JsonElement> getApiInfoRequest(String apiKey) {
         return apiCallInterface.getApiInfoRequest(apiKey);
     }
+
+    public Observable<JsonElement> fetchCountryListRequest(String apiKey) {
+        return apiCallInterface.fetchCountryListRequest(apiKey);
+    }
+
+    public Observable<JsonElement> fetchCityListRequest(String apiKey) {
+        return apiCallInterface.fetchCityListRequest(apiKey);
+    }
 }

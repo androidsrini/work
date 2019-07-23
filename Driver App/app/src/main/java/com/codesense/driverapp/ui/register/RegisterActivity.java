@@ -1,5 +1,6 @@
 package com.codesense.driverapp.ui.register;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -18,6 +20,8 @@ import android.widget.TextView;
 
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.base.BaseActivity;
+import com.codesense.driverapp.data.CitiesItem;
+import com.codesense.driverapp.data.CountriesItem;
 import com.codesense.driverapp.ui.verifymobile.VerifyMobileActivity;
 import com.product.annotationbuilder.ProductBindView;
 import com.product.process.annotation.Initialize;
@@ -26,6 +30,8 @@ import com.product.process.annotation.Onclick;
 public class RegisterActivity extends BaseActivity {
 
 
+    private CountriesItem countriesItem;
+    private CitiesItem citiesItem;
     @Initialize(R.id.tvRegisterDes)
     TextView tvRegisterDes;
     @Initialize(R.id.ll_name)
@@ -54,6 +60,8 @@ public class RegisterActivity extends BaseActivity {
     TextView tvTitle;
     @Initialize(R.id.toolbarClose)
     ImageView toolbarClose;
+    @Initialize(R.id.etCountry)
+    EditText etCountry;
 
 
     @Override
@@ -67,7 +75,6 @@ public class RegisterActivity extends BaseActivity {
         ProductBindView.bind(this);
         functionality();
         setDynamicValue();
-
     }
 
 
@@ -75,6 +82,33 @@ public class RegisterActivity extends BaseActivity {
         tvTitle.setText(getResources().getText(R.string.register_button));
         toolbarClose.setBackgroundResource(R.drawable.icon_close);
         singleTextView(tvPrivacyPolicy, getResources().getString(R.string.register_policy_text_first_prefix1), getResources().getString(R.string.register_policy_text_prefix2), getResources().getString(R.string.register_policy_text_first_sufix1), getResources().getString(R.string.register_policy_text_first_sufix2), getResources().getColor(R.color.primary_color), getResources().getString(R.string.register_policy_app_name));
+        setCountryAndCitiesOnTouchListener();
+    }
+
+    private void startCountryCitiesSelectionScreen(CountryCitiesSelectionActivity.ActivityType activityType) {
+        Intent starter = new Intent(this, CountryCitiesSelectionActivity.class);
+        starter.putExtra(CountryCitiesSelectionActivity.ACTIVITY_TYPE, activityType);
+        startActivityForResult(starter, CountryCitiesSelectionActivity.REQUEST_CODE);
+    }
+
+    /**
+     * This method will set touch listener for city and country edit text.
+     */
+    private void setCountryAndCitiesOnTouchListener() {
+        etCity.setOnTouchListener((v, event) -> {
+            if (MotionEvent.ACTION_UP == event.getAction()) {
+                //Show cities list screen.
+                startCountryCitiesSelectionScreen(CountryCitiesSelectionActivity.ActivityType.CITIES);
+            }
+            return true;
+        });
+        etCountry.setOnTouchListener((v, event) -> {
+            if (MotionEvent.ACTION_UP == event.getAction()) {
+                //Show country list screen.
+                startCountryCitiesSelectionScreen(CountryCitiesSelectionActivity.ActivityType.COUNTRY);
+            }
+            return true;
+        });
     }
 
 
@@ -83,14 +117,12 @@ public class RegisterActivity extends BaseActivity {
         int imgIconWidth = (int) (screenWidth * 0.075);
         int imgIconHeight = (int) (screenWidth * 0.075);
 
-
         RelativeLayout.LayoutParams imgLayParams = (RelativeLayout.LayoutParams) toolbarClose.getLayoutParams();
         imgLayParams.width = imgIconWidth;
         imgLayParams.height = imgIconHeight;
         toolbarClose.setLayoutParams(imgLayParams);
 
         int topBottomSpace = (int) (screenHeight * 0.0089);
-
 
         ConstraintLayout.LayoutParams tvRegisterDesLayoutParams = (ConstraintLayout.LayoutParams) tvRegisterDes.getLayoutParams();
         tvRegisterDesLayoutParams.setMargins(topBottomSpace * 3, topBottomSpace * 2, topBottomSpace * 3, 0);
@@ -120,7 +152,7 @@ public class RegisterActivity extends BaseActivity {
         etPasswordLayoutParams.setMargins(topBottomSpace * 3, topBottomSpace, topBottomSpace * 3, 0);
         etPassword.setLayoutParams(etPasswordLayoutParams);
 
-        ConstraintLayout.LayoutParams etCityLayoutParams = (ConstraintLayout.LayoutParams) etCity.getLayoutParams();
+        LinearLayout.LayoutParams etCityLayoutParams = (LinearLayout.LayoutParams) etCity.getLayoutParams();
         etCityLayoutParams.setMargins(topBottomSpace * 3, topBottomSpace, topBottomSpace * 3, 0);
         etCity.setLayoutParams(etCityLayoutParams);
 
@@ -136,7 +168,7 @@ public class RegisterActivity extends BaseActivity {
 
     }
 
-    private static void singleTextView(TextView textView, final String first, String second, final String third, final String fourth, final int color, final String appName) {
+    private void singleTextView(TextView textView, final String first, String second, final String third, final String fourth, final int color, final String appName) {
 
         final SpannableStringBuilder spanText = new SpannableStringBuilder();
         spanText.append(first);
@@ -158,10 +190,7 @@ public class RegisterActivity extends BaseActivity {
         spanText.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-
                 // On Click Action
-//                bottomSheetDialog.dismiss();
-
             }
 
             @Override
@@ -180,10 +209,7 @@ public class RegisterActivity extends BaseActivity {
         spanText.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-
                 // On Click Action
-//                bottomSheetDialog.dismiss();
-
             }
 
             @Override
@@ -195,10 +221,41 @@ public class RegisterActivity extends BaseActivity {
             }
         }, spanText.length() - fourth.length(), spanText.length(), 0);
 
-
         textView.setMovementMethod(LinkMovementMethod.getInstance());
         textView.setText(spanText, TextView.BufferType.SPANNABLE);
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (CountryCitiesSelectionActivity.REQUEST_CODE == requestCode && Activity.RESULT_OK == resultCode && null != data) {
+            CountryCitiesSelectionActivity.ActivityType activityType = (CountryCitiesSelectionActivity.ActivityType) data.getSerializableExtra(CountryCitiesSelectionActivity.ACTIVITY_TYPE);
+            if (null != activityType) {
+                if (CountryCitiesSelectionActivity.ActivityType.CITIES == activityType) {
+                    //Update city edit text UI.
+                    citiesItem = data.getParcelableExtra(CountryCitiesSelectionActivity.RESULT_DATA);
+                    if (null != citiesItem) {
+                        etCity.setText(citiesItem.getCityName());
+                    }
+                } else if (CountryCitiesSelectionActivity.ActivityType.COUNTRY == activityType) {
+                    //Update Country Edit text UI.
+                    countriesItem = data.getParcelableExtra(CountryCitiesSelectionActivity.RESULT_DATA);
+                    if (null != countriesItem) {
+                        etCountry.setText(countriesItem.getCountryName());
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        /**
+         * To clear listener for edit text.
+         */
+        etCity.setOnTouchListener(null);
+        etCountry.setOnTouchListener(null);
     }
 
     @Onclick(R.id.fbNext)

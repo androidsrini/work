@@ -30,6 +30,7 @@
     <string name="phone_text">Phone Number</string>
     <string name="password_text">Password</string>
     <string name="city_text">City</string>
+    <string name="country_text">Country</string>
     <string name="invite_text">Invite Code</string>
     <string name="register_policy_text_first_prefix1">By proceeding, I agree to</string>
     <string name="register_policy_app_name">" "VAVA\'s</string>
