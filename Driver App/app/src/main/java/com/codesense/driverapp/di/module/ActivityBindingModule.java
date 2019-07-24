@@ -9,6 +9,7 @@ import com.codesense.driverapp.ui.legalagreement.LegalAgreementActivity;
 import com.codesense.driverapp.ui.online.OnlineActivity;
 import com.codesense.driverapp.ui.paymentType.PaymentActivity;
 import com.codesense.driverapp.ui.pickuplocationaccept.PickUpLocationAcceptActivity;
+import com.codesense.driverapp.ui.referalprogram.ReferalProgramActivity;
 import com.codesense.driverapp.ui.register.RegisterActivity;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
 import com.codesense.driverapp.ui.setting.SettingActivity;
@@ -67,4 +68,7 @@ public abstract class ActivityBindingModule {
 
     @ContributesAndroidInjector
     abstract InviteFriendsActivity bindInviteFriendsActivity();
+
+    @ContributesAndroidInjector
+    abstract ReferalProgramActivity bindReferalProgramActivity();
 }

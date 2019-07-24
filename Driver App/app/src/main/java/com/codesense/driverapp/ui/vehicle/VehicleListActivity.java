@@ -34,7 +34,7 @@ public class VehicleListActivity extends DrawerActivity implements View.OnClickL
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View contentView = inflater.inflate(R.layout.activity_vehicle_list, null, false);
         frameLayout.addView(contentView);
-        ProductBindView.bind(this);
+//        ProductBindView.bind(this);
         titleTextView.setText(getResources().getString(R.string.vehicle_list_title));
         initially();
         setDynamicValue();

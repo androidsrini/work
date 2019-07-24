@@ -31,7 +31,7 @@ public class SettingActivity extends DrawerActivity {
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View contentView = inflater.inflate(R.layout.activity_setting, null, false);
         frameLayout.addView(contentView);
-        ProductBindView.bind(this);
+//        ProductBindView.bind(this);
         titleTextView.setText(getResources().getString(R.string.setting_title));
         initially();
         setDynamicValue();

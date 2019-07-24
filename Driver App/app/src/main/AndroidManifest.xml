@@ -85,12 +85,15 @@
         <activity
             android:name=".ui.invitefriends.InviteFriendsActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.referalprogram.ReferalProgramActivity"
+            android:screenOrientation="portrait" />
 
         <service android:name=".ui.helper.LocationMonitoringService" />
 
-        <activity android:name=".ui.register.CountryCitiesSelectionActivity"
-            android:theme="@style/AppTheme">
-        </activity>
+        <activity
+            android:name=".ui.register.CountryCitiesSelectionActivity"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

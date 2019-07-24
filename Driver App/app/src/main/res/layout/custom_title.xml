@@ -35,6 +35,7 @@
         android:thumb="@drawable/switch_thumb_online"
         android:checked="true"
         app:showText="true"
+        android:visibility="gone"
         app:track="@drawable/switch_selector_background"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true" />

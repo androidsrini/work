@@ -368,4 +368,10 @@
     <string name="invite_friend_share_desc">Invite your friends by sharing above invite code and earn the referral amount</string>
     <string name="invite_friend_button">Invite Friends</string>
     <string name="loading">Loading...</string>
+
+
+    <!--Referal Program-->
+    <string name="referal_earn_title">Referal and Earning</string>
+    <string name="referal_inivite_friends">Invite Friends</string>
+    <string name="referal_code_earning">Referal Earnings</string>
 </resources>

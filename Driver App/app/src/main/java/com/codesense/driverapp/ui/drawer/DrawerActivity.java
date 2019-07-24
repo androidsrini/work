@@ -33,6 +33,7 @@ import android.widget.TextView;
 
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.ui.invitefriends.InviteFriendsActivity;
+import com.codesense.driverapp.ui.referalprogram.ReferalProgramActivity;
 
 import java.util.ArrayList;
 
@@ -361,7 +362,7 @@ public class DrawerActivity extends DaggerAppCompatActivity {
             if (menuLabel.equals("checkstatus")) {
 
             } else if (menuLabel.equals("referearn")) {
-                intent = new Intent(this, InviteFriendsActivity.class);
+                intent = new Intent(this, ReferalProgramActivity.class);
                 startActivity(intent);
             }
         }
