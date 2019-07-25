@@ -3,10 +3,13 @@ package com.codesense.driverapp.net;
 import com.codesense.driverapp.request.RegisterNewUser;
 import com.google.gson.JsonElement;
 
+import java.util.HashMap;
+
 import io.reactivex.Observable;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.QueryMap;
 
 public interface ApiCallInterface {
 
@@ -22,4 +25,7 @@ public interface ApiCallInterface {
 
     @GET(WebserviceUrls.REGISTER_NEW_OWNER)
     Observable<JsonElement> registerNewOwnerRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Body RegisterNewUser registerNewUser);
+
+    @GET(WebserviceUrls.SENT_OTP)
+    Observable<JsonElement> sentOTPRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @QueryMap HashMap<String, String> params);
 }

@@ -6,12 +6,18 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,7 +30,9 @@ import com.codesense.driverapp.data.CitiesItem;
 import com.codesense.driverapp.data.CountriesItem;
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.di.utils.Utility;
+import com.codesense.driverapp.localstoreage.DatabaseClient;
 import com.codesense.driverapp.net.ApiResponse;
+import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.request.RegisterNewUser;
 import com.codesense.driverapp.ui.verifymobile.VerifyMobileActivity;
@@ -41,6 +49,7 @@ import io.reactivex.schedulers.Schedulers;
 public class RegisterActivity extends BaseActivity {
 
 
+    private static final String TAG = "DriverApp";
     private CountriesItem countriesItem;
     private CitiesItem citiesItem;
     @Initialize(R.id.tvRegisterDes)
@@ -58,7 +67,7 @@ public class RegisterActivity extends BaseActivity {
     @Initialize(R.id.etPassword)
     EditText etPassword;
     @Initialize(R.id.etCity)
-    EditText etCity;
+    AutoCompleteTextView etCity;
     @Initialize(R.id.etInviteCode)
     EditText etInviteCode;
     @Initialize(R.id.tvPrivacyPolicy)
@@ -72,7 +81,7 @@ public class RegisterActivity extends BaseActivity {
     @Initialize(R.id.toolbarClose)
     ImageView toolbarClose;
     @Initialize(R.id.etCountry)
-    EditText etCountry;
+    AutoCompleteTextView etCountry;
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     @Inject
     protected RequestHandler requestHandler;
@@ -98,35 +107,84 @@ public class RegisterActivity extends BaseActivity {
         tvTitle.setText(getResources().getText(R.string.register_button));
         toolbarClose.setBackgroundResource(R.drawable.icon_close);
         singleTextView(tvPrivacyPolicy, getResources().getString(R.string.register_policy_text_first_prefix1), getResources().getString(R.string.register_policy_text_prefix2), getResources().getString(R.string.register_policy_text_first_sufix1), getResources().getString(R.string.register_policy_text_first_sufix2), getResources().getColor(R.color.primary_color), getResources().getString(R.string.register_policy_app_name));
-        setCountryAndCitiesOnTouchListener();
+        fetchAndUpdateCountryListFromDataBase();
+        fetchAndUpdateCitiesListFromDataBase();
     }
 
-    private void startCountryCitiesSelectionScreen(CountryCitiesSelectionActivity.ActivityType activityType) {
-        Intent starter = new Intent(this, CountryCitiesSelectionActivity.class);
-        starter.putExtra(CountryCitiesSelectionActivity.ACTIVITY_TYPE, activityType);
-        startActivityForResult(starter, CountryCitiesSelectionActivity.REQUEST_CODE);
+    private void addTextWatcherForCountyAndCityUI() {
+        etCountry.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    findCountryFromCountryName(s);
+                } else {
+                    countriesItem = null;
+                }
+            }
+        });
+        etCity.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    findCityFromCityName(s);
+                } else {
+                    citiesItem = null;
+                }
+            }
+        });
     }
 
     /**
-     * This method will set touch listener for city and country edit text.
+     * This method to fetch country list from data base and update in country auto complete UI.
      */
-    private void setCountryAndCitiesOnTouchListener() {
-        etCity.setOnTouchListener((v, event) -> {
-            if (MotionEvent.ACTION_UP == event.getAction()) {
-                //Show cities list screen.
-                startCountryCitiesSelectionScreen(CountryCitiesSelectionActivity.ActivityType.CITIES);
-            }
-            return true;
-        });
-        etCountry.setOnTouchListener((v, event) -> {
-            if (MotionEvent.ACTION_UP == event.getAction()) {
-                //Show country list screen.
-                startCountryCitiesSelectionScreen(CountryCitiesSelectionActivity.ActivityType.COUNTRY);
-            }
-            return true;
-        });
+    private void fetchAndUpdateCountryListFromDataBase() {
+        compositeDisposable.add(DatabaseClient.getInstance(this).getAppDatabase().countryDao().getCountryList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    Log.d(TAG, " Country List data size is: " + result.size());
+                    ArrayAdapter arrayAdapter = new ArrayAdapter<CountriesItem>(this, android.R.layout.simple_list_item_1, result);
+                    etCountry.setAdapter(arrayAdapter);
+                }, error -> {
+                    Log.d(TAG, " Country List data getting error: " + Log.getStackTraceString(error));
+                }));
     }
 
+    /**
+     * This method to fetch cities list from data base and update in cities auto complete UI.
+     */
+    private void fetchAndUpdateCitiesListFromDataBase() {
+        compositeDisposable.add(DatabaseClient.getInstance(this).getAppDatabase().cityDao().getCityList()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    Log.d(TAG, " cities List data size is: " + result.size());
+                    ArrayAdapter arrayAdapter = new ArrayAdapter<CitiesItem>(this, android.R.layout.simple_list_item_1, result);
+                    etCity.setAdapter(arrayAdapter);
+                }, error -> {
+                    Log.d(TAG, " cities List data getting error: " + Log.getStackTraceString(error));
+                }));
+    }
 
     private void setDynamicValue() {
 
@@ -169,8 +227,12 @@ public class RegisterActivity extends BaseActivity {
         etPassword.setLayoutParams(etPasswordLayoutParams);
 
         LinearLayout.LayoutParams etCityLayoutParams = (LinearLayout.LayoutParams) etCity.getLayoutParams();
-        etCityLayoutParams.setMargins(topBottomSpace * 3, topBottomSpace, topBottomSpace * 3, 0);
+        etCityLayoutParams.setMargins(0, topBottomSpace, topBottomSpace * 3, 0);
         etCity.setLayoutParams(etCityLayoutParams);
+
+        LinearLayout.LayoutParams etCountryLayoutParams = (LinearLayout.LayoutParams) etCountry.getLayoutParams();
+        etCountryLayoutParams.setMargins(topBottomSpace * 3, topBottomSpace, 0, 0);
+        etCountry.setLayoutParams(etCountryLayoutParams);
 
         ConstraintLayout.LayoutParams etInviteCodeLayoutParams = (ConstraintLayout.LayoutParams) etInviteCode.getLayoutParams();
         etInviteCodeLayoutParams.setMargins(topBottomSpace * 3, topBottomSpace, topBottomSpace * 3, 0);
@@ -184,8 +246,8 @@ public class RegisterActivity extends BaseActivity {
 
     }
 
-    private void singleTextView(TextView textView, final String first, String second, final String third, final String fourth, final int color, final String appName) {
-
+    private void singleTextView(TextView textView, final String first, String second, final String third,
+                                final String fourth, final int color, final String appName) {
         final SpannableStringBuilder spanText = new SpannableStringBuilder();
         spanText.append(first);
         spanText.append(appName);
@@ -241,38 +303,74 @@ public class RegisterActivity extends BaseActivity {
         textView.setText(spanText, TextView.BufferType.SPANNABLE);
     }
 
-    public String getEtFirstName() {
+    /**
+     * This method will return user enterd First name
+     * @return String
+     */
+    private String getEtFirstName() {
         return etFirstName.getText().toString().trim();
     }
 
-    public String getEtLastName() {
+    /**
+     * This method will return user Entered last name.
+     * @return String
+     */
+    private String getEtLastName() {
         return etLastName.getText().toString().trim();
     }
 
-    public String getEtEmail() {
+    /**
+     * This Method will return user entered Email address.
+     * @return String
+     */
+    private String getEtEmail() {
         return etEmail.getText().toString().trim();
     }
 
-    public String getEtPhoneNumber() {
+    /**
+     * This method will return User Entered phone number
+     * @return String
+     */
+    private String getEtPhoneNumber() {
         return etPhoneNumber.getText().toString().trim();
     }
 
-    public String getEtPassword() {
+    /**
+     * This method will return User entered password
+     * @return String
+     */
+    private String getEtPassword() {
         return etPassword.getText().toString().trim();
     }
 
+    /**
+     * This method will return User Entered Invite code.
+     * @return String
+     */
+    private String getEtInviteCode() {
+        return etInviteCode.getText().toString().trim();
+    }
+
+    /**
+     * This method will return user entered city
+     * @return String
+     */
     public String getEtCity() {
         return etCity.getText().toString().trim();
     }
 
-    public String getEtInviteCode() {
-        return etInviteCode.getText().toString().trim();
-    }
-
+    /**
+     * This method will return user entered country
+     * @return String
+     */
     public String getEtCountry() {
         return etCountry.getText().toString().trim();
     }
 
+    /**
+     * This method will create Register New User Object.
+     * @return RegisterNewUser
+     */
     private RegisterNewUser createRegisterNewUserObject() {
         RegisterNewUser registerNewUser = new RegisterNewUser();
         registerNewUser.setFirstName(getEtFirstName());
@@ -290,6 +388,9 @@ public class RegisterActivity extends BaseActivity {
         return registerNewUser;
     }
 
+    /**
+     * This method call register new owner request API.
+     */
     private void registerNewUserRequest() {
         compositeDisposable.add(requestHandler.registerNewOwnerRequest(ApiUtility.getInstance().getApiKeyMetaData(), createRegisterNewUserObject())
                 .doOnSubscribe(d->registerApiResponse(ApiResponse.loading()))
@@ -299,6 +400,10 @@ public class RegisterActivity extends BaseActivity {
                         error->registerApiResponse(ApiResponse.error(error))));
     }
 
+    /**
+     * This method will handle register new Driver api response.
+     * @param apiResponse
+     */
     private void registerApiResponse(ApiResponse apiResponse) {
         switch (apiResponse.status) {
             case LOADING:
@@ -307,12 +412,75 @@ public class RegisterActivity extends BaseActivity {
             case SUCCESS:
                 utility.dismissDialog();
                 if (apiResponse.isValidResponse()) {
-                    startActivity(new Intent(this, VerifyMobileActivity.class));
+                    VerifyMobileActivity.start(this, "", getEtPhoneNumber());
                 }
                 break;
             case ERROR:
                 utility.dismissDialog();
                 break;
+        }
+    }
+
+    /**
+     * This method to find any mandatory field are empty
+     * @return boolean
+     */
+    private boolean doesAnyMandatoyFieldIsEmpty() {
+        return TextUtils.isEmpty(getEtFirstName()) || TextUtils.isEmpty(getEtLastName())
+                || TextUtils.isEmpty(getEtPhoneNumber()) || TextUtils.isEmpty(getEtPassword())
+                || TextUtils.isEmpty(getEtPassword()) || TextUtils.isEmpty(getEtEmail())
+                || TextUtils.isEmpty(getEtInviteCode());
+    }
+
+    /**
+     * This method is used for get country object from data base based on user enter value.
+     * @param e Editable argument
+     */
+    private void findCountryFromCountryName(Editable e) {
+        compositeDisposable.add(DatabaseClient.getInstance(this).getAppDatabase().countryDao().findByCountryName(e.toString())
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(result->{
+            countriesItem = result;
+            showCountryErrorMsg();
+        }, error->{
+            countriesItem = null;
+            showCountryErrorMsg();
+        }));
+    }
+
+    /**
+     * This method is used for get city object from data base based on user enter value.
+     * @param e Editable argument
+     */
+    private void findCityFromCityName(Editable e) {
+        compositeDisposable.add(DatabaseClient.getInstance(this).getAppDatabase().cityDao().findByCityName(e.toString())
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(result->{
+            citiesItem = result;
+            showCityErrorMsg();
+        }, error->{
+            citiesItem = null;
+            showCityErrorMsg();
+        }));
+    }
+
+    /**
+     * This method to display Invalid Country selection error msg
+     */
+    private void showCountryErrorMsg() {
+        if (null == countriesItem) {
+            utility.showToastMsg(this, "Please Enter Valid Country");
+        }
+    }
+
+    /**
+     * This method to display Invalid City selection error msg
+     */
+    private void showCityErrorMsg() {
+        if (null == citiesItem) {
+            utility.showToastMsg(this, "Please Enter Valid city");
         }
     }
 
@@ -342,19 +510,18 @@ public class RegisterActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        /**
-         * To clear listener for edit text.
-         */
-        etCity.setOnTouchListener(null);
-        etCountry.setOnTouchListener(null);
+        etCountry.addTextChangedListener(null);
+        etCity.addTextChangedListener(null);
     }
 
     @Onclick(R.id.fbNext)
     public void fbNext(View v) {
         //Update new uer to server.
-        registerNewUserRequest();
-        /*Intent intent = new Intent(this, VerifyMobileActivity.class);
-        startActivity(intent);*/
+        if (Constant.IS_UNDER_DEVELOPMENT && doesAnyMandatoyFieldIsEmpty()) {
+            VerifyMobileActivity.start(this, "", getEtPhoneNumber());
+        } else {
+            registerNewUserRequest();
+        }
     }
 
     @Onclick(R.id.toolbarClose)

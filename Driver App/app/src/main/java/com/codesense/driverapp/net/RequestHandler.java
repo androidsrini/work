@@ -3,6 +3,8 @@ package com.codesense.driverapp.net;
 import com.codesense.driverapp.request.RegisterNewUser;
 import com.google.gson.JsonElement;
 
+import java.util.HashMap;
+
 import io.reactivex.Observable;
 
 public class RequestHandler {
@@ -13,6 +15,13 @@ public class RequestHandler {
     public static RequestHandler GetInstance() {
         return requestHandler;
     }*/
+
+    private HashMap<String, String> getSendOTPRequestParam(String userID, String phoneNumber) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, userID);
+        param.put(Constant.PHONE_NUMBER_PARAM, phoneNumber);
+        return param;
+    }
 
     public RequestHandler(ApiCallInterface apiCallInterface) {
         this.apiCallInterface = apiCallInterface;
@@ -33,5 +42,9 @@ public class RequestHandler {
 
     public Observable<JsonElement> registerNewOwnerRequest(String apiKey, RegisterNewUser registerNewUser) {
         return apiCallInterface.registerNewOwnerRequest(apiKey, registerNewUser);
+    }
+
+    public Observable<JsonElement> sentOTPRequest(String apiKey, String userID, String phoneNumber) {
+        return apiCallInterface.sentOTPRequest(apiKey, getSendOTPRequestParam(userID, phoneNumber));
     }
 }

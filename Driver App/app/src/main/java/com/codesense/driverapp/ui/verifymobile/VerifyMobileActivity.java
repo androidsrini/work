@@ -1,5 +1,6 @@
 package com.codesense.driverapp.ui.verifymobile;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -17,6 +18,10 @@ import android.widget.TextView;
 
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.base.BaseActivity;
+import com.codesense.driverapp.di.utils.ApiUtility;
+import com.codesense.driverapp.di.utils.Utility;
+import com.codesense.driverapp.net.ApiResponse;
+import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
 import com.product.annotationbuilder.ProductBindView;
 import com.product.process.annotation.Initialize;
@@ -24,8 +29,17 @@ import com.product.process.annotation.Onclick;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
+
 public class VerifyMobileActivity extends BaseActivity {
 
+    private static final String USER_ID_ARG = "UserID";
+    private static final String PHONE_NUMBER_ARG = "PhoneNumber";
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     @Initialize(R.id.tvPhoneNumber)
     TextView tvPhoneNumber;
     @Initialize(R.id.optNumber1)
@@ -54,6 +68,10 @@ public class VerifyMobileActivity extends BaseActivity {
     View view3;
     @Initialize(R.id.toolbarClose)
     ImageView toolbarClose;
+    @Inject
+    protected RequestHandler requestHandler;
+    @Inject
+    protected Utility utility;
 
     private long timeCountInMilliSeconds = 60000;
     private int timeCountProgressSeconds = 1;
@@ -67,6 +85,13 @@ public class VerifyMobileActivity extends BaseActivity {
 
 
     private CountDownTimer countDownTimer;
+
+    public static void start(Context context, String userID, String phoneNumber) {
+        Intent starter = new Intent(context, VerifyMobileActivity.class);
+        starter.putExtra(USER_ID_ARG, userID);
+        starter.putExtra(PHONE_NUMBER_ARG, phoneNumber);
+        context.startActivity(starter);
+    }
 
 
     @Override
@@ -143,7 +168,6 @@ public class VerifyMobileActivity extends BaseActivity {
             }
         });
         startStop();
-
     }
 
     private void setDynamicValue() {
@@ -211,6 +235,29 @@ public class VerifyMobileActivity extends BaseActivity {
         LinearLayout.LayoutParams imgNextLayoutParams = (LinearLayout.LayoutParams) imgNext.getLayoutParams();
         imgNextLayoutParams.setMargins(0, topBottomSpace * 2, topBottomSpace, 0);
         imgNext.setLayoutParams(imgNextLayoutParams);
+    }
+
+    private void sendOTPRequest(String userID, String phoneNumber) {
+        compositeDisposable.add(requestHandler.sentOTPRequest(ApiUtility.getInstance().getApiKeyMetaData(), userID, phoneNumber)
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(d -> apiResponseHandle(ApiResponse.loading()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {apiResponseHandle(ApiResponse.success(result));},
+                        error -> {apiResponseHandle(ApiResponse.error(error));}));
+    }
+
+    private void apiResponseHandle(ApiResponse apiResponse) {
+        switch (apiResponse.status) {
+            case LOADING:
+                utility.showProgressDialog(this);
+                break;
+            case SUCCESS:
+                utility.dismissDialog();
+                break;
+            case ERROR:
+                utility.dismissDialog();
+                break;
+        }
     }
 
     @Onclick(R.id.toolbarClose)

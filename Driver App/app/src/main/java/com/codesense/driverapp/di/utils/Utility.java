@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.UiThread;
 import android.util.Base64;
+import android.widget.Toast;
 
 import com.codesense.driverapp.R;
 
@@ -41,6 +42,15 @@ public class Utility {
             progressDialog.dismiss();
             progressDialog = null;
         }
+    }
+
+    /**
+     * This method to disply toast message based in UI context.
+     * @param context
+     * @param msg
+     */
+    public void showToastMsg(Context context, String msg) {
+        Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
     }
 
     public String decrypt(String key, String encrypted) throws Exception {
@@ -96,6 +106,4 @@ public class Utility {
         String decrypted = new String(decryptedBytes);
         return decrypted;
     }
-
-
 }
