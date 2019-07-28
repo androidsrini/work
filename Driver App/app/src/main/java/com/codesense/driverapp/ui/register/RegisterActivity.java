@@ -109,6 +109,7 @@ public class RegisterActivity extends BaseActivity {
         singleTextView(tvPrivacyPolicy, getResources().getString(R.string.register_policy_text_first_prefix1), getResources().getString(R.string.register_policy_text_prefix2), getResources().getString(R.string.register_policy_text_first_sufix1), getResources().getString(R.string.register_policy_text_first_sufix2), getResources().getColor(R.color.primary_color), getResources().getString(R.string.register_policy_app_name));
         fetchAndUpdateCountryListFromDataBase();
         fetchAndUpdateCitiesListFromDataBase();
+        addTextWatcherForCountyAndCityUI();
     }
 
     private void addTextWatcherForCountyAndCityUI() {
@@ -393,8 +394,8 @@ public class RegisterActivity extends BaseActivity {
      */
     private void registerNewUserRequest() {
         compositeDisposable.add(requestHandler.registerNewOwnerRequest(ApiUtility.getInstance().getApiKeyMetaData(), createRegisterNewUserObject())
+                .subscribeOn(Schedulers.io())
                 .doOnSubscribe(d->registerApiResponse(ApiResponse.loading()))
-        .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result->registerApiResponse(ApiResponse.success(result)),
                         error->registerApiResponse(ApiResponse.error(error))));
@@ -411,8 +412,10 @@ public class RegisterActivity extends BaseActivity {
                 break;
             case SUCCESS:
                 utility.dismissDialog();
-                if (apiResponse.isValidResponse()) {
-                    VerifyMobileActivity.start(this, "", getEtPhoneNumber());
+                if ((null != apiResponse.getResponseJsonObject() && apiResponse.isValidResponse())
+                        || ApiResponse.OTP_VALIDATION == apiResponse.getResponseStatus()) {
+                    VerifyMobileActivity.start(this, apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE),
+                            getEtPhoneNumber());
                 }
                 break;
             case ERROR:
@@ -428,8 +431,7 @@ public class RegisterActivity extends BaseActivity {
     private boolean doesAnyMandatoyFieldIsEmpty() {
         return TextUtils.isEmpty(getEtFirstName()) || TextUtils.isEmpty(getEtLastName())
                 || TextUtils.isEmpty(getEtPhoneNumber()) || TextUtils.isEmpty(getEtPassword())
-                || TextUtils.isEmpty(getEtPassword()) || TextUtils.isEmpty(getEtEmail())
-                || TextUtils.isEmpty(getEtInviteCode());
+                || TextUtils.isEmpty(getEtPassword()) || TextUtils.isEmpty(getEtEmail());
     }
 
     /**
@@ -517,10 +519,10 @@ public class RegisterActivity extends BaseActivity {
     @Onclick(R.id.fbNext)
     public void fbNext(View v) {
         //Update new uer to server.
-        if (Constant.IS_UNDER_DEVELOPMENT && doesAnyMandatoyFieldIsEmpty()) {
-            VerifyMobileActivity.start(this, "", getEtPhoneNumber());
-        } else {
+        if (!doesAnyMandatoyFieldIsEmpty()) {
             registerNewUserRequest();
+        } else {
+            utility.showToastMsg(this, "Enter all fields");
         }
     }
 

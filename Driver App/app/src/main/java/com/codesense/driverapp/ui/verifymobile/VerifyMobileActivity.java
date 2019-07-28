@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -23,20 +25,28 @@ import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
+import com.google.gson.JsonElement;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.product.annotationbuilder.ProductBindView;
 import com.product.process.annotation.Initialize;
 import com.product.process.annotation.Onclick;
 
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
+import javax.xml.transform.Transformer;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class VerifyMobileActivity extends BaseActivity {
 
+    private static final String TAG = "Driver";
     private static final String USER_ID_ARG = "UserID";
     private static final String PHONE_NUMBER_ARG = "PhoneNumber";
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -72,6 +82,7 @@ public class VerifyMobileActivity extends BaseActivity {
     protected RequestHandler requestHandler;
     @Inject
     protected Utility utility;
+    private String userID, phoneNumber;
 
     private long timeCountInMilliSeconds = 60000;
     private int timeCountProgressSeconds = 1;
@@ -106,6 +117,10 @@ public class VerifyMobileActivity extends BaseActivity {
         tvTitle.setText(getResources().getText(R.string.verify_title));
         setDynamicValue();
         functionality();
+        setEditTextObserver();
+        if (!TextUtils.isEmpty(getUserId())) {
+            sendOTPRequest(getUserId(), getPhoneNumber());
+        }
     }
 
     private void functionality() {
@@ -172,11 +187,9 @@ public class VerifyMobileActivity extends BaseActivity {
 
     private void setDynamicValue() {
         int topBottomSpace = (int) (screenHeight * 0.0089);
-
         int imgIconWidth = (int) (screenWidth * 0.075);
         int imgEditheight = (int) (screenWidth * 0.105);
         int imgIconHeight = (int) (screenWidth * 0.075);
-
 
         RelativeLayout.LayoutParams imgLayParams = (RelativeLayout.LayoutParams) toolbarClose.getLayoutParams();
         imgLayParams.width = imgIconWidth;
@@ -237,6 +250,73 @@ public class VerifyMobileActivity extends BaseActivity {
         imgNext.setLayoutParams(imgNextLayoutParams);
     }
 
+    private void setEditTextObserver() {
+        // Show button Active code when enough fields active code
+        Observable<Boolean> mObsPhoneVerify1 = RxTextView.textChanges(optNumber1)
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(charSequence -> {
+                    boolean isField = null != charSequence && !charSequence.toString().equals("");
+                    if (isField) {
+                        optNumber2.requestFocus();
+                    }
+                    return isField;
+                    }
+                );
+        Observable<Boolean> mObsPhoneVerify2 = RxTextView.textChanges(optNumber2)
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(charSequence -> {
+                    boolean isField = null != charSequence && !charSequence.toString().equals("");
+                    if (isField) {
+                        optNumber3.requestFocus();
+                    }
+                    return isField;
+                });
+        Observable<Boolean> mObsPhoneVerify3 = RxTextView.textChanges(optNumber3)
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(charSequence -> {
+                    boolean isField = null != charSequence && !charSequence.toString().equals("");
+                    if (isField) {
+                        optNumber4.requestFocus();
+                    }
+                    return isField;
+                });
+        Observable<Boolean> mObsPhoneVerify4 = RxTextView.textChanges(optNumber4)
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(charSequence -> {
+                    //optNumber4.requestFocus();
+                    //hideKeyboard();
+                    return charSequence != null && !charSequence.toString().equals("");
+                });
+
+        Disposable disposable = Observable
+                .combineLatest(mObsPhoneVerify1, mObsPhoneVerify2, mObsPhoneVerify3, mObsPhoneVerify4,
+                        (PhoneVerify1, PhoneVerify2, PhoneVerify3, PhoneVerify4)
+                                -> PhoneVerify1 && PhoneVerify2 && PhoneVerify3 && PhoneVerify4)
+                //.compose(verifyOTPRequest(getUserId(), getPhoneNumber()))
+                .subscribe(result->System.out.println(result),
+                        error -> apiResponseHandle(ApiResponse.error((Throwable) error)));
+        compositeDisposable.add(disposable);
+    }
+
+    private String getUserId() {
+        if (null != getIntent() && TextUtils.isEmpty(userID)) {
+            userID =  getIntent().getStringExtra(USER_ID_ARG);
+        }
+        return "53";//userID;
+    }
+
+    private String getPhoneNumber() {
+        if (null != getIntent() && TextUtils.isEmpty(phoneNumber)) {
+            phoneNumber = getIntent().getStringExtra(PHONE_NUMBER_ARG);
+        }
+        return "8122960636";//phoneNumber;
+    }
+
+    /**
+     * This method is used for to send OTP request server.
+     * @param userID
+     * @param phoneNumber
+     */
     private void sendOTPRequest(String userID, String phoneNumber) {
         compositeDisposable.add(requestHandler.sentOTPRequest(ApiUtility.getInstance().getApiKeyMetaData(), userID, phoneNumber)
                 .subscribeOn(Schedulers.io())
@@ -246,6 +326,22 @@ public class VerifyMobileActivity extends BaseActivity {
                         error -> {apiResponseHandle(ApiResponse.error(error));}));
     }
 
+    /**
+     * This method is used for to verify opt value with server
+     * @param userID
+     * @param phoneNumber
+     */
+    private ObservableTransformer verifyOTPRequest(String userID, String phoneNumber) {
+        return observable -> requestHandler.verifyOTPRequest(ApiUtility.getInstance().getApiKeyMetaData(), userID, phoneNumber)
+                .subscribeOn(Schedulers.io())
+                //.doOnSubscribe(d -> apiResponseHandle(ApiResponse.loading()))
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    /**
+     * This method will handle verify mobile screen api responses.
+     * @param apiResponse
+     */
     private void apiResponseHandle(ApiResponse apiResponse) {
         switch (apiResponse.status) {
             case LOADING:
@@ -272,13 +368,10 @@ public class VerifyMobileActivity extends BaseActivity {
     }
 
     private void startCountDownTimer() {
-
         countDownTimer = new CountDownTimer(timeCountInMilliSeconds, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 btnResend.setText(hmsTimeFormatter(millisUntilFinished));
-
-
             }
 
             @Override
@@ -286,40 +379,44 @@ public class VerifyMobileActivity extends BaseActivity {
                 btnResend.setText(getResources().getString(R.string.resend_text));
                 timerStatus = TimerStatus.STOPPED;
             }
-
         }.start();
         countDownTimer.start();
     }
 
     private String hmsTimeFormatter(long milliSeconds) {
-
-        String hms = String.format("%02d:%02d",
+        return String.format(Locale.getDefault(),"%02d:%02d",
                 TimeUnit.MILLISECONDS.toMinutes(milliSeconds) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(milliSeconds)),
                 TimeUnit.MILLISECONDS.toSeconds(milliSeconds) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliSeconds)));
-
-        return hms;
     }
 
     private void startStop() {
         if (timerStatus == TimerStatus.STOPPED) {
-
             // call to initialize the progress bar values
-
             timerStatus = TimerStatus.STARTED;
             // call to start the count down timer
             startCountDownTimer();
-
-
         } else {
             stopCountDownTimer();
-
         }
-
     }
 
     private void stopCountDownTimer() {
         countDownTimer.cancel();
     }
 
+    @Onclick(R.id.btnResend)
+    protected void resendOtpRequest(View v) {
+        if (!TextUtils.isEmpty(getUserId())) {
+            sendOTPRequest(getUserId(), getPhoneNumber());
+        }
+    }
 
+    @Onclick(R.id.btnEditNumber)
+    protected void editPhoneNumberRequest(View v) {
+        //Show number edit dialog.
+        finish();
+        /*if (!TextUtils.isEmpty(getUserId())) {
+            sendOTPRequest(getUserId(), getPhoneNumber());
+        }*/
+    }
 }

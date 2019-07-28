@@ -1,15 +1,15 @@
 package com.codesense.driverapp.net;
 
-import com.codesense.driverapp.request.RegisterNewUser;
 import com.google.gson.JsonElement;
 
 import java.util.HashMap;
 
 import io.reactivex.Observable;
-import retrofit2.http.Body;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
-import retrofit2.http.QueryMap;
+import retrofit2.http.POST;
 
 public interface ApiCallInterface {
 
@@ -23,9 +23,15 @@ public interface ApiCallInterface {
     @GET(WebserviceUrls.CITIES_LIST)
     Observable<JsonElement> fetchCityListRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey);
 
-    @GET(WebserviceUrls.REGISTER_NEW_OWNER)
-    Observable<JsonElement> registerNewOwnerRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Body RegisterNewUser registerNewUser);
+    @POST(WebserviceUrls.REGISTER_NEW_OWNER)
+    @FormUrlEncoded
+    Observable<JsonElement> registerNewOwnerRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @FieldMap HashMap<String, String> param);
 
-    @GET(WebserviceUrls.SENT_OTP)
-    Observable<JsonElement> sentOTPRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @QueryMap HashMap<String, String> params);
+    @POST(WebserviceUrls.SENT_OTP)
+    @FormUrlEncoded
+    Observable<JsonElement> sentOTPRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @FieldMap HashMap<String, String> params);
+
+    @POST(WebserviceUrls.VERIFY_OTP)
+    @FormUrlEncoded
+    Observable<JsonElement> verifyOTPRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @FieldMap HashMap<String, String> params);
 }

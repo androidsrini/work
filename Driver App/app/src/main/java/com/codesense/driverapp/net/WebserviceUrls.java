@@ -7,4 +7,5 @@ public class WebserviceUrls {
     public static final String CITIES_LIST = "cities";
     public static final String REGISTER_NEW_OWNER = "signup_owner";
     public static final String SENT_OTP = "sent_otp";
+    public static final String VERIFY_OTP = "verify_otp";
 }
