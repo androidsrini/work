@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.UiThread;
 import android.support.constraint.ConstraintLayout;
 import android.text.TextUtils;
 import android.util.Log;
@@ -79,6 +81,8 @@ public class VerifyMobileActivity extends BaseActivity {
     View view3;
     @Initialize(R.id.toolbarClose)
     ImageView toolbarClose;
+    @Initialize(R.id.errorResponseStripTextView)
+    TextView errorResponseStripTextView;
     private String userID, phoneNumber;
 
     private long timeCountInMilliSeconds = 60000;
@@ -103,15 +107,32 @@ public class VerifyMobileActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ProductBindView.bind(this);
-        tvTitle.setText(getResources().getText(R.string.verify_title));
         setDynamicValue();
         functionality();
+        updateUI();
         setEditTextObserver();
         if (!TextUtils.isEmpty(getUserId())) {
             sendOTPRequest(getUserId(), getPhoneNumber());
         }
     }
 
+    /**
+     * This method will update Action bar title and append phone number.
+     */
+    @UiThread
+    private void updateUI() {
+        tvTitle.setText(getResources().getText(R.string.verify_title));
+        tvPhoneNumber.setText(getString(R.string.verify_mobile_text_place_holder, getPhoneNumber()));
+    }
+
+    @UiThread
+    private void updateErrorMessageStripUI(@NonNull String msg) {
+        if (View.INVISIBLE == errorResponseStripTextView.getVisibility())
+            errorResponseStripTextView.setVisibility(View.VISIBLE);
+        errorResponseStripTextView.setText(msg);
+    }
+
+    @UiThread
     private void functionality() {
         optNumber1.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View arg0, MotionEvent arg1) {
@@ -173,6 +194,7 @@ public class VerifyMobileActivity extends BaseActivity {
         });
     }
 
+    @UiThread
     private void setDynamicValue() {
         int topBottomSpace = (int) (screenHeight * 0.0089);
         int imgIconWidth = (int) (screenWidth * 0.075);
@@ -241,6 +263,7 @@ public class VerifyMobileActivity extends BaseActivity {
     /**
      * This method to observe verfication code edit text and call verfiy api.
      */
+    @UiThread
     private void setEditTextObserver() {
         // Show button Active code when enough fields active code
         Observable<Boolean> mObsPhoneVerify1 = RxTextView.textChanges(optNumber1)
@@ -367,6 +390,8 @@ public class VerifyMobileActivity extends BaseActivity {
                 } else if (ServiceType.VERIFY_OTP == serviceType) {
                     if (apiResponse.isValidResponse()) {
                         SelectTypeActivity.start(this);
+                    } else {
+                        updateErrorMessageStripUI(apiResponse.getResponseMessage());
                     }
                 }
                 break;

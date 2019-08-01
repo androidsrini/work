@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="max_length_phone_number">10</integer>
+    <dimen name="error_msg_strip_text_size">20sp</dimen>
 </resources>

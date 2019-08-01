@@ -12,11 +12,21 @@
         android:id="@+id/tvPhoneNumber"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/verify_mobile_text"
+        android:text="@string/verify_mobile_text_place_holder"
         android:textColor="@color/secondary_color"
         android:textSize="25sp"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/errorResponseStripTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/primary_color"
+        android:textSize="@dimen/error_msg_strip_text_size"
+        android:visibility="invisible"
+        app:layout_constraintTop_toBottomOf="@+id/tvPhoneNumber"
+        app:layout_constraintStart_toStartOf="@id/tvPhoneNumber" />
 
     <EditText
         android:id="@+id/optNumber1"
@@ -33,7 +43,7 @@
         android:nextFocusForward="@id/optNumber2"
         android:textColor="@color/secondary_color"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvPhoneNumber" />
+        app:layout_constraintTop_toBottomOf="@+id/errorResponseStripTextView" />
 
     <View
         android:id="@+id/view"
@@ -57,7 +67,7 @@
         android:background="@android:color/transparent"
         android:textColor="@color/secondary_color"
         app:layout_constraintStart_toEndOf="@id/optNumber1"
-        app:layout_constraintTop_toBottomOf="@+id/tvPhoneNumber" />
+        app:layout_constraintTop_toBottomOf="@+id/errorResponseStripTextView" />
 
     <View
         android:id="@+id/view1"
@@ -81,7 +91,7 @@
         android:background="@android:color/transparent"
         android:textColor="@color/secondary_color"
         app:layout_constraintStart_toEndOf="@id/optNumber2"
-        app:layout_constraintTop_toBottomOf="@+id/tvPhoneNumber" />
+        app:layout_constraintTop_toBottomOf="@+id/errorResponseStripTextView" />
 
     <View
         android:id="@+id/view2"
@@ -104,7 +114,7 @@
         android:ems="2"
         android:textColor="@color/secondary_color"
         app:layout_constraintStart_toEndOf="@id/optNumber3"
-        app:layout_constraintTop_toBottomOf="@+id/tvPhoneNumber" />
+        app:layout_constraintTop_toBottomOf="@+id/errorResponseStripTextView" />
 
     <View
         android:id="@+id/view3"
