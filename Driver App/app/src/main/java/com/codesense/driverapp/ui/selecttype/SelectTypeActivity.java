@@ -1,5 +1,6 @@
 package com.codesense.driverapp.ui.selecttype;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -36,6 +37,14 @@ public class SelectTypeActivity extends BaseActivity {
     TextView tvNonDriverText;
     @Initialize(R.id.tvNonDriverdesc)
     TextView tvNonDriverdesc;
+
+    /**
+     * This method to create instance based on context.
+     * @param context - To show UI.
+     */
+    public static void start(Context context) {
+        context.startActivity(new Intent(context, SelectTypeActivity.class));
+    }
 
 
     @Override

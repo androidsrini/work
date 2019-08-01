@@ -72,38 +72,51 @@
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:singleLine="true"
-                app:layout_constraintTop_toBottomOf="@+id/ll_name"
                 android:hint="@string/email_text"
+                android:inputType="textEmailAddress"
                 android:imeOptions="actionNext"
                 android:backgroundTint="@color/primary_color"
                 android:textColorHint="@color/secondary_color"
-                android:textColor="@color/secondary_color" />
+                android:textColor="@color/secondary_color"
+                app:layout_constraintTop_toBottomOf="@+id/ll_name"/>
 
             <EditText
                 android:id="@+id/etPhoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
-                app:layout_constraintTop_toBottomOf="@+id/etEmail"
+                android:inputType="phone"
                 android:hint="@string/phone_text"
+                android:maxLength="@integer/max_length_phone_number"
                 android:singleLine="true"
                 android:imeOptions="actionNext"
                 android:backgroundTint="@color/primary_color"
                 android:textColorHint="@color/secondary_color"
-                android:textColor="@color/secondary_color" />
+                android:textColor="@color/secondary_color"
+                app:layout_constraintTop_toBottomOf="@+id/etEmail"/>
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/passwordTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/etPhoneNumber"
+                app:passwordToggleEnabled="true"
+                >
 
             <EditText
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
-                app:layout_constraintTop_toBottomOf="@+id/etPhoneNumber"
                 android:hint="@string/password_text"
+                android:inputType="textPassword"
                 android:imeOptions="actionNext"
                 android:singleLine="true"
                 android:backgroundTint="@color/primary_color"
                 android:textColorHint="@color/secondary_color"
                 android:textColor="@color/secondary_color" />
+
+            </android.support.design.widget.TextInputLayout>
 
             <LinearLayout
                 android:id="@+id/addressContainerLinearLayout"
@@ -111,7 +124,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="2"
-                app:layout_constraintTop_toBottomOf="@+id/etPassword">
+                app:layout_constraintTop_toBottomOf="@+id/passwordTextInputLayout">
 
                 <AutoCompleteTextView
                     android:id="@+id/etCountry"

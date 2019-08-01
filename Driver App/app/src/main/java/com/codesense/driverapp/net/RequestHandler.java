@@ -1,5 +1,6 @@
 package com.codesense.driverapp.net;
 
+import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.request.RegisterNewUser;
 import com.google.gson.JsonElement;
 
@@ -10,11 +11,8 @@ import io.reactivex.Observable;
 public class RequestHandler {
 
     private ApiCallInterface apiCallInterface;
-    /*private static final RequestHandler requestHandler = new RequestHandler();
 
-    public static RequestHandler GetInstance() {
-        return requestHandler;
-    }*/
+    protected AppSharedPreference appSharedPreference;
 
     private HashMap<String, String> getSaveNewUserRequestParam(RegisterNewUser registerNewUser) {
         HashMap<String, String> param = new HashMap<>();
@@ -43,8 +41,9 @@ public class RequestHandler {
         return param;
     }
 
-    public RequestHandler(ApiCallInterface apiCallInterface) {
+    public RequestHandler(ApiCallInterface apiCallInterface, AppSharedPreference appSharedPreference) {
         this.apiCallInterface = apiCallInterface;
+        this.appSharedPreference = appSharedPreference;
         //this.apiCallInterface = NetworkModule.GetInstance().getApiCallInterface();
     }
 
@@ -65,10 +64,10 @@ public class RequestHandler {
     }
 
     public Observable<JsonElement> sentOTPRequest(String apiKey, String userID, String phoneNumber) {
-        return apiCallInterface.sentOTPRequest(apiKey, getSendOTPRequestParam(userID, phoneNumber));
+        return apiCallInterface.sentOTPRequest(apiKey, appSharedPreference.getAccessTokenKey(), getSendOTPRequestParam(userID, phoneNumber));
     }
 
     public Observable<JsonElement> verifyOTPRequest(String apiKey, String userID, String otp) {
-        return apiCallInterface.verifyOTPRequest(apiKey, getVerifyOTPRequestParam(userID, otp));
+        return apiCallInterface.verifyOTPRequest(apiKey, appSharedPreference.getAccessTokenKey(), getVerifyOTPRequestParam(userID, otp));
     }
 }

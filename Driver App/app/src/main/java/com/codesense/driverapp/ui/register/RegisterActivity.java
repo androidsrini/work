@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -30,6 +32,7 @@ import com.codesense.driverapp.data.CitiesItem;
 import com.codesense.driverapp.data.CountriesItem;
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.di.utils.Utility;
+import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.localstoreage.DatabaseClient;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.Constant;
@@ -87,6 +90,8 @@ public class RegisterActivity extends BaseActivity {
     protected RequestHandler requestHandler;
     @Inject
     protected Utility utility;
+    @Inject
+    protected AppSharedPreference appSharedPreference;
 
 
     @Override
@@ -223,7 +228,7 @@ public class RegisterActivity extends BaseActivity {
         etPhoneNumberLayoutParams.setMargins(topBottomSpace * 3, topBottomSpace, topBottomSpace * 3, 0);
         etPhoneNumber.setLayoutParams(etPhoneNumberLayoutParams);
 
-        ConstraintLayout.LayoutParams etPasswordLayoutParams = (ConstraintLayout.LayoutParams) etPassword.getLayoutParams();
+        FrameLayout.LayoutParams etPasswordLayoutParams = (FrameLayout.LayoutParams) etPassword.getLayoutParams();
         etPasswordLayoutParams.setMargins(topBottomSpace * 3, topBottomSpace, topBottomSpace * 3, 0);
         etPassword.setLayoutParams(etPasswordLayoutParams);
 
@@ -414,8 +419,11 @@ public class RegisterActivity extends BaseActivity {
                 utility.dismissDialog();
                 if ((null != apiResponse.getResponseJsonObject() && apiResponse.isValidResponse())
                         || ApiResponse.OTP_VALIDATION == apiResponse.getResponseStatus()) {
+                    appSharedPreference.saveAccessToken(apiResponse.getResponseJsonObject().optString(Constant.ACCESS_TOKEN_PARAM));
                     VerifyMobileActivity.start(this, apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE),
                             getEtPhoneNumber());
+                } else if (null != apiResponse.getResponseJsonObject()) {
+                    utility.showToastMsg(apiResponse.getResponseMessage());
                 }
                 break;
             case ERROR:

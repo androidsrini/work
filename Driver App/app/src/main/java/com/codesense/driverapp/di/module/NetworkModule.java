@@ -1,6 +1,9 @@
 package com.codesense.driverapp.di.module;
 
+import android.content.Context;
+
 import com.codesense.driverapp.di.utils.Utility;
+import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.ApiCallInterface;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.WebserviceUrls;
@@ -25,15 +28,17 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module
 public class NetworkModule {
 
-    /*private static final NetworkModule networkModule = new NetworkModule();
+    private Context context;
 
-    private NetworkModule() {
+    public NetworkModule(Context context) {
+        this.context = context;
+    }
 
-    }*/
-
-    /*protected static NetworkModule GetInstance() {
-        return networkModule;
-    }*/
+    @Provides
+    @Singleton
+    Context provideContext() {
+        return context;
+    }
 
     @Provides
     @Singleton
@@ -87,12 +92,18 @@ public class NetworkModule {
     @Provides
     @Singleton
     protected RequestHandler provideRequestHandler(ApiCallInterface apiCallInterface) {
-         return new RequestHandler(apiCallInterface);
+         return new RequestHandler(apiCallInterface, provideAppSharedPreference(context));
     }
 
     @Provides
     @Singleton
     protected Utility provideUtility() {
-         return new Utility();
+         return new Utility(context);
+    }
+
+    @Provides
+    @Singleton
+    protected AppSharedPreference provideAppSharedPreference(Context context) {
+         return new AppSharedPreference(context);
     }
 }

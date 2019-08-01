@@ -21,6 +21,9 @@ public final class Constant {
     public static final String INVITE_CODE_PARAM = "invite_code";
     public static final String EMAIL_ID_PARAM = "email_id";
     public static final String PHONE_NUMBER_PARAM = "phone_number";
+    public static final String ACCESS_TOKEN_PARAM = "access_token";
+    public static final String ACCESS_TOKEN_RESPONSE = "access_token";
     public static final String OTP_PARAM = "otp";
+    public static final String MESSAGE_RESPONSE = "message";
     public static final String DRIVER_APP_API_KEY = "com.codesense.driverapp.API_KEY" ;
 }

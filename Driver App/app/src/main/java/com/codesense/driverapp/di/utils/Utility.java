@@ -28,9 +28,11 @@ public class Utility {
     /*private static final Utility utility = new Utility();*/
     private ProgressDialog progressDialog;
 
-    /*public static  Utility GetInstance() {
-        return utility;
-    }*/
+    private Context appContext;
+
+    public Utility(Context context) {
+        this.appContext = context;
+    }
 
     public void showProgressDialog(@UiThread Context context) {
         progressDialog = ProgressDialog.show(context, null, context.getString(R.string.loading), false);
@@ -51,6 +53,10 @@ public class Utility {
      */
     public void showToastMsg(Context context, String msg) {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    public void showToastMsg(String msg) {
+        Toast.makeText(appContext, msg, Toast.LENGTH_SHORT).show();
     }
 
     public String decrypt(String key, String encrypted) throws Exception {

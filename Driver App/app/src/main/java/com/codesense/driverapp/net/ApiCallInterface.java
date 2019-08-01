@@ -27,11 +27,13 @@ public interface ApiCallInterface {
     @FormUrlEncoded
     Observable<JsonElement> registerNewOwnerRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @FieldMap HashMap<String, String> param);
 
-    @POST(WebserviceUrls.SENT_OTP)
+    @POST(WebserviceUrls.SEND_OTP)
     @FormUrlEncoded
-    Observable<JsonElement> sentOTPRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @FieldMap HashMap<String, String> params);
+    Observable<JsonElement> sentOTPRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
+                                           @FieldMap HashMap<String, String> params);
 
     @POST(WebserviceUrls.VERIFY_OTP)
     @FormUrlEncoded
-    Observable<JsonElement> verifyOTPRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @FieldMap HashMap<String, String> params);
+    Observable<JsonElement> verifyOTPRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
+                                             @FieldMap HashMap<String, String> params);
 }

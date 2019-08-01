@@ -98,6 +98,10 @@ public class ApiResponse {
         return (null != jsonObject) ? jsonObject.optInt(Constant.STATUS_PARAM) : NO_RESPONSE;
     }
 
+    public String getResponseMessage() {
+        return (null != jsonObject) ? jsonObject.optString(Constant.MESSAGE_RESPONSE) : null;
+    }
+
     @Nullable
     public JSONObject getResponseJsonObject() {
         return jsonObject;
