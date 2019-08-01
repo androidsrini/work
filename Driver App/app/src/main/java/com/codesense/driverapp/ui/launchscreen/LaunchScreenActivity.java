@@ -20,6 +20,7 @@ import com.codesense.driverapp.localstoreage.DatabaseClient;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.ui.register.RegisterActivity;
+import com.codesense.driverapp.ui.signin.LoginActivity;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.product.annotationbuilder.ProductBindView;
@@ -94,6 +95,7 @@ public class LaunchScreenActivity extends BaseActivity {
 
     /**
      * This method to update country list in data base
+     *
      * @param countryList argument
      */
     private void updateCountryListInDataBase(List<CountriesItem> countryList) {
@@ -124,10 +126,11 @@ public class LaunchScreenActivity extends BaseActivity {
      * 1.This method will delete all country data in data base.
      * 2.After delete all data completed it will update new country list data in data base
      * 3.If data base empty then also we are getting onComplete call back.
+     *
      * @param apiResponse we are getting server success and error response.
      */
     private void deleteAllCountriesFromDataBase(ApiResponse apiResponse) {
-        Completable.fromAction(()-> DatabaseClient.getInstance(this).getAppDatabase().countryDao().deleteAllRowFromDataBase())
+        Completable.fromAction(() -> DatabaseClient.getInstance(this).getAppDatabase().countryDao().deleteAllRowFromDataBase())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {
@@ -161,10 +164,11 @@ public class LaunchScreenActivity extends BaseActivity {
      * 1.This method will delete all cities data in data base.
      * 2.After delete all data completed it will update new cities list data in data base
      * 3.If data base empty then also we are getting onComplete call back.
+     *
      * @param apiResponse we are getting server success and error response.
      */
     private void deleteAllCitiesFromDataBase(ApiResponse apiResponse) {
-        Completable.fromAction(()-> DatabaseClient.getInstance(this).getAppDatabase().cityDao().deleteAllRowFromDataBase())
+        Completable.fromAction(() -> DatabaseClient.getInstance(this).getAppDatabase().cityDao().deleteAllRowFromDataBase())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new CompletableObserver() {
@@ -196,6 +200,7 @@ public class LaunchScreenActivity extends BaseActivity {
 
     /**
      * This Method will update cities to Data base.
+     *
      * @param cityList we are getting from server.
      */
     private void updateCitiesListInDataBase(List<CitiesItem> cityList) {
@@ -233,7 +238,7 @@ public class LaunchScreenActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ProductBindView.bind(this);
-        launchScreenViewModel.getApiResponseMutableLiveData().observe(this, (apiResponse)->{
+        launchScreenViewModel.getApiResponseMutableLiveData().observe(this, (apiResponse) -> {
             if (null != apiResponse)
                 profileApiResponse(apiResponse, ServiceType.API_INFO);
         });
@@ -317,6 +322,12 @@ public class LaunchScreenActivity extends BaseActivity {
     @Onclick(R.id.btnRegister)
     public void btnRegister(View v) {
         Intent intent = new Intent(this, RegisterActivity.class);
+        startActivity(intent);
+    }
+
+    @Onclick(R.id.btnSignIn)
+    public void btnSignIn(View v) {
+        Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);
     }
 

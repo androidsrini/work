@@ -29,6 +29,7 @@
     <string name="email_text">Email address</string>
     <string name="phone_text">Phone Number</string>
     <string name="password_text">Password</string>
+    <string name="confirm_password_text">Confirm Password</string>
     <string name="city_text">City</string>
     <string name="country_text">Country</string>
     <string name="invite_text">Invite Code</string>
@@ -101,7 +102,7 @@
         <!-- video url / website url -->
         <item>Manage Vehicle</item>
         <!-- Screen Page Title Label -->
-        <item>@drawable/documents_icon</item>
+        <item>@drawable/managevehicle</item>
         <!-- sso configuration -->
         <item>SignedIn</item>
         <!-- Login non login configuration-->
@@ -122,7 +123,7 @@
         <!-- video url / website url -->
         <item>Manage Document</item>
         <!-- Screen Page Title Label -->
-        <item>@drawable/documents_icon</item>
+        <item>@drawable/managedocuments</item>
         <!-- sso configuration -->
         <item>SignedIn</item>
         <!-- Login non login configuration-->
@@ -144,7 +145,7 @@
         <!-- video url / website url -->
         <item>Your trips</item>
         <!-- Screen Page Title Label -->
-        <item>@drawable/documents_icon</item>
+        <item>@drawable/your_trips</item>
         <!-- sso configuration -->
         <item>SignedIn</item>
         <!-- Login non login configuration-->
@@ -165,7 +166,7 @@
         <!-- video url / website url -->
         <item>Earning Reports</item>
         <!-- Screen Page Title Label -->
-        <item>@drawable/documents_icon</item>
+        <item>@drawable/earningreport</item>
         <!-- sso configuration -->
         <item>SignedIn</item>
         <!-- Login non login configuration-->
@@ -186,7 +187,7 @@
         <!-- video url / website url -->
         <item>Refer and Earn</item>
         <!-- Screen Page Title Label -->
-        <item>@drawable/documents_icon</item>
+        <item>@drawable/referandearn</item>
         <!-- sso configuration -->
         <item>SignedIn</item>
         <!-- Login non login configuration-->
@@ -207,7 +208,7 @@
         <!-- video url / website url -->
         <item>Your trips</item>
         <!-- Screen Page Title Label -->
-        <item>@drawable/documents_icon</item>
+        <item>@drawable/livetracking</item>
         <!-- sso configuration -->
         <item>SignedIn</item>
         <!-- Login non login configuration-->
@@ -229,7 +230,7 @@
         <!-- video url / website url -->
         <item>Setting</item>
         <!-- Screen Page Title Label -->
-        <item>@drawable/documents_icon</item>
+        <item>@drawable/settings</item>
         <!-- sso configuration -->
         <item>SignedIn</item>
         <!-- Login non login configuration-->
@@ -374,4 +375,9 @@
     <string name="referal_earn_title">Referal and Earning</string>
     <string name="referal_inivite_friends">Invite Friends</string>
     <string name="referal_code_earning">Referal Earnings</string>
+
+    <!--LOgin-->
+    <string name="login_btn">Sign In</string>
+    <string name="login_title">Sign In</string>
 </resources>
+

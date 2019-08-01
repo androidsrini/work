@@ -55,6 +55,9 @@
             android:name=".ui.legalagreement.LegalAgreementActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".ui.signin.LoginActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ui.uploaddocument.UploadDocumentActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

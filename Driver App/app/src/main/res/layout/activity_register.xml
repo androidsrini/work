@@ -118,13 +118,36 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/confirmpasswordTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/passwordTextInputLayout"
+                app:passwordToggleEnabled="true"
+                >
+
+                <EditText
+                    android:id="@+id/etConfirmPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:hint="@string/confirm_password_text"
+                    android:inputType="textPassword"
+                    android:imeOptions="actionNext"
+                    android:singleLine="true"
+                    android:backgroundTint="@color/primary_color"
+                    android:textColorHint="@color/secondary_color"
+                    android:textColor="@color/secondary_color" />
+
+            </android.support.design.widget.TextInputLayout>
+
             <LinearLayout
                 android:id="@+id/addressContainerLinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:weightSum="2"
-                app:layout_constraintTop_toBottomOf="@+id/passwordTextInputLayout">
+                app:layout_constraintTop_toBottomOf="@+id/confirmpasswordTextInputLayout">
 
                 <AutoCompleteTextView
                     android:id="@+id/etCountry"

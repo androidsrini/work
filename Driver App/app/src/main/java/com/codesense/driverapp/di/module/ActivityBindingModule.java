@@ -13,6 +13,7 @@ import com.codesense.driverapp.ui.referalprogram.ReferalProgramActivity;
 import com.codesense.driverapp.ui.register.RegisterActivity;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
 import com.codesense.driverapp.ui.setting.SettingActivity;
+import com.codesense.driverapp.ui.signin.LoginActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentSecondActivity;
 import com.codesense.driverapp.ui.vehicle.VehicleListActivity;
@@ -71,4 +72,7 @@ public abstract class ActivityBindingModule {
 
     @ContributesAndroidInjector
     abstract ReferalProgramActivity bindReferalProgramActivity();
+
+    @ContributesAndroidInjector
+    abstract LoginActivity bindLoginActivity();
 }
