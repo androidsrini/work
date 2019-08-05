@@ -9,6 +9,9 @@ import javax.inject.Inject;
 public class AppSharedPreference {
 
     private static final String ACCESS_TOKEN_KEY = "AccessTokenKey";
+    private static final String USER_ID_KEY = "UserIDKey";
+    private static final String MOBILE_NUMBER_KEY = "MobileNumberKey";
+    private static final String DEFAULT_VALUE = null;
     private SharedPreferences sharedPreferences;
 
     @Inject
@@ -23,6 +26,26 @@ public class AppSharedPreference {
     }
 
     public String getAccessTokenKey() {
-        return sharedPreferences.getString(ACCESS_TOKEN_KEY, null);
+        return sharedPreferences.getString(ACCESS_TOKEN_KEY, DEFAULT_VALUE);
+    }
+
+    public void saveUserID(String userID) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(USER_ID_KEY, userID);
+        editor.apply();
+    }
+
+    public String getUserID() {
+        return sharedPreferences.getString(USER_ID_KEY, DEFAULT_VALUE);
+    }
+
+    public void saveMobileNumber(String mobileNumber) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(MOBILE_NUMBER_KEY, mobileNumber);
+        editor.apply();
+    }
+
+    public String getMobileNumberKey() {
+        return sharedPreferences.getString(MOBILE_NUMBER_KEY, null);
     }
 }

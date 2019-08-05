@@ -21,6 +21,7 @@ import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.ui.register.RegisterActivity;
 import com.codesense.driverapp.ui.signin.LoginActivity;
+import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.product.annotationbuilder.ProductBindView;
@@ -219,6 +220,7 @@ public class LaunchScreenActivity extends BaseActivity {
                         // action was completed successfully
                         // Country list updated in DB.
                         Log.d(TAG, " Cities list updated in Data base");
+                        UploadDocumentActivity.start(LaunchScreenActivity.this);
                     }
 
                     @Override
@@ -321,14 +323,12 @@ public class LaunchScreenActivity extends BaseActivity {
 
     @Onclick(R.id.btnRegister)
     public void btnRegister(View v) {
-        Intent intent = new Intent(this, RegisterActivity.class);
-        startActivity(intent);
+        RegisterActivity.start(this);
     }
 
     @Onclick(R.id.btnSignIn)
     public void btnSignIn(View v) {
-        Intent intent = new Intent(this, LoginActivity.class);
-        startActivity(intent);
+        LoginActivity.start(this);
     }
 
     @Override

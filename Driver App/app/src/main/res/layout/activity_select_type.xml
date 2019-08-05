@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <include
@@ -19,7 +20,16 @@
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <RelativeLayout
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/driverTypeRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@+id/tvSelectTypeDesc"
+        />
+
+    <!--<RelativeLayout
         android:id="@+id/rlDrive"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -82,6 +92,6 @@
             android:layout_below="@+id/tvNonDriverText"
             app:layout_constraintLeft_toLeftOf="parent" />
 
-    </RelativeLayout>
+    </RelativeLayout>-->
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>

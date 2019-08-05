@@ -6,11 +6,9 @@ import android.support.annotation.NonNull;
 
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.ui.launchscreen.LaunchScreenViewModel;
-
-import java.util.Map;
+import com.codesense.driverapp.ui.uploaddocument.UploadDocumentViewModel;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.inject.Singleton;
 
 @Singleton
@@ -29,6 +27,8 @@ public class ViewModelFactory implements ViewModelProvider.Factory {
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(LaunchScreenViewModel.class)) {
             return (T) new LaunchScreenViewModel(requestHandler);
+        } else if (modelClass.isAssignableFrom(UploadDocumentViewModel.class)) {
+            return (T) new UploadDocumentViewModel(requestHandler);
         }
         throw new IllegalArgumentException("Unknown class name");
     }

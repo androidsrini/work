@@ -23,7 +23,11 @@ public final class Constant {
     public static final String PHONE_NUMBER_PARAM = "phone_number";
     public static final String ACCESS_TOKEN_PARAM = "access_token";
     public static final String ACCESS_TOKEN_RESPONSE = "access_token";
+    public static final String EMAIL_ID_REQUEST = "email_id";
+    public static final String OWNER_TYPE_ID_RESPONSE = "owner_type_id";
+    public static final String OWNER_TYPE_ID_PARAM = "owner_type_id";
     public static final String OTP_PARAM = "otp";
+    public static final String AGREEMENT_ACCEPT_REQUEST = "agreement_accept";
     public static final String MESSAGE_RESPONSE = "message";
     public static final String DRIVER_APP_API_KEY = "com.codesense.driverapp.API_KEY" ;
 }

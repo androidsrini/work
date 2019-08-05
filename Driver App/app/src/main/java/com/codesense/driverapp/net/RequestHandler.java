@@ -41,6 +41,54 @@ public class RequestHandler {
         return param;
     }
 
+    /**
+     * This method will create sigin in api request as hashmap
+     * @param emailId
+     * @param password
+     * @return HashMap.
+     */
+    private HashMap<String, String> getSignInRequestParam(String emailId, String password) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.EMAIL_ID_PARAM, emailId);
+        param.put(Constant.PASSWORD_PARAM, password);
+        return param;
+    }
+
+
+    /**
+     * This method to create userId param value as HashMap.
+     * @return HashMap;
+     */
+    private HashMap<String, String> getUserIDRequestParam() {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
+        return param;
+    }
+
+    /**
+     * This method to create Agreement Accept request.
+     * @param agreementAccept
+     * @return HashMap
+     */
+    private HashMap<String, String> getAgreementAcceptRequestParam(String agreementAccept) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
+        param.put(Constant.AGREEMENT_ACCEPT_REQUEST, agreementAccept);
+        return param;
+    }
+
+    /**
+     * This method to create Owner type request.
+     * @param ownerType
+     * @return HashMap
+     */
+    private HashMap<String, String> getOwnerTypeRequestParam(String ownerType) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
+        param.put(Constant.OWNER_TYPE_ID_PARAM, ownerType);
+        return param;
+    }
+
     public RequestHandler(ApiCallInterface apiCallInterface, AppSharedPreference appSharedPreference) {
         this.apiCallInterface = apiCallInterface;
         this.appSharedPreference = appSharedPreference;
@@ -69,5 +117,29 @@ public class RequestHandler {
 
     public Observable<JsonElement> verifyOTPRequest(String apiKey, String userID, String otp) {
         return apiCallInterface.verifyOTPRequest(apiKey, appSharedPreference.getAccessTokenKey(), getVerifyOTPRequestParam(userID, otp));
+    }
+
+    public Observable<JsonElement> signInRequest(String apiKey, String emailId, String password) {
+        return apiCallInterface.signInRequest(apiKey, getSignInRequestParam(emailId, password));
+    }
+
+    public Observable<JsonElement> fetchOwnerTypeRequest(String apikey) {
+        return apiCallInterface.fetchOwnerTypeRequest(apikey, appSharedPreference.getAccessTokenKey());
+    }
+
+    public Observable<JsonElement> getOwnerAgreementRequest(String apikey) {
+        return apiCallInterface.getOwnerAgreementRequest(apikey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
+    }
+
+    public Observable<JsonElement> updateAgreementAcceptRequest(String apikey, String agreementAccept) {
+        return apiCallInterface.fetchAgreementAcceptRequest(apikey, appSharedPreference.getAccessTokenKey(), getAgreementAcceptRequestParam(agreementAccept));
+    }
+
+    public Observable<JsonElement> updateRegistationOwnerTypeRequest(String apikey, String ownerTypeId) {
+        return apiCallInterface.updateRegistationOwnerTypeRequest(apikey, appSharedPreference.getAccessTokenKey(), getOwnerTypeRequestParam(ownerTypeId));
+    }
+
+    public Observable<JsonElement> fetchVehicleTypesRequest(String apikey) {
+        return apiCallInterface.fetchVehicleTypesRequest(apikey, appSharedPreference.getAccessTokenKey());
     }
 }

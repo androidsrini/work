@@ -390,6 +390,8 @@ public class VerifyMobileActivity extends BaseActivity {
                 } else if (ServiceType.VERIFY_OTP == serviceType) {
                     if (apiResponse.isValidResponse()) {
                         SelectTypeActivity.start(this);
+                        //To finish this class.
+                        finish();
                     } else {
                         updateErrorMessageStripUI(apiResponse.getResponseMessage());
                     }

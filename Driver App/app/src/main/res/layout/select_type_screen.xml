@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/padding_10"
+    android:background="@color/primary_color"
+    app:layout_constraintVertical_weight="1">
+
+    <TextView
+        android:id="@+id/tvDriverText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:padding="@dimen/padding_5"
+        android:text="@string/select_type_driver_text"
+        android:textColor="@color/secondary_color"
+        android:textSize="21sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvDriverDesc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tvDriverText"
+        android:padding="@dimen/padding_10"
+        android:text="@string/select_type_driver_desc"
+        android:textColor="@color/secondary_color"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+</RelativeLayout>

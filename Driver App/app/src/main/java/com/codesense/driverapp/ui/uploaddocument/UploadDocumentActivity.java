@@ -23,13 +23,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codesense.driverapp.R;
+import com.codesense.driverapp.data.VehicleTypeResponse;
+import com.codesense.driverapp.data.VehicleTypesItem;
+import com.codesense.driverapp.di.utils.Utility;
+import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.Utils;
-import com.product.annotationbuilder.ProductBindView;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class UploadDocumentActivity extends DrawerActivity implements View.OnClickListener {
 
@@ -43,15 +49,12 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
     View view;
     View view1;
     View view2;
-
+    RecyclerView recyclerView;
+    UploadDocumentAdapter adapter;
     int mSelectedItemType;
     boolean typeSelFirstTime;
     String typeValue;
-
-
-    RecyclerView recyclerView;
-    UploadDocumentAdapter adapter;
-
+    private List<VehicleTypesItem> vehicleTypesItems;
     //DriverAppUI driverAppUI1;
 
     public static final int UPLOAD_DOCUMENT_STATUS_INDEX = 0;
@@ -59,20 +62,65 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
     private static final int UPLOAD_DOCUMENT_ICON_NAME_INDEX = 2;
     private List<UploadDocumentModel> uploadDocumentActionInfos;
 
+    /**
+     * To create UploadDocumentViewModel object.
+     */
+    @Inject
+    protected UploadDocumentViewModel uploadDocumentViewModel;
+
+    /**
+     * To create Utility object.
+     */
+    @Inject
+    protected Utility utility;
+
+    /**
+     * This method to start UploadDocumentActivity class
+     * @param context
+     */
+    public static void start(Context context) {
+        context.startActivity(new Intent(context, UploadDocumentActivity.class));
+    }
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //setContentView(R.layout.activity_upload_document);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View contentView = inflater.inflate(R.layout.activity_upload_document, null, false);
         frameLayout.addView(contentView);
         //ProductBindView.bind(this);
         uploadDocumentActionInfos = new ArrayList<>();
+        vehicleTypesItems = new ArrayList<>();
         titleTextView.setText(getResources().getString(R.string.upload_doc_text));
+        uploadDocumentViewModel.getApiResponseMutableLiveData().observe(this, this::handleApiResponse);
+        uploadDocumentViewModel.fetchVehicleTypesRequest();
         initially();
         setDynamicValue();
         setonClickListener();
         functionality();
+    }
+
+    private void handleApiResponse(ApiResponse apiResponse) {
+        switch (apiResponse.status) {
+            case LOADING:
+                utility.showProgressDialog(this);
+                break;
+            case SUCCESS:
+                utility.dismissDialog();
+                if (apiResponse.isValidResponse()) {
+                    VehicleTypeResponse vehicleTypeResponse = new Gson().fromJson(apiResponse.data, VehicleTypeResponse.class);
+                    vehicleTypesItems.clear();
+                    if (null != vehicleTypeResponse && null != vehicleTypeResponse.getVehicleTypes()) {
+                        vehicleTypesItems.addAll(vehicleTypeResponse.getVehicleTypes());
+                    }
+                }
+                break;
+            case ERROR:
+                utility.dismissDialog();
+                break;
+        }
     }
 
     private void functionality() {
@@ -106,25 +154,20 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
             }
         }));
 
-
         String[] itemNames = getResources().getStringArray(R.array.vehicleType);
-
-
-        final ArrayList<String> vehicle = new ArrayList<>(Arrays.asList(itemNames));
-
-
+        //final ArrayList<String> vehicle = new ArrayList<>(Arrays.asList(itemNames));
         vehicleTypeRelativeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // stateSelectSpinner.performClick();
-                showListPopupScreen(vehicleTypeRelativeLayout, vehicleTypeTextView, "vehicle", vehicle);
+                showListPopupScreen(vehicleTypeRelativeLayout, vehicleTypeTextView,  vehicleTypesItems);
 
             }
         });
 
     }
 
-    private void showListPopupScreen(View view, final TextView updateNameTextView, final String selectionItem, final List<String> list) {
+    private void showListPopupScreen(View view, final TextView updateNameTextView, final List<VehicleTypesItem> list) {
         View customView = LayoutInflater.from(this).inflate(R.layout.spinner_pop_up_screen, null);
         int leftRightSpace = (int) (screenWidth * 0.0153);
         int topBottomSpace = (int) (screenHeight * 0.0089);
@@ -134,7 +177,7 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
 
         final ListView listView = customView.findViewById(R.id.listItemListView);
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this, R.layout.spinner_dropdown_textview, list) {
+        ArrayAdapter<VehicleTypesItem> dataAdapter = new ArrayAdapter<VehicleTypesItem>(this, R.layout.spinner_dropdown_textview, list) {
 
             @NonNull
             @Override
@@ -142,37 +185,33 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
                 View v = null;
                 v = super.getView(position, null, parent);
                 TextView tv = (TextView) v;
-                if (selectionItem.equalsIgnoreCase("vehicle")) {
-                    if (position == mSelectedItemType) {
-                        v.setBackgroundColor(getResources().getColor(R.color.primary_color));
-                        tv.setTextColor(getResources().getColor(R.color.secondary_color));
-                    } else {
-                        v.setBackgroundColor(getResources().getColor(R.color.background_color));
-                        tv.setTextColor(getResources().getColor(R.color.secondary_color));
-                    }
-                    if (typeSelFirstTime) {
-                        v.setBackgroundColor(getResources().getColor(R.color.background_color));
-                        tv.setTextColor(getResources().getColor(R.color.secondary_color));
-                    }
+                if (position == mSelectedItemType) {
+                    v.setBackgroundColor(getResources().getColor(R.color.primary_color));
+                    tv.setTextColor(getResources().getColor(R.color.secondary_color));
+                } else {
+                    v.setBackgroundColor(getResources().getColor(R.color.background_color));
+                    tv.setTextColor(getResources().getColor(R.color.secondary_color));
                 }
-
-
+                if (typeSelFirstTime) {
+                    v.setBackgroundColor(getResources().getColor(R.color.background_color));
+                    tv.setTextColor(getResources().getColor(R.color.secondary_color));
+                }
                 return v;
             }
         };
         listView.setAdapter(dataAdapter);
         listView.setSelection(mSelectedItemType);
 
-        final List<String> fState;
+        final List<VehicleTypesItem> fState;
         fState = list;
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 popupWindow.dismiss();
-                String selectedState = list.get(position);
+                VehicleTypesItem selectedState = list.get(position);
                 int selectedPosition = fState.indexOf(selectedState);
                 // Here is your corresponding country code
-                updateNameTextView.setText(selectedState);
+                updateNameTextView.setText(selectedState.getVehicleType());
                 updateNameTextView.setTextColor(getResources().getColor(R.color.secondary_color));
                 mSelectedItemType = position;
                 typeSelFirstTime = false;

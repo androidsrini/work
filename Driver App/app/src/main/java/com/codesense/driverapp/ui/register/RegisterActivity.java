@@ -1,12 +1,12 @@
 package com.codesense.driverapp.ui.register;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TextInputLayout;
 import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
@@ -15,7 +15,7 @@ import android.text.TextWatcher;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
-import android.view.MotionEvent;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -39,6 +39,7 @@ import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.request.RegisterNewUser;
 import com.codesense.driverapp.ui.verifymobile.VerifyMobileActivity;
+import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.product.annotationbuilder.ProductBindView;
 import com.product.process.annotation.Initialize;
 import com.product.process.annotation.Onclick;
@@ -53,8 +54,13 @@ public class RegisterActivity extends BaseActivity {
 
 
     private static final String TAG = "DriverApp";
-    private CountriesItem countriesItem;
-    private CitiesItem citiesItem;
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
+    @Inject
+    protected RequestHandler requestHandler;
+    @Inject
+    protected Utility utility;
+    @Inject
+    protected AppSharedPreference appSharedPreference;
     @Initialize(R.id.tvRegisterDes)
     TextView tvRegisterDes;
     @Initialize(R.id.ll_name)
@@ -85,14 +91,18 @@ public class RegisterActivity extends BaseActivity {
     ImageView toolbarClose;
     @Initialize(R.id.etCountry)
     AutoCompleteTextView etCountry;
-    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
-    @Inject
-    protected RequestHandler requestHandler;
-    @Inject
-    protected Utility utility;
-    @Inject
-    protected AppSharedPreference appSharedPreference;
+    @Initialize(R.id.etConfirmPassword)
+    EditText etConfirmPassword;
+    private CountriesItem countriesItem;
+    private CitiesItem citiesItem;
 
+    /**
+     * This method will start the RegisterActivity class
+     * @param context
+     */
+    public static void start(Context context) {
+        context.startActivity(new Intent(context, RegisterActivity.class));
+    }
 
     @Override
     protected int layoutRes() {
@@ -118,46 +128,28 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void addTextWatcherForCountyAndCityUI() {
-        etCountry.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 0) {
-                    findCountryFromCountryName(s);
-                } else {
-                    countriesItem = null;
-                }
-            }
-        });
-        etCity.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 0) {
-                    findCityFromCityName(s);
-                } else {
-                    citiesItem = null;
-                }
-            }
-        });
+        compositeDisposable.add(RxTextView.afterTextChangeEvents(etCountry)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(onNext->{
+                    if (null != onNext.editable() && 0 < onNext.editable().length()) {
+                        findCountryFromCountryName(onNext.toString());
+                    } else {
+                        countriesItem = null;
+                    }
+                }));
+        compositeDisposable.add(RxTextView.afterTextChangeEvents(etCity)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(textViewAfterTextChangeEvent -> {
+                    if (null != textViewAfterTextChangeEvent &&
+                            null != textViewAfterTextChangeEvent.editable()
+                            && textViewAfterTextChangeEvent.editable().length() > 0) {
+                        findCityFromCityName(textViewAfterTextChangeEvent.editable());
+                    } else {
+                        citiesItem = null;
+                    }
+                }));
     }
 
     /**
@@ -231,6 +223,10 @@ public class RegisterActivity extends BaseActivity {
         FrameLayout.LayoutParams etPasswordLayoutParams = (FrameLayout.LayoutParams) etPassword.getLayoutParams();
         etPasswordLayoutParams.setMargins(topBottomSpace * 3, topBottomSpace, topBottomSpace * 3, 0);
         etPassword.setLayoutParams(etPasswordLayoutParams);
+
+        FrameLayout.LayoutParams etConfirmPasswordLayoutParams = (FrameLayout.LayoutParams) etConfirmPassword.getLayoutParams();
+        etConfirmPasswordLayoutParams.setMargins(topBottomSpace * 3, topBottomSpace, topBottomSpace * 3, 0);
+        etConfirmPassword.setLayoutParams(etPasswordLayoutParams);
 
         LinearLayout.LayoutParams etCityLayoutParams = (LinearLayout.LayoutParams) etCity.getLayoutParams();
         etCityLayoutParams.setMargins(0, topBottomSpace, topBottomSpace * 3, 0);
@@ -311,6 +307,7 @@ public class RegisterActivity extends BaseActivity {
 
     /**
      * This method will return user enterd First name
+     *
      * @return String
      */
     private String getEtFirstName() {
@@ -319,6 +316,7 @@ public class RegisterActivity extends BaseActivity {
 
     /**
      * This method will return user Entered last name.
+     *
      * @return String
      */
     private String getEtLastName() {
@@ -327,6 +325,7 @@ public class RegisterActivity extends BaseActivity {
 
     /**
      * This Method will return user entered Email address.
+     *
      * @return String
      */
     private String getEtEmail() {
@@ -335,6 +334,7 @@ public class RegisterActivity extends BaseActivity {
 
     /**
      * This method will return User Entered phone number
+     *
      * @return String
      */
     private String getEtPhoneNumber() {
@@ -343,6 +343,7 @@ public class RegisterActivity extends BaseActivity {
 
     /**
      * This method will return User entered password
+     *
      * @return String
      */
     private String getEtPassword() {
@@ -351,6 +352,7 @@ public class RegisterActivity extends BaseActivity {
 
     /**
      * This method will return User Entered Invite code.
+     *
      * @return String
      */
     private String getEtInviteCode() {
@@ -359,6 +361,7 @@ public class RegisterActivity extends BaseActivity {
 
     /**
      * This method will return user entered city
+     *
      * @return String
      */
     public String getEtCity() {
@@ -367,6 +370,7 @@ public class RegisterActivity extends BaseActivity {
 
     /**
      * This method will return user entered country
+     *
      * @return String
      */
     public String getEtCountry() {
@@ -374,7 +378,16 @@ public class RegisterActivity extends BaseActivity {
     }
 
     /**
+     * This method will returned user entered ConfirmPassword
+     * @return String
+     */
+    public String getEtConfirmPassword() {
+        return etConfirmPassword.getText().toString();
+    }
+
+    /**
      * This method will create Register New User Object.
+     *
      * @return RegisterNewUser
      */
     private RegisterNewUser createRegisterNewUserObject() {
@@ -400,14 +413,15 @@ public class RegisterActivity extends BaseActivity {
     private void registerNewUserRequest() {
         compositeDisposable.add(requestHandler.registerNewOwnerRequest(ApiUtility.getInstance().getApiKeyMetaData(), createRegisterNewUserObject())
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(d->registerApiResponse(ApiResponse.loading()))
+                .doOnSubscribe(d -> registerApiResponse(ApiResponse.loading()))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result->registerApiResponse(ApiResponse.success(result)),
-                        error->registerApiResponse(ApiResponse.error(error))));
+                .subscribe(result -> registerApiResponse(ApiResponse.success(result)),
+                        error -> registerApiResponse(ApiResponse.error(error))));
     }
 
     /**
      * This method will handle register new Driver api response.
+     *
      * @param apiResponse
      */
     private void registerApiResponse(ApiResponse apiResponse) {
@@ -419,6 +433,7 @@ public class RegisterActivity extends BaseActivity {
                 utility.dismissDialog();
                 if ((null != apiResponse.getResponseJsonObject() && apiResponse.isValidResponse())
                         || ApiResponse.OTP_VALIDATION == apiResponse.getResponseStatus()) {
+                    appSharedPreference.saveUserID(apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE));
                     appSharedPreference.saveAccessToken(apiResponse.getResponseJsonObject().optString(Constant.ACCESS_TOKEN_PARAM));
                     VerifyMobileActivity.start(this, apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE),
                             getEtPhoneNumber());
@@ -434,6 +449,7 @@ public class RegisterActivity extends BaseActivity {
 
     /**
      * This method to find any mandatory field are empty
+     *
      * @return boolean
      */
     private boolean doesAnyMandatoyFieldIsEmpty() {
@@ -444,36 +460,38 @@ public class RegisterActivity extends BaseActivity {
 
     /**
      * This method is used for get country object from data base based on user enter value.
+     *
      * @param e Editable argument
      */
-    private void findCountryFromCountryName(Editable e) {
-        compositeDisposable.add(DatabaseClient.getInstance(this).getAppDatabase().countryDao().findByCountryName(e.toString())
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(result->{
-            countriesItem = result;
-            showCountryErrorMsg();
-        }, error->{
-            countriesItem = null;
-            showCountryErrorMsg();
-        }));
+    private void findCountryFromCountryName(String s) {
+        compositeDisposable.add(DatabaseClient.getInstance(this).getAppDatabase().countryDao().findByCountryName(s)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    countriesItem = result;
+                    //showCountryErrorMsg();
+                }, error -> {
+                    countriesItem = null;
+                    //showCountryErrorMsg();
+                }));
     }
 
     /**
      * This method is used for get city object from data base based on user enter value.
+     *
      * @param e Editable argument
      */
     private void findCityFromCityName(Editable e) {
         compositeDisposable.add(DatabaseClient.getInstance(this).getAppDatabase().cityDao().findByCityName(e.toString())
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(result->{
-            citiesItem = result;
-            showCityErrorMsg();
-        }, error->{
-            citiesItem = null;
-            showCityErrorMsg();
-        }));
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    citiesItem = result;
+                    //showCityErrorMsg();
+                }, error -> {
+                    citiesItem = null;
+                    //showCityErrorMsg();
+                }));
     }
 
     /**
@@ -492,6 +510,43 @@ public class RegisterActivity extends BaseActivity {
         if (null == citiesItem) {
             utility.showToastMsg(this, "Please Enter Valid city");
         }
+    }
+
+    /**
+     * This method will be validate and show error msg
+     * @return boolean
+     */
+    private boolean isValidAllFields() {
+        boolean isValid = true;
+        if (TextUtils.isEmpty(getEtFirstName())) {
+            utility.showToastMsg(getString(R.string.first_name_empty));
+            isValid = false;
+        } else if (TextUtils.isEmpty(getEtLastName())) {
+            utility.showToastMsg(getString(R.string.last_name_empty));
+            isValid = false;
+        } else if (TextUtils.isEmpty(getEtEmail())) {
+            utility.showToastMsg(getString(R.string.email_address_empty));
+            isValid = false;
+        } else if (TextUtils.isEmpty(getEtPhoneNumber())) {
+            utility.showToastMsg(getString(R.string.phone_number_empty));
+            isValid = false;
+        } else if (TextUtils.isEmpty(getEtPassword())) {
+            utility.showToastMsg(getString(R.string.password_empty));
+            isValid = false;
+        } else if (TextUtils.isEmpty(getEtConfirmPassword())) {
+            utility.showToastMsg(getString(R.string.confirm_password_empty));
+            isValid = false;
+        } else if (!utility.isValidEmailAddress(getEtEmail())) {
+            utility.showToastMsg(getString(R.string.email_not_valid));
+            isValid = false;
+        } else if (!getEtPassword().equals(getEtConfirmPassword())) {
+            utility.showToastMsg(getString(R.string.password_not_matched));
+            isValid = false;
+        } else if (getEtPhoneNumber().length() != getResources().getInteger(R.integer.max_length_phone_number)) {
+            utility.showToastMsg(getString(R.string.mobile_number_not_valid));
+            isValid = false;
+        }
+        return isValid;
     }
 
     @Override
@@ -527,10 +582,8 @@ public class RegisterActivity extends BaseActivity {
     @Onclick(R.id.fbNext)
     public void fbNext(View v) {
         //Update new uer to server.
-        if (!doesAnyMandatoyFieldIsEmpty()) {
+        if (isValidAllFields()) {
             registerNewUserRequest();
-        } else {
-            utility.showToastMsg(this, "Enter all fields");
         }
     }
 

@@ -379,5 +379,16 @@
     <!--LOgin-->
     <string name="login_btn">Sign In</string>
     <string name="login_title">Sign In</string>
+
+    <!-- Register screen error msg -->
+    <string name="first_name_empty">Required First Name</string>
+    <string name="last_name_empty">Required Last Name</string>
+    <string name="email_address_empty">Required Email Address</string>
+    <string name="phone_number_empty">Required Phone Number</string>
+    <string name="password_empty">Required Password</string>
+    <string name="confirm_password_empty">Required Confirm Password</string>
+    <string name="password_not_matched">Password does not matched</string>
+    <string name="email_not_valid">Email not valid</string>
+    <string name="mobile_number_not_valid">Mobile Number not valied</string>
 </resources>
 

@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.UiThread;
 import android.util.Base64;
+import android.util.Patterns;
 import android.widget.Toast;
 
 import com.codesense.driverapp.R;
@@ -51,12 +52,29 @@ public class Utility {
      * @param context
      * @param msg
      */
+    @UiThread
     public void showToastMsg(Context context, String msg) {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * This method to show the toast message based on the app context
+     * @param msg string
+     */
     public void showToastMsg(String msg) {
         Toast.makeText(appContext, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * This method to check the given email address are valid or not.
+     * @param email string
+     * @return boolean
+     */
+    public boolean isValidEmailAddress(String email) {
+        if (null != email) {
+            return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+        }
+        return false;
     }
 
     public String decrypt(String key, String encrypted) throws Exception {

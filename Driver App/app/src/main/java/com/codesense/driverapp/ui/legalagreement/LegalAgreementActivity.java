@@ -1,10 +1,12 @@
 package com.codesense.driverapp.ui.legalagreement;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -14,14 +16,26 @@ import android.widget.TextView;
 
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.base.BaseActivity;
+import com.codesense.driverapp.di.utils.ApiUtility;
+import com.codesense.driverapp.di.utils.Utility;
+import com.codesense.driverapp.net.ApiResponse;
+import com.codesense.driverapp.net.Constant;
+import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
 import com.product.annotationbuilder.ProductBindView;
 import com.product.process.annotation.Initialize;
 import com.product.process.annotation.Onclick;
 
+import javax.inject.Inject;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
+
 public class LegalAgreementActivity extends BaseActivity {
 
 
+    private static final String OWNER_TYPE_ID_ARG = "OwnerTypeArg";
     @Initialize(R.id.tvTitle)
     TextView tvTitle;
     @Initialize(R.id.tvLegalText)
@@ -36,7 +50,32 @@ public class LegalAgreementActivity extends BaseActivity {
     CheckBox checkbox;
     @Initialize(R.id.btnAcceptContinue)
     Button btnAcceptContinue;
+    /**
+     * To create RequestHandler object
+     */
+    @Inject
+    RequestHandler requestHandler;
+    /**
+     * To create Utility object.
+     */
+    @Inject
+    Utility utility;
+    /**
+     * To create CompositeDisposable object.
+     */
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    private String ownerType;
 
+    /**
+     * This method to start LegalAgreementActivity class.
+     * @param context
+     * @param ownerType
+     */
+    public static void start(Context context, String ownerType) {
+        Intent intent = new Intent(context, LegalAgreementActivity.class);
+        intent.putExtra(OWNER_TYPE_ID_ARG, ownerType);
+        context.startActivity(intent);
+    }
 
     @Override
     protected int layoutRes() {
@@ -51,6 +90,12 @@ public class LegalAgreementActivity extends BaseActivity {
         setDynamicValue();
     }
 
+    private String getOwnerTypeId() {
+        if (null != getIntent() && TextUtils.isEmpty(ownerType)) {
+            ownerType = getIntent().getStringExtra(OWNER_TYPE_ID_ARG);
+        }
+        return ownerType;
+    }
 
     private void setDynamicValue() {
         int topBottomSpace = (int) (screenHeight * 0.0089);
@@ -84,6 +129,53 @@ public class LegalAgreementActivity extends BaseActivity {
 
     }
 
+    private void updateRegistationOwnerTypeRequest() {
+        compositeDisposable.add(requestHandler.updateRegistationOwnerTypeRequest(ApiUtility.getInstance().getApiKeyMetaData(), getOwnerTypeId())
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnSubscribe(d->handleAgreementResponse(ApiResponse.loading(), ServiceType.REGISTATION_OWNER_TYPE))
+        .subscribe(result->handleAgreementResponse(ApiResponse.success(result), ServiceType.REGISTATION_OWNER_TYPE),
+                error->handleAgreementResponse(ApiResponse.error(error), ServiceType.REGISTATION_OWNER_TYPE)));
+    }
+
+    private void updateAgreementAcceptRequest() {
+        compositeDisposable.add(requestHandler.updateAgreementAcceptRequest(ApiUtility.getInstance().getApiKeyMetaData(), "1")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(d->handleAgreementResponse(ApiResponse.loading(), ServiceType.ACCEPT_LEGAL_AGREEMENT))
+                .subscribe(result->handleAgreementResponse(ApiResponse.success(result), ServiceType.ACCEPT_LEGAL_AGREEMENT),
+                        error->handleAgreementResponse(ApiResponse.error(error), ServiceType.ACCEPT_LEGAL_AGREEMENT)));
+
+    }
+
+    private void handleAgreementResponse(ApiResponse apiResponse, ServiceType serviceType) {
+        switch (apiResponse.status) {
+            case LOADING:
+                utility.showProgressDialog(this);
+                break;
+            case SUCCESS:
+                utility.dismissDialog();
+                if (apiResponse.isValidResponse()) {
+                    if (ServiceType.REGISTATION_OWNER_TYPE == serviceType) {
+                        updateAgreementAcceptRequest();
+                    } else {
+                        if (apiResponse.isValidResponse()) {
+                            //To show dashboard screen.
+                            UploadDocumentActivity.start(this);
+                            //To clear all Activity class from backstack
+                            ActivityCompat.finishAffinity(this);
+                        }
+                    }
+                } else {
+                    utility.showToastMsg(apiResponse.getResponseMessage());
+                }
+                break;
+            case ERROR:
+                utility.dismissDialog();
+                break;
+        }
+    }
+
     @Onclick(R.id.toolbarClose)
     public void toolbarClose(View v) {
         finish();
@@ -103,9 +195,11 @@ public class LegalAgreementActivity extends BaseActivity {
     @Onclick(R.id.btnAcceptContinue)
     public void btnAcceptContinue(View v) {
         if (checkbox.isChecked()) {
-            Intent intent = new Intent(this, UploadDocumentActivity.class);
-            startActivity(intent);
-            ActivityCompat.finishAffinity(this);
+            updateRegistationOwnerTypeRequest();
         }
+    }
+
+    private enum ServiceType {
+        REGISTATION_OWNER_TYPE, ACCEPT_LEGAL_AGREEMENT
     }
 }

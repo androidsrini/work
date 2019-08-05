@@ -36,4 +36,58 @@ public interface ApiCallInterface {
     @FormUrlEncoded
     Observable<JsonElement> verifyOTPRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
                                              @FieldMap HashMap<String, String> params);
+
+    /**
+     * This method to sign in the owner
+     * @param apiKey
+     * @param params (email id, password)
+     * @return JsonObject
+     */
+    @POST(WebserviceUrls.SIGNIN_OWNER)
+    @FormUrlEncoded
+    Observable<JsonElement> signInRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @FieldMap HashMap<String, String> params);
+
+    /**
+     * This method to fetch owner type from server.
+     * @param apiKey
+     * @return JsonObject
+     */
+    @GET(WebserviceUrls.OWNER_TYPES)
+    Observable<JsonElement> fetchOwnerTypeRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
+                                                  @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken);
+
+    /**
+     * This method to fetch OwnerAgreement from server.
+     * @param apiKey
+     * @param accessToken
+     * @param param
+     * @return JsonObject
+     */
+    @POST(WebserviceUrls.GET_OWNER_AGREEMENT)
+    @FormUrlEncoded
+    Observable<JsonElement> getOwnerAgreementRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
+                                                  @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
+                                                     @FieldMap HashMap<String, String> param);
+
+    @POST(WebserviceUrls.ACCEPT_LEGAL_AGREEMENT)
+    @FormUrlEncoded
+    Observable<JsonElement> fetchAgreementAcceptRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
+                                                  @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
+                                                     @FieldMap HashMap<String, String> param);
+
+    @POST(WebserviceUrls.REGISTATION_OWNER_TYPE)
+    @FormUrlEncoded
+    Observable<JsonElement> updateRegistationOwnerTypeRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
+                                                  @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
+                                                     @FieldMap HashMap<String, String> param);
+
+    /**
+     * This method to fetch vehicle types from server.
+     * @param apiKey
+     * @param accessToken
+     * @return
+     */
+    @GET(WebserviceUrls.VEHICLE_TYPES)
+    Observable<JsonElement> fetchVehicleTypesRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
+                                                  @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken);
 }
