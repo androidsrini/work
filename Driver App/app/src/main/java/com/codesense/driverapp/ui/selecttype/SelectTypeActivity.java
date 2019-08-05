@@ -97,7 +97,7 @@ public class SelectTypeActivity extends BaseActivity {
     }
 
     private void handleOnSelectedTypeSelection(OwnerTypesItem ownerTypesItem) {
-        LegalAgreementActivity.start(this, ownerTypesItem.getOwnerTypeId());
+        LegalAgreementActivity.start(this, ownerTypesItem);
         /*compositeDisposable.add(requestHandler.getOwnerAgreementRequest(ApiUtility.getInstance().getApiKeyMetaData())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())

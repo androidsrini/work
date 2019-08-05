@@ -1,7 +1,7 @@
 package com.codesense.driverapp.ui.launchscreen;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +16,7 @@ import com.codesense.driverapp.data.CountriesItem;
 import com.codesense.driverapp.data.CountriesListResponse;
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.di.utils.Utility;
+import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.localstoreage.DatabaseClient;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
@@ -23,7 +24,6 @@ import com.codesense.driverapp.ui.register.RegisterActivity;
 import com.codesense.driverapp.ui.signin.LoginActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.product.annotationbuilder.ProductBindView;
 import com.product.process.annotation.Initialize;
 import com.product.process.annotation.Onclick;
@@ -71,6 +71,8 @@ public class LaunchScreenActivity extends BaseActivity {
     protected Utility utility;
     @Inject
     protected RequestHandler requestHandler;
+    @Inject
+    protected AppSharedPreference appSharedPreference;
 
     /**
      * This method to fetch Country list from server.
@@ -220,7 +222,10 @@ public class LaunchScreenActivity extends BaseActivity {
                         // action was completed successfully
                         // Country list updated in DB.
                         Log.d(TAG, " Cities list updated in Data base");
-                        UploadDocumentActivity.start(LaunchScreenActivity.this);
+                        if (!TextUtils.isEmpty(appSharedPreference.getAccessTokenKey())) {
+                            UploadDocumentActivity.start(LaunchScreenActivity.this);
+                            finish();
+                        }
                     }
 
                     @Override

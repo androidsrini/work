@@ -14,4 +14,20 @@ public class WebserviceUrls {
     public static final String ACCEPT_LEGAL_AGREEMENT = "owner_registation/legal_agreement";
     public static final String REGISTATION_OWNER_TYPE = "owner_registation/owner_type";
     public static final String VEHICLE_TYPES = "vehicle_types";
+    public static final String OWNER_CUM_DRIVER_STATUS = "get_documents_list/owner_cum_driver";
+    public static final String NON_DRIVING_PARTNER_STATUS = "get_documents_list/non_driving_partner";
+    public static final String UPLOAD_DOCUMENTS = "owner_registation/upload_documents";
+    public static final String GET_AVAILABLE_VEHICLES = "get_available_vehicles";
+    public static final String ADD_VEHICLE_TO_OWNER = "add_vehicle_to_owner";
+    public static final String EDIT_DRIVER_VEHICLE = "edit_driver_vehicle";
+    public static final String ADD_DRIVER_TO_OWNER = "add_driver_to_owner";
+    public static final String EDIT_VEHICLE_DRIVER = "edit_vehicle_driver";
+    public static final String GET_OWNER_VEHICLES = "get_owner_vehicles";
+    public static final String GET_ALL_DRIVERS_LIST = "get_all_drivers_list";
+    public static final String DRIVER = "get_documents_list/driver";
+    public static final String VEHICLE = "get_documents_list/vehicle";
+    public static final String ADD_DRIVER_DOCUMENTS = "add_driver_documents";
+    public static final String ADD_VEHICLE_DOCUMENTS = "add_vehicle_documents";
+    public static final String DELETE_OWNER_VEHICLE = "delete_owner_vehicle";
+    public static final String DELETE_DRIVER = "delete_driver";
 }

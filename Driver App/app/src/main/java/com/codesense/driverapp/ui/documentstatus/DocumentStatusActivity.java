@@ -2,26 +2,32 @@ package com.codesense.driverapp.ui.documentstatus;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.codesense.driverapp.R;
+import com.codesense.driverapp.data.DocumentsListItem;
+import com.codesense.driverapp.data.DocumentsListStatusResponse;
+import com.codesense.driverapp.di.utils.Utility;
+import com.codesense.driverapp.localstoreage.AppSharedPreference;
+import com.codesense.driverapp.net.ApiResponse;
+import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
-import com.codesense.driverapp.ui.helper.Utils;
 import com.codesense.driverapp.ui.uploaddocument.RecyclerTouchListener;
-import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
-import com.codesense.driverapp.ui.uploaddocument.UploadDocumentModel;
 import com.codesense.driverapp.ui.vehicle.VehicleListActivity;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class DocumentStatusActivity extends DrawerActivity implements View.OnClickListener {
 
@@ -29,7 +35,10 @@ public class DocumentStatusActivity extends DrawerActivity implements View.OnCli
     Button btnUpdate;
     RecyclerView recyclerView;
     DocumentStatusAdapter adapter;
-    List<UploadDocumentModel> arraylist;
+    List<DocumentsListItem> arraylist;
+    @Inject protected AppSharedPreference appSharedPreference;
+    @Inject protected DocumentStatusViewModel documentStatusViewModel;
+    @Inject protected Utility utility;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,16 +49,48 @@ public class DocumentStatusActivity extends DrawerActivity implements View.OnCli
 
         arraylist = new ArrayList<>();
         titleTextView.setText(getResources().getString(R.string.document_status_title));
+        documentStatusViewModel.getApiResponseMutableLiveData().observe(this, this::handleApiResponse);
+        if (!TextUtils.isEmpty(appSharedPreference.getOwnerType())) {
+            if (Constant.OWNER_CUM_DRIVER.equalsIgnoreCase(appSharedPreference.getOwnerType())) {
+                documentStatusViewModel.fetchOwnerCumDriverStatusRequest();
+            } else {
+                documentStatusViewModel.fetchNonDrivingPartnerStatusRequest();
+            }
+        }
         initially();
         setDynamicValue();
         functionality();
 
     }
 
+    private void handleApiResponse(ApiResponse apiResponse) {
+        switch (apiResponse.status) {
+            case LOADING:
+                utility.showProgressDialog(this);
+                break;
+            case SUCCESS:
+                utility.dismissDialog();
+                if (apiResponse.isValidResponse()) {
+                    DocumentsListStatusResponse documentsListStatusResponse = new Gson().fromJson(apiResponse.data, DocumentsListStatusResponse.class);
+                    if (documentsListStatusResponse != null) {
+                        arraylist.clear();
+                        if (null != documentsListStatusResponse.getDocumentsList()) {
+                            arraylist.addAll(documentsListStatusResponse.getDocumentsList());
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+                break;
+            case ERROR:
+                utility.dismissDialog();
+                break;
+        }
+    }
+
     private void functionality() {
 
         btnUpdate.setOnClickListener(this);
-        int storeInfoActionListSize = getResources().getInteger(R.integer.document_status_count);
+        /*int storeInfoActionListSize = getResources().getInteger(R.integer.document_status_count);
         List<TypedArray> typedArrayList = Utils.getMultiTypedArray(this, Utils.DOCUMENT_STATUS);
         if (storeInfoActionListSize > typedArrayList.size()) {
             storeInfoActionListSize = typedArrayList.size();
@@ -60,8 +101,7 @@ public class DocumentStatusActivity extends DrawerActivity implements View.OnCli
             String title = typedArray.getString(UploadDocumentActivity.UPLOAD_DOCUMENT_NAME_INDEX);
             int icon = 0;
             arraylist.add(new UploadDocumentModel(status, title, icon));
-        }
-
+        }*/
         adapter = new DocumentStatusAdapter(this, arraylist, screenWidth, screenHeight);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));

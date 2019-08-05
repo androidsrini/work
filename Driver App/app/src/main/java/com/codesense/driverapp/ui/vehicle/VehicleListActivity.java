@@ -13,12 +13,17 @@ import android.view.View;
 import android.widget.Button;
 
 import com.codesense.driverapp.R;
+import com.codesense.driverapp.di.utils.Utility;
+import com.codesense.driverapp.net.ApiResponse;
+import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.product.annotationbuilder.ProductBindView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.inject.Inject;
 
 
 @SuppressLint("Registered")
@@ -27,6 +32,9 @@ public class VehicleListActivity extends DrawerActivity implements View.OnClickL
     RecyclerView recyclerView;
     Button btnAddVehicle;
     VehicleListAdapter adapter;
+    @Inject protected VehicleListViewModel vehicleListViewModel;
+    @Inject protected RequestHandler requestHandler;
+    @Inject protected Utility utility;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -34,11 +42,26 @@ public class VehicleListActivity extends DrawerActivity implements View.OnClickL
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View contentView = inflater.inflate(R.layout.activity_vehicle_list, null, false);
         frameLayout.addView(contentView);
-//        ProductBindView.bind(this);
         titleTextView.setText(getResources().getString(R.string.vehicle_list_title));
+        vehicleListViewModel.getApiResponseMutableLiveData().observe(this, this::handleApiResponse);
+        vehicleListViewModel.fetchAvailableVehiclesRequest();
         initially();
         setDynamicValue();
         functionality();
+    }
+
+    private void handleApiResponse(ApiResponse apiResponse) {
+        switch (apiResponse.status) {
+            case LOADING:
+                utility.showProgressDialog(this);
+                break;
+            case SUCCESS:
+                utility.dismissDialog();
+                break;
+            case ERROR:
+                utility.dismissDialog();
+                break;
+        }
     }
 
     private void functionality() {

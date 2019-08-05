@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.base.BaseActivity;
+import com.codesense.driverapp.data.OwnerTypeResponse;
+import com.codesense.driverapp.data.OwnerTypesItem;
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
@@ -24,6 +26,7 @@ import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
+import com.google.gson.Gson;
 import com.product.annotationbuilder.ProductBindView;
 import com.product.process.annotation.Initialize;
 import com.product.process.annotation.Onclick;
@@ -159,17 +162,26 @@ public class LoginActivity extends BaseActivity {
     private void signInRequest() {
         compositeDisposable.add(requestHandler.signInRequest(ApiUtility.getInstance().getApiKeyMetaData(), getEtEmail(), getEtPassword())
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(d->loginResponse(ApiResponse.loading()))
+                .doOnSubscribe(d->loginResponse(ApiResponse.loading(), ServiceType.SIGNIN_OWNER))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result->loginResponse(ApiResponse.success(result)),
-                        error->{loginResponse(ApiResponse.error(error));}));
+                .subscribe(result->loginResponse(ApiResponse.success(result), ServiceType.SIGNIN_OWNER),
+                        error->{loginResponse(ApiResponse.error(error), ServiceType.SIGNIN_OWNER);}));
+    }
+
+    private void fetchOwnerTypeRequest() {
+        compositeDisposable.add(requestHandler.fetchOwnerTypeRequest(ApiUtility.getInstance().getApiKeyMetaData())
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnSubscribe(d->loginResponse(ApiResponse.loading(), ServiceType.OWNER_TYPES))
+        .subscribe(result->loginResponse(ApiResponse.success(result), ServiceType.OWNER_TYPES),
+                error->loginResponse(ApiResponse.error(error), ServiceType.OWNER_TYPES)));
     }
 
     /**
      * This method to handle api response
      * @param apiResponse
      */
-    private void loginResponse(ApiResponse apiResponse) {
+    private void loginResponse(ApiResponse apiResponse, ServiceType serviceType) {
         switch (apiResponse.status) {
             case LOADING:
                 utility.showProgressDialog(this);
@@ -177,18 +189,31 @@ public class LoginActivity extends BaseActivity {
             case SUCCESS:
                 utility.dismissDialog();
                 if (null != apiResponse.getResponseJsonObject()) {
-                    if (null != apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE)) {
-                        appSharedPreference.saveUserID(apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE));
-                        appSharedPreference.saveAccessToken(apiResponse.getResponseJsonObject().optString(Constant.ACCESS_TOKEN_RESPONSE));
-
-                    }
-                    if (0 == apiResponse.getResponseJsonObject().optInt(Constant.OWNER_TYPE_ID_RESPONSE)) {
-                        SelectTypeActivity.start(this);
-                        //TO kill this activity class from backstack
-                        finish();
-                    } else {
-                        //To show dashboard screen.
-                        UploadDocumentActivity.start(this);
+                    if (ServiceType.SIGNIN_OWNER == serviceType) {
+                        if (null != apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE)) {
+                            appSharedPreference.saveUserID(apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE));
+                            appSharedPreference.saveAccessToken(apiResponse.getResponseJsonObject().optString(Constant.ACCESS_TOKEN_RESPONSE));
+                            appSharedPreference.saveOwnerTypeId(apiResponse.getResponseJsonObject().optInt(Constant.OWNER_TYPE_ID_RESPONSE, -1));
+                        }
+                        fetchOwnerTypeRequest();
+                    } else if (ServiceType.OWNER_TYPES == serviceType) {
+                        if (-1 == appSharedPreference.getOwnerTypeId() || 0 == appSharedPreference.getOwnerTypeId()) {
+                            SelectTypeActivity.start(this);
+                            //TO kill this activity class from backstack
+                            finish();
+                        } else {
+                            //To show dashboard screen.
+                            OwnerTypeResponse ownerTypeResponse = new Gson().fromJson(apiResponse.data, OwnerTypeResponse.class);
+                            if (null != ownerTypeResponse) {
+                                for (OwnerTypesItem ownerTypesItem: ownerTypeResponse.getOwnerTypes()) {
+                                    if (ownerTypesItem.getOwnerTypeId().equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
+                                        appSharedPreference.saveOwnerType(ownerTypesItem.getOwnerType());
+                                        break;
+                                    }
+                                }
+                            }
+                            UploadDocumentActivity.start(this);
+                        }
                     }
                 }
                 break;
@@ -214,5 +239,9 @@ public class LoginActivity extends BaseActivity {
         if (isValidAllFields()) {
             signInRequest();
         }
+    }
+
+    private enum ServiceType {
+        SIGNIN_OWNER, OWNER_TYPES
     }
 }

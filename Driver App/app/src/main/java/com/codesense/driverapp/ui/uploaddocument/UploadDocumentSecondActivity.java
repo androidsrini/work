@@ -84,8 +84,6 @@ public class UploadDocumentSecondActivity extends DrawerActivity implements View
     }
 
     private void initially() {
-
-
         btnVerify = findViewById(R.id.btnVerify);
         recyclerView = findViewById(R.id.recyclerView);
     }

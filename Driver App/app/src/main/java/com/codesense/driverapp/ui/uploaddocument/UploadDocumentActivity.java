@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,6 +22,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codesense.driverapp.R;
+import com.codesense.driverapp.data.DocumentsListItem;
+import com.codesense.driverapp.data.DocumentsListStatusResponse;
 import com.codesense.driverapp.data.VehicleTypeResponse;
 import com.codesense.driverapp.data.VehicleTypesItem;
 import com.codesense.driverapp.di.utils.Utility;
@@ -32,7 +33,6 @@ import com.codesense.driverapp.ui.helper.Utils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -60,7 +60,7 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
     public static final int UPLOAD_DOCUMENT_STATUS_INDEX = 0;
     public static final int UPLOAD_DOCUMENT_NAME_INDEX = 1;
     private static final int UPLOAD_DOCUMENT_ICON_NAME_INDEX = 2;
-    private List<UploadDocumentModel> uploadDocumentActionInfos;
+    private List<DocumentsListItem> uploadDocumentActionInfos;
 
     /**
      * To create UploadDocumentViewModel object.
@@ -102,7 +102,9 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
         functionality();
     }
 
-    private void handleApiResponse(ApiResponse apiResponse) {
+    private void handleApiResponse(UploadDocumentApiResponse uploadDocumentApiResponse) {
+        ApiResponse apiResponse = uploadDocumentApiResponse.getApiResponse();
+        UploadDocumentApiResponse.ServiceType serviceType = uploadDocumentApiResponse.getServiceType();
         switch (apiResponse.status) {
             case LOADING:
                 utility.showProgressDialog(this);
@@ -110,10 +112,18 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
             case SUCCESS:
                 utility.dismissDialog();
                 if (apiResponse.isValidResponse()) {
-                    VehicleTypeResponse vehicleTypeResponse = new Gson().fromJson(apiResponse.data, VehicleTypeResponse.class);
-                    vehicleTypesItems.clear();
-                    if (null != vehicleTypeResponse && null != vehicleTypeResponse.getVehicleTypes()) {
-                        vehicleTypesItems.addAll(vehicleTypeResponse.getVehicleTypes());
+                    if (UploadDocumentApiResponse.ServiceType.VEHICLE_TYPES == serviceType) {
+                        VehicleTypeResponse vehicleTypeResponse = new Gson().fromJson(apiResponse.data, VehicleTypeResponse.class);
+                        vehicleTypesItems.clear();
+                        if (null != vehicleTypeResponse && null != vehicleTypeResponse.getVehicleTypes()) {
+                            vehicleTypesItems.addAll(vehicleTypeResponse.getVehicleTypes());
+                        }
+                        uploadDocumentViewModel.fetchDriverDocumentListRequest();
+                    } else if (UploadDocumentApiResponse.ServiceType.DRIVER == serviceType) {
+                        updateDriverDocumentListUI(apiResponse);
+                        uploadDocumentViewModel.fetchVehicleListRequest();
+                    } else if (UploadDocumentApiResponse.ServiceType.VEHICLE == serviceType) {
+                        updateVehicleDocumentListUI(apiResponse);
                     }
                 }
                 break;
@@ -123,9 +133,29 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
         }
     }
 
+    private void updateDriverDocumentListUI(ApiResponse apiResponse) {
+        if (apiResponse.isValidResponse()) {
+            DocumentsListStatusResponse documentsListStatusResponse = new Gson().fromJson(apiResponse.data, DocumentsListStatusResponse.class);
+            uploadDocumentActionInfos.clear();
+            if (null != documentsListStatusResponse && null != documentsListStatusResponse.getDocumentsList()) {
+                uploadDocumentActionInfos.addAll(documentsListStatusResponse.getDocumentsList());
+            }
+        }
+    }
+
+    private void updateVehicleDocumentListUI(ApiResponse apiResponse) {
+        if (apiResponse.isValidResponse()) {
+            DocumentsListStatusResponse documentsListStatusResponse = new Gson().fromJson(apiResponse.data, DocumentsListStatusResponse.class);
+            if (null != documentsListStatusResponse && null != documentsListStatusResponse.getDocumentsList()) {
+                uploadDocumentActionInfos.addAll(documentsListStatusResponse.getDocumentsList());
+            }
+        }
+        adapter.notifyDataSetChanged();
+    }
+
     private void functionality() {
 
-        int storeInfoActionListSize = getResources().getInteger(R.integer.upload_document_count);
+        /*int storeInfoActionListSize = getResources().getInteger(R.integer.upload_document_count);
         List<TypedArray> typedArrayList = Utils.getMultiTypedArray(this, Utils.UPLOAD_DOCUMENT);
         if (storeInfoActionListSize > typedArrayList.size()) {
             storeInfoActionListSize = typedArrayList.size();
@@ -136,7 +166,7 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
             String title = typedArray.getString(UPLOAD_DOCUMENT_NAME_INDEX);
             int icon = 0;
             uploadDocumentActionInfos.add(new UploadDocumentModel(status, title, icon));
-        }
+        }*/
 
         adapter = new UploadDocumentAdapter(this, uploadDocumentActionInfos, screenWidth, screenHeight);
         recyclerView.setAdapter(adapter);
@@ -154,15 +184,8 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
             }
         }));
 
-        String[] itemNames = getResources().getStringArray(R.array.vehicleType);
-        //final ArrayList<String> vehicle = new ArrayList<>(Arrays.asList(itemNames));
-        vehicleTypeRelativeLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // stateSelectSpinner.performClick();
-                showListPopupScreen(vehicleTypeRelativeLayout, vehicleTypeTextView,  vehicleTypesItems);
-
-            }
+        vehicleTypeRelativeLayout.setOnClickListener(v -> {
+            showListPopupScreen(vehicleTypeRelativeLayout, vehicleTypeTextView,  vehicleTypesItems);
         });
 
     }
@@ -196,6 +219,7 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
                     v.setBackgroundColor(getResources().getColor(R.color.background_color));
                     tv.setTextColor(getResources().getColor(R.color.secondary_color));
                 }
+                tv.setText(getItem(position).getVehicleType());
                 return v;
             }
         };
@@ -204,19 +228,14 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
 
         final List<VehicleTypesItem> fState;
         fState = list;
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                popupWindow.dismiss();
-                VehicleTypesItem selectedState = list.get(position);
-                int selectedPosition = fState.indexOf(selectedState);
-                // Here is your corresponding country code
-                updateNameTextView.setText(selectedState.getVehicleType());
-                updateNameTextView.setTextColor(getResources().getColor(R.color.secondary_color));
-                mSelectedItemType = position;
-                typeSelFirstTime = false;
+        listView.setOnItemClickListener((parent, view3, position, id) -> {
+            popupWindow.dismiss();
+            VehicleTypesItem selectedState = list.get(position);
+            updateNameTextView.setText(selectedState.getVehicleType());
+            updateNameTextView.setTextColor(getResources().getColor(R.color.secondary_color));
+            mSelectedItemType = position;
+            typeSelFirstTime = false;
 
-            }
         });
         popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
         popupWindow.setOutsideTouchable(true);

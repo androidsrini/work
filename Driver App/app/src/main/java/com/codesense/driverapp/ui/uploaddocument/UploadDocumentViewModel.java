@@ -17,14 +17,14 @@ public class UploadDocumentViewModel extends ViewModel {
     private RequestHandler requestHandler;
 
     private final CompositeDisposable disposables = new CompositeDisposable();
-    private MutableLiveData<ApiResponse> apiResponseMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<UploadDocumentApiResponse> apiResponseMutableLiveData = new MutableLiveData<>();
 
     @Inject
     public UploadDocumentViewModel(RequestHandler requestHandler) {
         this.requestHandler = requestHandler;
     }
 
-    public MutableLiveData<ApiResponse> getApiResponseMutableLiveData() {
+    public MutableLiveData<UploadDocumentApiResponse> getApiResponseMutableLiveData() {
         return apiResponseMutableLiveData;
     }
 
@@ -33,9 +33,40 @@ public class UploadDocumentViewModel extends ViewModel {
             disposables.add(requestHandler.fetchVehicleTypesRequest(ApiUtility.getInstance().getApiKeyMetaData()).
                     subscribeOn(Schedulers.io()).
                     observeOn(AndroidSchedulers.mainThread()).
-                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading())).
-                    subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.success(result)),
-                            error -> {apiResponseMutableLiveData.setValue(ApiResponse.error(error));}));
+                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.loading(),
+                            UploadDocumentApiResponse.ServiceType.VEHICLE_TYPES))).
+                    subscribe(result -> apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.success(result),
+                            UploadDocumentApiResponse.ServiceType.VEHICLE_TYPES)),
+                            error -> {apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.error(error),
+                                    UploadDocumentApiResponse.ServiceType.VEHICLE_TYPES));}));
+        }
+    }
+
+    public void fetchDriverDocumentListRequest(){
+        if(null != requestHandler) {
+            disposables.add(requestHandler.fetchDriverDocumentListRequest(ApiUtility.getInstance().getApiKeyMetaData()).
+                    subscribeOn(Schedulers.io()).
+                    observeOn(AndroidSchedulers.mainThread()).
+                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.loading(),
+                            UploadDocumentApiResponse.ServiceType.DRIVER))).
+                    subscribe(result -> apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.success(result),
+                            UploadDocumentApiResponse.ServiceType.DRIVER)),
+                            error -> {apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.error(error),
+                                    UploadDocumentApiResponse.ServiceType.DRIVER));}));
+        }
+    }
+
+    public void fetchVehicleListRequest(){
+        if(null != requestHandler) {
+            disposables.add(requestHandler.fetchVehicleListRequest(ApiUtility.getInstance().getApiKeyMetaData()).
+                    subscribeOn(Schedulers.io()).
+                    observeOn(AndroidSchedulers.mainThread()).
+                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.loading(),
+                            UploadDocumentApiResponse.ServiceType.VEHICLE))).
+                    subscribe(result -> apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.success(result),
+                            UploadDocumentApiResponse.ServiceType.VEHICLE)),
+                            error -> {apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.error(error),
+                                    UploadDocumentApiResponse.ServiceType.VEHICLE));}));
         }
     }
 }

@@ -1,8 +1,11 @@
 package com.codesense.driverapp.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-public class OwnerTypesItem{
+public class OwnerTypesItem implements Parcelable{
 
 	@SerializedName("owner_type_id")
 	private String ownerTypeId;
@@ -46,4 +49,37 @@ public class OwnerTypesItem{
 			",owner_type = '" + ownerType + '\'' + 
 			"}";
 		}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(this.ownerTypeId);
+		dest.writeString(this.description);
+		dest.writeString(this.ownerType);
+	}
+
+	public OwnerTypesItem() {
+	}
+
+	protected OwnerTypesItem(Parcel in) {
+		this.ownerTypeId = in.readString();
+		this.description = in.readString();
+		this.ownerType = in.readString();
+	}
+
+	public static final Creator<OwnerTypesItem> CREATOR = new Creator<OwnerTypesItem>() {
+		@Override
+		public OwnerTypesItem createFromParcel(Parcel source) {
+			return new OwnerTypesItem(source);
+		}
+
+		@Override
+		public OwnerTypesItem[] newArray(int size) {
+			return new OwnerTypesItem[size];
+		}
+	};
 }

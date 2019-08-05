@@ -11,18 +11,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codesense.driverapp.R;
+import com.codesense.driverapp.data.DocumentsListItem;
 
 import java.util.List;
 
 public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAdapter.ViewHolder> {
 
 
-    private List<UploadDocumentModel> uploadDocumentModelList;
+    private List<DocumentsListItem> uploadDocumentModelList;
     private Activity activity;
     private int width;
     private int height;
 
-    public UploadDocumentAdapter(Activity activity, List<UploadDocumentModel> uploadDocumentModelList,
+    public UploadDocumentAdapter(Activity activity, List<DocumentsListItem> uploadDocumentModelList,
                                  int w, int h) {
         this.activity = activity;
         this.width = w;
@@ -43,9 +44,10 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
 
-        UploadDocumentModel uploadDocumentModel = uploadDocumentModelList.get(position);
-        String status = uploadDocumentModel.getStatus();
-        String title = uploadDocumentModel.getTitle();
+        DocumentsListItem uploadDocumentModel = uploadDocumentModelList.get(position);
+        String status = (null != uploadDocumentModel.getDocumentStatus()) ?
+                uploadDocumentModel.getDocumentStatus().getStatusMessage() : activity.getString(R.string.recommended_next_step);
+        String title = uploadDocumentModel.getDisplayName();
 
         viewHolder.tvDriverText.setText(status);
         viewHolder.tvDriverdesc.setText(title);

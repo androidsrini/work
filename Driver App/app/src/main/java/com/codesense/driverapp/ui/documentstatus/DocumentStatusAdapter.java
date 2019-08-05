@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codesense.driverapp.R;
+import com.codesense.driverapp.data.DocumentsListItem;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentModel;
 
 import java.util.List;
@@ -19,12 +20,12 @@ import java.util.List;
 public class DocumentStatusAdapter extends RecyclerView.Adapter<DocumentStatusAdapter.ViewHolder> {
 
 
-    private List<UploadDocumentModel> uploadDocumentModelList;
+    private List<DocumentsListItem> uploadDocumentModelList;
     private Activity activity;
     private int width;
     private int height;
 
-    public DocumentStatusAdapter(Activity activity, List<UploadDocumentModel> uploadDocumentModelList,
+    public DocumentStatusAdapter(Activity activity, List<DocumentsListItem> uploadDocumentModelList,
                                  int w, int h) {
         this.activity = activity;
         this.width = w;
@@ -44,9 +45,9 @@ public class DocumentStatusAdapter extends RecyclerView.Adapter<DocumentStatusAd
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        UploadDocumentModel uploadDocumentModel = uploadDocumentModelList.get(position);
-        String status = uploadDocumentModel.getStatus();
-        String title = uploadDocumentModel.getTitle();
+        DocumentsListItem uploadDocumentModel = uploadDocumentModelList.get(position);
+        String status = uploadDocumentModel.getDocumentStatus().getStatusMessage();
+        String title = uploadDocumentModel.getDisplayName();
 
         if (status.equalsIgnoreCase("completed")) {
             setCompleted(viewHolder);

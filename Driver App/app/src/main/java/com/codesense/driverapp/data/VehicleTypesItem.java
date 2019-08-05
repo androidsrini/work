@@ -28,10 +28,6 @@ public class VehicleTypesItem {
 
     @Override
     public String toString() {
-        return
-                "VehicleTypesItem{" +
-                        "vehicle_type_id = '" + vehicleTypeId + '\'' +
-                        ",vehicle_type = '" + vehicleType + '\'' +
-                        "}";
+        return vehicleType;
     }
 }

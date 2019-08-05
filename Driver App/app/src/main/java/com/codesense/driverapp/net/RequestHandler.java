@@ -142,4 +142,24 @@ public class RequestHandler {
     public Observable<JsonElement> fetchVehicleTypesRequest(String apikey) {
         return apiCallInterface.fetchVehicleTypesRequest(apikey, appSharedPreference.getAccessTokenKey());
     }
+
+    public Observable<JsonElement> fetchOwnerCumDriverStatusRequest(String apikey) {
+        return apiCallInterface.fetchOwnerCumDriverStatusRequest(apikey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
+    }
+
+    public Observable<JsonElement> fetchNonDrivingPartnerStatusRequest(String apikey) {
+        return apiCallInterface.fetchNonDrivingPartnerStatusRequest(apikey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
+    }
+
+    public Observable<JsonElement> fetchAvailableVehiclesRequest(String apikey) {
+        return apiCallInterface.fetchAvailableVehiclesRequest(apikey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
+    }
+
+    public Observable<JsonElement> fetchDriverDocumentListRequest(String apikey) {
+        return apiCallInterface.fetchDriverDocumentListRequest(apikey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
+    }
+
+    public Observable<JsonElement> fetchVehicleListRequest(String apikey) {
+        return apiCallInterface.fetchVehicleListRequest(apikey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
+    }
 }

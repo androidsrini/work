@@ -16,8 +16,10 @@ import android.widget.TextView;
 
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.base.BaseActivity;
+import com.codesense.driverapp.data.OwnerTypesItem;
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.di.utils.Utility;
+import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.RequestHandler;
@@ -61,19 +63,23 @@ public class LegalAgreementActivity extends BaseActivity {
     @Inject
     Utility utility;
     /**
+     * To create AppSharedPreference object
+     */
+    @Inject protected AppSharedPreference appSharedPreference;
+    /**
      * To create CompositeDisposable object.
      */
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private String ownerType;
+    private OwnerTypesItem ownerType;
 
     /**
      * This method to start LegalAgreementActivity class.
      * @param context
-     * @param ownerType
+     * @param ownerTypesItem
      */
-    public static void start(Context context, String ownerType) {
+    public static void start(Context context, OwnerTypesItem ownerTypesItem) {
         Intent intent = new Intent(context, LegalAgreementActivity.class);
-        intent.putExtra(OWNER_TYPE_ID_ARG, ownerType);
+        intent.putExtra(OWNER_TYPE_ID_ARG, ownerTypesItem);
         context.startActivity(intent);
     }
 
@@ -90,11 +96,18 @@ public class LegalAgreementActivity extends BaseActivity {
         setDynamicValue();
     }
 
-    private String getOwnerTypeId() {
-        if (null != getIntent() && TextUtils.isEmpty(ownerType)) {
-            ownerType = getIntent().getStringExtra(OWNER_TYPE_ID_ARG);
+    private OwnerTypesItem getOwnerType() {
+        if (null != getIntent() && null == ownerType) {
+            ownerType = getIntent().getParcelableExtra(OWNER_TYPE_ID_ARG);
         }
         return ownerType;
+    }
+
+    private String getOwnerTypeId() {
+        if (null == ownerType) {
+            ownerType = getOwnerType();
+        }
+        return ownerType.getOwnerTypeId();
     }
 
     private void setDynamicValue() {
@@ -161,6 +174,10 @@ public class LegalAgreementActivity extends BaseActivity {
                     } else {
                         if (apiResponse.isValidResponse()) {
                             //To show dashboard screen.
+                            if (null != apiResponse.getResponseJsonObject()) {
+                                appSharedPreference.saveOwnerTypeId(apiResponse.getResponseJsonObject().optInt(Constant.OWNER_TYPE_ID_RESPONSE));
+                                appSharedPreference.saveOwnerType(ownerType.getOwnerType());
+                            }
                             UploadDocumentActivity.start(this);
                             //To clear all Activity class from backstack
                             ActivityCompat.finishAffinity(this);

@@ -12,9 +12,11 @@
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            >
 
-            <RelativeLayout
+            <!--<RelativeLayout
                 android:id="@+id/vehicleTypeRelativeLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -39,7 +41,16 @@
                     tools:ignore="ContentDescription" />
 
 
-            </RelativeLayout>
+            </RelativeLayout>-->
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/vehicleTypeAppCompatSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"/>
+
+            <!--android:background="@android:color/transparent"-->
+            <!--app:backgroundTint="@color/primary_color"-->
 
             <View
                 android:id="@+id/view"
@@ -47,8 +58,13 @@
                 android:layout_height="3dp"
                 android:layout_marginTop="3dp"
                 android:background="@color/primary_color"
-                android:layout_below="@+id/vehicleTypeRelativeLayout"
-                app:layout_constraintTop_toBottomOf="@+id/vehicleTypeRelativeLayout" />
+                app:layout_constraintTop_toBottomOf="@+id/vehicleTypeAppCompatSpinner" />
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/vehicleNameTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/view">
 
             <EditText
                 android:id="@+id/etVehicleName"
@@ -56,23 +72,24 @@
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:singleLine="true"
-                android:background="@android:color/transparent"
-                app:layout_constraintTop_toBottomOf="@+id/view"
                 android:hint="@string/vehicle_name"
-                android:layout_below="@+id/view"
                 android:imeOptions="actionNext"
-                android:backgroundTint="@color/primary_color"
-                android:textColorHint="@color/dark_grey"
-                android:textColor="@color/secondary_color" />
-
-            <View
+                 />
+            </android.support.design.widget.TextInputLayout>
+<!--            <View
                 android:id="@+id/view1"
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
                 android:layout_marginTop="3dp"
                 android:background="@color/primary_color"
                 android:layout_below="@+id/etVehicleName"
-                app:layout_constraintTop_toBottomOf="@+id/etVehicleName" />
+                app:layout_constraintTop_toBottomOf="@+id/etVehicleName" />-->
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/vehicleNumberTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/vehicleNameTextInputLayout">
 
             <EditText
                 android:id="@+id/etVehicleNumber"
@@ -80,23 +97,26 @@
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:singleLine="true"
-                android:background="@android:color/transparent"
-                app:layout_constraintTop_toBottomOf="@+id/view1"
-                android:layout_below="@+id/view1"
                 android:hint="@string/vehicle_number"
                 android:imeOptions="actionNext"
-                android:backgroundTint="@color/primary_color"
-                android:textColorHint="@color/dark_grey"
-                android:textColor="@color/secondary_color" />
+                />
 
-            <View
+            </android.support.design.widget.TextInputLayout>
+
+            <!--<View
                 android:id="@+id/view2"
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
                 android:layout_marginTop="3dp"
                 android:background="@color/primary_color"
                 android:layout_below="@+id/etVehicleNumber"
-                app:layout_constraintTop_toBottomOf="@+id/etVehicleNumber" />
+                app:layout_constraintTop_toBottomOf="@+id/etVehicleNumber" />-->
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/driverNameTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/vehicleNumberTextInputLayout">
 
             <EditText
                 android:id="@+id/etDriverName"
@@ -104,23 +124,25 @@
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:singleLine="true"
-                android:background="@android:color/transparent"
-                app:layout_constraintTop_toBottomOf="@+id/view2"
-                android:layout_below="@+id/view2"
                 android:hint="@string/add_vehicle_driver_name"
                 android:imeOptions="actionNext"
-                android:backgroundTint="@color/primary_color"
-                android:textColorHint="@color/dark_grey"
-                android:textColor="@color/secondary_color" />
+                 />
+            </android.support.design.widget.TextInputLayout>
 
-            <View
+            <!--<View
                 android:id="@+id/view3"
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
                 android:layout_marginTop="3dp"
                 android:background="@color/primary_color"
                 android:layout_below="@+id/etVehicleNumber"
-                app:layout_constraintTop_toBottomOf="@+id/etDriverName" />
+                app:layout_constraintTop_toBottomOf="@+id/etDriverName" />-->
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/driverContNumTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/driverNameTextInputLayout">
 
             <EditText
                 android:id="@+id/etDriverContNum"
@@ -128,23 +150,25 @@
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:singleLine="true"
-                android:background="@android:color/transparent"
-                app:layout_constraintTop_toBottomOf="@+id/view3"
-                android:layout_below="@+id/view3"
                 android:hint="@string/add_vehicle_driver_contact"
                 android:imeOptions="actionNext"
-                android:backgroundTint="@color/primary_color"
-                android:textColorHint="@color/dark_grey"
-                android:textColor="@color/secondary_color" />
+                 />
+            </android.support.design.widget.TextInputLayout>
 
-            <View
+            <!--<View
                 android:id="@+id/view4"
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
                 android:layout_marginTop="3dp"
                 android:background="@color/primary_color"
                 android:layout_below="@+id/etVehicleNumber"
-                app:layout_constraintTop_toBottomOf="@+id/etDriverContNum" />
+                app:layout_constraintTop_toBottomOf="@+id/etDriverContNum" />-->
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/driverEmailTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/driverContNumTextInputLayout">
 
             <EditText
                 android:id="@+id/etDriverEmail"
@@ -152,23 +176,25 @@
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:singleLine="true"
-                android:background="@android:color/transparent"
-                app:layout_constraintTop_toBottomOf="@+id/view4"
-                android:layout_below="@+id/view3"
                 android:hint="@string/add_vehicle_driver_email"
                 android:imeOptions="actionNext"
-                android:backgroundTint="@color/primary_color"
-                android:textColorHint="@color/dark_grey"
-                android:textColor="@color/secondary_color" />
+                 />
+            </android.support.design.widget.TextInputLayout>
 
-            <View
+            <!--<View
                 android:id="@+id/view5"
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
                 android:layout_marginTop="3dp"
                 android:background="@color/primary_color"
                 android:layout_below="@+id/etVehicleNumber"
-                app:layout_constraintTop_toBottomOf="@+id/etDriverEmail" />
+                app:layout_constraintTop_toBottomOf="@+id/etDriverEmail" />-->
+
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/driverPasswordTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/driverEmailTextInputLayout">
 
             <EditText
                 android:id="@+id/etDriverPassword"
@@ -176,24 +202,26 @@
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:singleLine="true"
-                android:background="@android:color/transparent"
-                app:layout_constraintTop_toBottomOf="@+id/view5"
-                android:layout_below="@+id/view5"
                 android:hint="@string/add_vehicle_password"
                 android:imeOptions="actionNext"
-                android:backgroundTint="@color/primary_color"
-                android:textColorHint="@color/dark_grey"
-                android:textColor="@color/secondary_color" />
+                 />
 
-            <View
+            </android.support.design.widget.TextInputLayout>
+
+            <!--<View
                 android:id="@+id/view6"
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
                 android:layout_marginTop="3dp"
                 android:background="@color/primary_color"
                 android:layout_below="@+id/etVehicleNumber"
-                app:layout_constraintTop_toBottomOf="@+id/etDriverPassword" />
+                app:layout_constraintTop_toBottomOf="@+id/etDriverPassword" />-->
 
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/driverConTextInputLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/driverPasswordTextInputLayout">
 
             <EditText
                 android:id="@+id/etDriverConPassword"
@@ -201,23 +229,18 @@
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
                 android:singleLine="true"
-                android:background="@android:color/transparent"
-                app:layout_constraintTop_toBottomOf="@+id/view6"
-                android:layout_below="@+id/view6"
                 android:hint="@string/add_vehicle_confirm_password"
                 android:imeOptions="actionNext"
-                android:backgroundTint="@color/primary_color"
-                android:textColorHint="@color/dark_grey"
-                android:textColor="@color/secondary_color" />
-
-            <View
+                 />
+            </android.support.design.widget.TextInputLayout>
+            <!--<View
                 android:id="@+id/view7"
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
                 android:layout_marginTop="3dp"
                 android:background="@color/primary_color"
                 android:layout_below="@+id/etVehicleNumber"
-                app:layout_constraintTop_toBottomOf="@+id/etDriverConPassword" />
+                app:layout_constraintTop_toBottomOf="@+id/etDriverConPassword" />-->
 
 
         </android.support.constraint.ConstraintLayout>

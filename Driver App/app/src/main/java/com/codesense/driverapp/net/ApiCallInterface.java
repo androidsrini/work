@@ -90,4 +90,63 @@ public interface ApiCallInterface {
     @GET(WebserviceUrls.VEHICLE_TYPES)
     Observable<JsonElement> fetchVehicleTypesRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
                                                   @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken);
+
+    /**
+     * This method to fetch Documents List For Owner Cum Driver.
+     * @param apiKey
+     * @param accessToken
+     * @param param
+     * @return
+     */
+    @POST(WebserviceUrls.OWNER_CUM_DRIVER_STATUS)
+    @FormUrlEncoded
+    Observable<JsonElement> fetchOwnerCumDriverStatusRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
+                                                  @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String,String> param);
+
+    /**
+     * This method to fetch Documents List For Non Driver
+     * @param apiKey
+     * @param accessToken
+     * @param param
+     * @return
+     */
+    @POST(WebserviceUrls.NON_DRIVING_PARTNER_STATUS)
+    @FormUrlEncoded
+    Observable<JsonElement> fetchNonDrivingPartnerStatusRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
+                                                  @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String,String> param);
+
+
+    @POST(WebserviceUrls.UPLOAD_DOCUMENTS)
+    @FormUrlEncoded
+    Observable<JsonElement> uploadDocumentsRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
+                                                  @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String,String> param);
+
+
+    @POST(WebserviceUrls.ADD_VEHICLE_DOCUMENTS)
+    @FormUrlEncoded
+    Observable<JsonElement> addVehicleDocumentsRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
+                                                  @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String,String> param);
+
+    @POST(WebserviceUrls.GET_AVAILABLE_VEHICLES)
+    @FormUrlEncoded
+    Observable<JsonElement> fetchAvailableVehiclesRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
+                                                  @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String,String> param);
+
+
+    @POST(WebserviceUrls.ADD_VEHICLE_TO_OWNER)
+    @FormUrlEncoded
+    Observable<JsonElement> addVehicleToOwnerRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
+                                                  @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String,String> param);
+
+
+    @POST(WebserviceUrls.DRIVER)
+    @FormUrlEncoded
+    Observable<JsonElement> fetchDriverDocumentListRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
+                                                  @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String,String> param);
+
+
+    @POST(WebserviceUrls.VEHICLE)
+    @FormUrlEncoded
+    Observable<JsonElement> fetchVehicleListRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
+                                                  @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String,String> param);
 }
