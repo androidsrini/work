@@ -101,6 +101,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/etPhoneNumber"
                 app:passwordToggleEnabled="true"
+                app:hintEnabled="false"
                 >
 
             <EditText
@@ -124,6 +125,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintTop_toBottomOf="@+id/passwordTextInputLayout"
                 app:passwordToggleEnabled="true"
+                app:hintEnabled="false"
                 >
 
                 <EditText

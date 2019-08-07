@@ -64,7 +64,9 @@
                 android:id="@+id/vehicleNameTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/view">
+                app:layout_constraintTop_toBottomOf="@+id/view"
+                app:hintEnabled="false"
+                >
 
             <EditText
                 android:id="@+id/etVehicleName"
@@ -89,7 +91,9 @@
                 android:id="@+id/vehicleNumberTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/vehicleNameTextInputLayout">
+                app:layout_constraintTop_toBottomOf="@+id/vehicleNameTextInputLayout"
+                app:hintEnabled="false"
+                >
 
             <EditText
                 android:id="@+id/etVehicleNumber"
@@ -116,7 +120,9 @@
                 android:id="@+id/driverNameTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/vehicleNumberTextInputLayout">
+                app:layout_constraintTop_toBottomOf="@+id/vehicleNumberTextInputLayout"
+                app:hintEnabled="false"
+                >
 
             <EditText
                 android:id="@+id/etDriverName"
@@ -142,7 +148,9 @@
                 android:id="@+id/driverContNumTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/driverNameTextInputLayout">
+                app:layout_constraintTop_toBottomOf="@+id/driverNameTextInputLayout"
+                app:hintEnabled="false"
+                >
 
             <EditText
                 android:id="@+id/etDriverContNum"
@@ -168,7 +176,9 @@
                 android:id="@+id/driverEmailTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/driverContNumTextInputLayout">
+                app:layout_constraintTop_toBottomOf="@+id/driverContNumTextInputLayout"
+                app:hintEnabled="false"
+                >
 
             <EditText
                 android:id="@+id/etDriverEmail"
@@ -194,7 +204,9 @@
                 android:id="@+id/driverPasswordTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/driverEmailTextInputLayout">
+                app:layout_constraintTop_toBottomOf="@+id/driverEmailTextInputLayout"
+                app:hintEnabled="false"
+                >
 
             <EditText
                 android:id="@+id/etDriverPassword"
@@ -221,7 +233,9 @@
                 android:id="@+id/driverConTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/driverPasswordTextInputLayout">
+                app:layout_constraintTop_toBottomOf="@+id/driverPasswordTextInputLayout"
+                app:hintEnabled="false"
+                >
 
             <EditText
                 android:id="@+id/etDriverConPassword"

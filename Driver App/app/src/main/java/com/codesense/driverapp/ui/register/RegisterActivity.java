@@ -128,24 +128,24 @@ public class RegisterActivity extends BaseActivity {
     }
 
     private void addTextWatcherForCountyAndCityUI() {
-        compositeDisposable.add(RxTextView.afterTextChangeEvents(etCountry)
+        compositeDisposable.add(RxTextView.textChanges(etCountry)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(onNext->{
-                    if (null != onNext.editable() && 0 < onNext.editable().length()) {
+                    if (null != onNext && 0 < onNext.length()) {
                         findCountryFromCountryName(onNext.toString());
                     } else {
                         countriesItem = null;
                     }
                 }));
-        compositeDisposable.add(RxTextView.afterTextChangeEvents(etCity)
+        compositeDisposable.add(RxTextView.textChanges(etCity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(textViewAfterTextChangeEvent -> {
                     if (null != textViewAfterTextChangeEvent &&
-                            null != textViewAfterTextChangeEvent.editable()
-                            && textViewAfterTextChangeEvent.editable().length() > 0) {
-                        findCityFromCityName(textViewAfterTextChangeEvent.editable());
+                            null != textViewAfterTextChangeEvent
+                            && textViewAfterTextChangeEvent.length() > 0) {
+                        findCityFromCityName(textViewAfterTextChangeEvent.toString());
                     } else {
                         citiesItem = null;
                     }
@@ -479,10 +479,10 @@ public class RegisterActivity extends BaseActivity {
     /**
      * This method is used for get city object from data base based on user enter value.
      *
-     * @param e Editable argument
+     * @param s Editable argument
      */
-    private void findCityFromCityName(Editable e) {
-        compositeDisposable.add(DatabaseClient.getInstance(this).getAppDatabase().cityDao().findByCityName(e.toString())
+    private void findCityFromCityName(String s) {
+        compositeDisposable.add(DatabaseClient.getInstance(this).getAppDatabase().cityDao().findByCityName(s)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
