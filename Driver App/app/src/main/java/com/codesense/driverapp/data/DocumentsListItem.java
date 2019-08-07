@@ -13,6 +13,16 @@ public class DocumentsListItem{
 	@SerializedName("display_name")
 	private String displayName;
 
+	private String filePath;
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public void setFilePath(String filePath) {
+		this.filePath = filePath;
+	}
+
 	public void setDocumentStatus(DocumentStatus documentStatus){
 		this.documentStatus = documentStatus;
 	}

@@ -7,6 +7,7 @@ buildscript {
         flatDir {
             dirs 'libs'
         }
+        maven { url "https://jitpack.io" }
         //Carshlysitc repositories
         /*maven {
             url 'https://maven.fabric.io/public'
@@ -30,7 +31,7 @@ allprojects {
     repositories {
         google()
         jcenter()
-        
+        maven { url "https://jitpack.io" }
     }
 }
 

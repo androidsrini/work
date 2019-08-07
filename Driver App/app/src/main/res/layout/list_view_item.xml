@@ -21,6 +21,13 @@
             android:textColor="@color/third_color" />
 
         <TextView
+            android:id="@+id/documentFileNameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvDriverText"
+            android:visibility="gone"/>
+
+        <TextView
             android:id="@+id/tvDriverdesc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,14 +36,16 @@
             android:textSize="21sp"
             android:textStyle="bold"
             android:textColor="@color/secondary_color"
-            android:layout_below="@+id/tvDriverText"
+            android:layout_below="@+id/documentFileNameTextView"
             app:layout_constraintLeft_toLeftOf="parent" />
+
+        <!-- Default background image -->
+        <!--android:src="@drawable/right_only_bg"-->
 
         <ImageView
             android:id="@+id/imgRightArrow"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/right_only_bg"
             android:layout_alignParentEnd="true" />
 
     </RelativeLayout>

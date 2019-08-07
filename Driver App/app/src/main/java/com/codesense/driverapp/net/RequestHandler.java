@@ -1,12 +1,17 @@
 package com.codesense.driverapp.net;
 
+import com.codesense.driverapp.data.DocumentsListItem;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.request.RegisterNewUser;
 import com.google.gson.JsonElement;
 
+import java.io.File;
 import java.util.HashMap;
 
 import io.reactivex.Observable;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 public class RequestHandler {
 
@@ -89,6 +94,20 @@ public class RequestHandler {
         return param;
     }
 
+    private MultipartBody.Part getUploadDocumentFileRequest(DocumentsListItem documentsListItem) {
+        File file = new File(documentsListItem.getFilePath());
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        return MultipartBody.Part.createFormData(documentsListItem.getName(), file.getName(), requestFile);
+    }
+
+    private RequestBody getUploadDocumentFileName(DocumentsListItem documentsListItem) {
+        return RequestBody.create(MediaType.parse("text/plain"), documentsListItem.getName());
+    }
+
+    private RequestBody getUploadDocumentUserID() {
+        return RequestBody.create(MediaType.parse("text/plain"), appSharedPreference.getUserID());
+    }
+
     public RequestHandler(ApiCallInterface apiCallInterface, AppSharedPreference appSharedPreference) {
         this.apiCallInterface = apiCallInterface;
         this.appSharedPreference = appSharedPreference;
@@ -132,7 +151,7 @@ public class RequestHandler {
     }
 
     public Observable<JsonElement> updateAgreementAcceptRequest(String apikey, String agreementAccept) {
-        return apiCallInterface.fetchAgreementAcceptRequest(apikey, appSharedPreference.getAccessTokenKey(), getAgreementAcceptRequestParam(agreementAccept));
+        return apiCallInterface.updateAgreementAcceptRequest(apikey, appSharedPreference.getAccessTokenKey(), getAgreementAcceptRequestParam(agreementAccept));
     }
 
     public Observable<JsonElement> updateRegistationOwnerTypeRequest(String apikey, String ownerTypeId) {
@@ -161,5 +180,15 @@ public class RequestHandler {
 
     public Observable<JsonElement> fetchVehicleListRequest(String apikey) {
         return apiCallInterface.fetchVehicleListRequest(apikey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
+    }
+
+    public Observable<JsonElement> uploadDocumentsRequest(String api, DocumentsListItem documentsListItem) {
+        return apiCallInterface.uploadDocumentsRequest(api, appSharedPreference.getAccessTokenKey(),
+                getUploadDocumentFileRequest(documentsListItem), getUploadDocumentUserID());
+    }
+
+    public Observable<JsonElement> fetchOwnerSignupStatusRequest(String api) {
+        return apiCallInterface.fetchOwnerSignupStatusRequest(api, appSharedPreference.getAccessTokenKey(),
+                getUserIDRequestParam());
     }
 }

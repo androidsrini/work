@@ -3,6 +3,7 @@ package com.codesense.driverapp.ui.uploaddocument;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,12 +46,20 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
 
         DocumentsListItem uploadDocumentModel = uploadDocumentModelList.get(position);
-        String status = (null != uploadDocumentModel.getDocumentStatus()) ?
+        boolean isFileSelected = TextUtils.isEmpty(uploadDocumentModel.getFilePath());
+        String status = !isFileSelected ? activity.getString(R.string.document_status_completed)
+                :  (null != uploadDocumentModel.getDocumentStatus()) ?
                 uploadDocumentModel.getDocumentStatus().getStatusMessage() : activity.getString(R.string.recommended_next_step);
         String title = uploadDocumentModel.getDisplayName();
-
         viewHolder.tvDriverText.setText(status);
         viewHolder.tvDriverdesc.setText(title);
+        if (!isFileSelected) {
+            //To show selected image UI
+            viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
+        } else {
+            // To show unselected image and content
+            viewHolder.imgRightArrow.setBackgroundResource(R.drawable.right_only_bg);
+        }
     }
 
     @Override
@@ -73,10 +82,7 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
             tvDriverdesc = view.findViewById(R.id.tvDriverdesc);
             imgRightArrow = view.findViewById(R.id.imgRightArrow);
 
-
             int topBottomSpace = (int) (height * 0.0089);
-
-
             int imgIconWidth = (int) (width * 0.105);
             int imgIconHeight = (int) (width * 0.105);
 

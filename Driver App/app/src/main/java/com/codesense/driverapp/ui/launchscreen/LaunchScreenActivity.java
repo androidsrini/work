@@ -1,5 +1,7 @@
 package com.codesense.driverapp.ui.launchscreen;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -73,6 +75,14 @@ public class LaunchScreenActivity extends BaseActivity {
     protected RequestHandler requestHandler;
     @Inject
     protected AppSharedPreference appSharedPreference;
+
+    /**
+     * This method to launch LaunchScreenActivity
+     * @param context
+     */
+    public static void start(Context context) {
+        context.startActivity(new Intent(context, LaunchScreenActivity.class));
+    }
 
     /**
      * This method to fetch Country list from server.

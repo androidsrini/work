@@ -15,6 +15,7 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.SecureRandom;
+import java.text.ParseException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -75,6 +76,20 @@ public class Utility {
             return Patterns.EMAIL_ADDRESS.matcher(email).matches();
         }
         return false;
+    }
+
+    /**
+     * This method to parse the sting value to int.
+     * @param s
+     * @return int
+     */
+    public int parseInt(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public String decrypt(String key, String encrypted) throws Exception {

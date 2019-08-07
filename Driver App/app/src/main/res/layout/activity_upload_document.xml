@@ -103,7 +103,12 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/view2" />
+        android:layout_below="@+id/view2"
+        android:layout_above="@+id/uploadContentButton"/>
 
+    <Button
+        android:id="@+id/uploadContentButton"
+        android:text="@string/update_document_text"
+        style="@style/appButtonProperty" />
 
 </RelativeLayout>

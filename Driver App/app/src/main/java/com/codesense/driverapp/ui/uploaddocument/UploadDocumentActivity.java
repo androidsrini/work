@@ -1,8 +1,10 @@
 package com.codesense.driverapp.ui.uploaddocument;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -10,10 +12,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -29,7 +33,6 @@ import com.codesense.driverapp.data.VehicleTypesItem;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
-import com.codesense.driverapp.ui.helper.Utils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -37,8 +40,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class UploadDocumentActivity extends DrawerActivity implements View.OnClickListener {
+import in.mayanknagwanshi.imagepicker.ImageSelectActivity;
 
+public class UploadDocumentActivity extends DrawerActivity {
+
+    private static final String TAG = "Driver";
+    private static final int IMAGE_PICKER = 0x0001;
     View contentView;
     TextView tvRemaining;
     RelativeLayout vehicleTypeRelativeLayout;
@@ -50,6 +57,7 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
     View view1;
     View view2;
     RecyclerView recyclerView;
+    Button uploadContentButton;
     UploadDocumentAdapter adapter;
     int mSelectedItemType;
     boolean typeSelFirstTime;
@@ -61,7 +69,7 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
     public static final int UPLOAD_DOCUMENT_NAME_INDEX = 1;
     private static final int UPLOAD_DOCUMENT_ICON_NAME_INDEX = 2;
     private List<DocumentsListItem> uploadDocumentActionInfos;
-
+    private DocumentsListItem selectedDocumetnsListItem;
     /**
      * To create UploadDocumentViewModel object.
      */
@@ -98,10 +106,13 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
         uploadDocumentViewModel.fetchVehicleTypesRequest();
         initially();
         setDynamicValue();
-        setonClickListener();
         functionality();
     }
 
+    /**
+     * This method to handle api resonse
+     * @param uploadDocumentApiResponse
+     */
     private void handleApiResponse(UploadDocumentApiResponse uploadDocumentApiResponse) {
         ApiResponse apiResponse = uploadDocumentApiResponse.getApiResponse();
         UploadDocumentApiResponse.ServiceType serviceType = uploadDocumentApiResponse.getServiceType();
@@ -133,6 +144,10 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
         }
     }
 
+    /**
+     * This method to update Driver DocumentList UI.
+     * @param apiResponse
+     */
     private void updateDriverDocumentListUI(ApiResponse apiResponse) {
         if (apiResponse.isValidResponse()) {
             DocumentsListStatusResponse documentsListStatusResponse = new Gson().fromJson(apiResponse.data, DocumentsListStatusResponse.class);
@@ -143,6 +158,10 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
         }
     }
 
+    /**
+     * This method to update Vehicle DocumentList UI.
+     * @param apiResponse
+     */
     private void updateVehicleDocumentListUI(ApiResponse apiResponse) {
         if (apiResponse.isValidResponse()) {
             DocumentsListStatusResponse documentsListStatusResponse = new Gson().fromJson(apiResponse.data, DocumentsListStatusResponse.class);
@@ -153,29 +172,32 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
         adapter.notifyDataSetChanged();
     }
 
-    private void functionality() {
-
-        /*int storeInfoActionListSize = getResources().getInteger(R.integer.upload_document_count);
-        List<TypedArray> typedArrayList = Utils.getMultiTypedArray(this, Utils.UPLOAD_DOCUMENT);
-        if (storeInfoActionListSize > typedArrayList.size()) {
-            storeInfoActionListSize = typedArrayList.size();
+    /**
+     * This method to update DocumetnsListItem and update adapter UI.
+     * @param path image path
+     */
+    private void updateDocumentItem(@NonNull String path) {
+        if (null != selectedDocumetnsListItem) {
+            selectedDocumetnsListItem.setFilePath(path);
+            adapter.notifyDataSetChanged();
         }
-        for (int index = 0; index < storeInfoActionListSize; index++) {
-            TypedArray typedArray = typedArrayList.get(index);
-            String status = typedArray.getString(UPLOAD_DOCUMENT_STATUS_INDEX);
-            String title = typedArray.getString(UPLOAD_DOCUMENT_NAME_INDEX);
-            int icon = 0;
-            uploadDocumentActionInfos.add(new UploadDocumentModel(status, title, icon));
-        }*/
+    }
 
+    private void functionality() {
+        uploadContentButton.setOnClickListener(((view)->{
+            if (null != selectedDocumetnsListItem)
+                uploadDocumentViewModel.uploadDocumentRequest(selectedDocumetnsListItem);
+        }));
         adapter = new UploadDocumentAdapter(this, uploadDocumentActionInfos, screenWidth, screenHeight);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                Intent intent = new Intent(UploadDocumentActivity.this, UploadDocumentSecondActivity.class);
-                startActivity(intent);
+                /*Intent intent = new Intent(UploadDocumentActivity.this, UploadDocumentSecondActivity.class);
+                startActivity(intent);*/
+                selectedDocumetnsListItem = uploadDocumentActionInfos.get(position);
+                showImageFromGalary();
             }
 
             @Override
@@ -188,6 +210,14 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
             showListPopupScreen(vehicleTypeRelativeLayout, vehicleTypeTextView,  vehicleTypesItems);
         });
 
+    }
+
+    private void showImageFromGalary() {
+        Intent intent = new Intent(this, ImageSelectActivity.class);
+        intent.putExtra(ImageSelectActivity.FLAG_COMPRESS, false);//default is true
+        intent.putExtra(ImageSelectActivity.FLAG_CAMERA, false);//default is true
+        intent.putExtra(ImageSelectActivity.FLAG_GALLERY, true);//default is true
+        startActivityForResult(intent, IMAGE_PICKER);
     }
 
     private void showListPopupScreen(View view, final TextView updateNameTextView, final List<VehicleTypesItem> list) {
@@ -242,9 +272,6 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
         popupWindow.showAsDropDown(view);
     }
 
-    private void setonClickListener() {
-    }
-
     private void initially() {
         vehicleTypeArrowImageView = findViewById(R.id.vehicleTypeArrowImageView);
         tvRemaining = findViewById(R.id.tvRemaining);
@@ -256,15 +283,13 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
         view2 = findViewById(R.id.view2);
         recyclerView = findViewById(R.id.recyclerView);
         vehicleTypeTextView = findViewById(R.id.vehicleTypeTextView);
+        uploadContentButton = findViewById(R.id.uploadContentButton);
     }
 
     private void setDynamicValue() {
-
         int topBottomSpace = (int) (screenHeight * 0.0089);
-
-        int imgIconArrowWidth = (int) (screenWidth * 0.075);
-        int imgIconArrowHeight = (int) (screenWidth * 0.075);
-
+        int imgIconArrowWidth = (int) (screenWidth * 0.055);
+        int imgIconArrowHeight = (int) (screenWidth * 0.055);
 
         RelativeLayout.LayoutParams vehicleTypeArrowImageViewimgLayParams = (RelativeLayout.LayoutParams) vehicleTypeArrowImageView.getLayoutParams();
         vehicleTypeArrowImageViewimgLayParams.width = imgIconArrowWidth;
@@ -303,15 +328,18 @@ public class UploadDocumentActivity extends DrawerActivity implements View.OnCli
         RelativeLayout.LayoutParams recyclerViewLayoutParams = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
         recyclerViewLayoutParams.setMargins(0, topBottomSpace * 2, 0, 0);
         recyclerView.setLayoutParams(recyclerViewLayoutParams);
-
-
     }
 
     @Override
-    public void onClick(View v) {
-        Intent intent;
-        switch (v.getId()) {
-
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == IMAGE_PICKER && resultCode == Activity.RESULT_OK) {
+            String filePath = data.getStringExtra(ImageSelectActivity.RESULT_FILE_PATH);
+            Bitmap selectedImage = BitmapFactory.decodeFile(filePath);
+            Log.d(TAG, " The image file path:" + filePath);
+            updateDocumentItem(filePath);
+        } else {
+            utility.showToastMsg("File not found");
         }
     }
 }

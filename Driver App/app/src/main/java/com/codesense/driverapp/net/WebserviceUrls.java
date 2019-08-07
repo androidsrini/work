@@ -30,4 +30,5 @@ public class WebserviceUrls {
     public static final String ADD_VEHICLE_DOCUMENTS = "add_vehicle_documents";
     public static final String DELETE_OWNER_VEHICLE = "delete_owner_vehicle";
     public static final String DELETE_DRIVER = "delete_driver";
+    public static final String GET_OWNER_SIGNUP_STATUS = "get_owner_signup_status";
 }

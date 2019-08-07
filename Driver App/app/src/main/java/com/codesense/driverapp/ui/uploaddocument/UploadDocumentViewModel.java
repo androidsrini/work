@@ -1,5 +1,6 @@
 package com.codesense.driverapp.ui.uploaddocument;
 
+import com.codesense.driverapp.data.DocumentsListItem;
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
@@ -67,6 +68,20 @@ public class UploadDocumentViewModel extends ViewModel {
                             UploadDocumentApiResponse.ServiceType.VEHICLE)),
                             error -> {apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.error(error),
                                     UploadDocumentApiResponse.ServiceType.VEHICLE));}));
+        }
+    }
+
+    public void uploadDocumentRequest(DocumentsListItem documentsListItem) {
+        if(null != requestHandler) {
+            disposables.add(requestHandler.uploadDocumentsRequest(ApiUtility.getInstance().getApiKeyMetaData(), documentsListItem).
+                    subscribeOn(Schedulers.io()).
+                    observeOn(AndroidSchedulers.mainThread()).
+                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.loading(),
+                            UploadDocumentApiResponse.ServiceType.UPLOAD_DOCUEMNT))).
+                    subscribe(result -> apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.success(result),
+                            UploadDocumentApiResponse.ServiceType.UPLOAD_DOCUEMNT)),
+                            error -> {apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.error(error),
+                                    UploadDocumentApiResponse.ServiceType.UPLOAD_DOCUEMNT));}));
         }
     }
 }

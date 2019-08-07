@@ -28,6 +28,7 @@ public final class Constant {
     public static final String OWNER_TYPE_ID_PARAM = "owner_type_id";
     public static final String OWNER_CUM_DRIVER = "Owner Cum Driver";
     public static final String NON_DRIVING_PARTNER = "Non Driving Partner";
+    public static final String OWNER_AGREEMENT_RESPONSE = "owner_agreement";
     public static final String OTP_PARAM = "otp";
     public static final String AGREEMENT_ACCEPT_REQUEST = "agreement_accept";
     public static final String MESSAGE_RESPONSE = "message";

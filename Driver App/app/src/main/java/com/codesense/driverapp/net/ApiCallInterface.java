@@ -5,11 +5,15 @@ import com.google.gson.JsonElement;
 import java.util.HashMap;
 
 import io.reactivex.Observable;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 
 public interface ApiCallInterface {
 
@@ -71,9 +75,9 @@ public interface ApiCallInterface {
 
     @POST(WebserviceUrls.ACCEPT_LEGAL_AGREEMENT)
     @FormUrlEncoded
-    Observable<JsonElement> fetchAgreementAcceptRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
-                                                  @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
-                                                     @FieldMap HashMap<String, String> param);
+    Observable<JsonElement> updateAgreementAcceptRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
+                                                         @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
+                                                         @FieldMap HashMap<String, String> param);
 
     @POST(WebserviceUrls.REGISTATION_OWNER_TYPE)
     @FormUrlEncoded
@@ -116,10 +120,19 @@ public interface ApiCallInterface {
                                                   @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String,String> param);
 
 
+    /**
+     * This method to update file to server.
+     * @param apiKey
+     * @param accessToken
+     * @return JsonElement
+     * @line reference: https://stackoverflow.com/questions/34562950/post-multipart-form-data-using-retrofit-2-0-including-image
+     */
+    @Multipart
     @POST(WebserviceUrls.UPLOAD_DOCUMENTS)
-    @FormUrlEncoded
     Observable<JsonElement> uploadDocumentsRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
-                                                  @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String,String> param);
+                                                   @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
+                                                   @Part MultipartBody.Part fileBody,
+                                                   @Part("user_id") RequestBody userId);
 
 
     @POST(WebserviceUrls.ADD_VEHICLE_DOCUMENTS)
@@ -148,5 +161,11 @@ public interface ApiCallInterface {
     @POST(WebserviceUrls.VEHICLE)
     @FormUrlEncoded
     Observable<JsonElement> fetchVehicleListRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
+                                                  @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String,String> param);
+
+
+    @POST(WebserviceUrls.GET_OWNER_SIGNUP_STATUS)
+    @FormUrlEncoded
+    Observable<JsonElement> fetchOwnerSignupStatusRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
                                                   @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String,String> param);
 }

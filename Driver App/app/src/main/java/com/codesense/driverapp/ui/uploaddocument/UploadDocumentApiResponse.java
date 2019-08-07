@@ -25,6 +25,6 @@ public class UploadDocumentApiResponse {
     }
 
     public enum ServiceType {
-        DRIVER, VEHICLE_TYPES, VEHICLE
+        DRIVER, VEHICLE_TYPES, VEHICLE, UPLOAD_DOCUEMNT
     }
 }

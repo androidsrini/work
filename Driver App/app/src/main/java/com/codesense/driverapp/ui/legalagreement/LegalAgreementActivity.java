@@ -8,6 +8,7 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -40,8 +41,8 @@ public class LegalAgreementActivity extends BaseActivity {
     private static final String OWNER_TYPE_ID_ARG = "OwnerTypeArg";
     @Initialize(R.id.tvTitle)
     TextView tvTitle;
-    @Initialize(R.id.tvLegalText)
-    TextView tvLegalText;
+    /*@Initialize(R.id.tvLegalText)
+    TextView tvLegalText;*/
     @Initialize(R.id.toolbarClose)
     ImageView toolbarClose;
     @Initialize(R.id.view)
@@ -52,6 +53,8 @@ public class LegalAgreementActivity extends BaseActivity {
     CheckBox checkbox;
     @Initialize(R.id.btnAcceptContinue)
     Button btnAcceptContinue;
+    @Initialize(R.id.legalArgumentWebView)
+    WebView legalArgumentWebView;
     /**
      * To create RequestHandler object
      */
@@ -94,6 +97,7 @@ public class LegalAgreementActivity extends BaseActivity {
         ProductBindView.bind(this);
         tvTitle.setText(getResources().getString(R.string.legal_title));
         setDynamicValue();
+        fetchLegalAgreementRequest();
     }
 
     private OwnerTypesItem getOwnerType() {
@@ -112,20 +116,18 @@ public class LegalAgreementActivity extends BaseActivity {
 
     private void setDynamicValue() {
         int topBottomSpace = (int) (screenHeight * 0.0089);
-
         int imgIconWidth = (int) (screenWidth * 0.075);
         int imgIconHeight = (int) (screenWidth * 0.075);
-
 
         RelativeLayout.LayoutParams imgLayParams = (RelativeLayout.LayoutParams) toolbarClose.getLayoutParams();
         imgLayParams.width = imgIconWidth;
         imgLayParams.height = imgIconHeight;
         toolbarClose.setLayoutParams(imgLayParams);
 
-        ConstraintLayout.LayoutParams tvLegalTextLayoutParams = (ConstraintLayout.LayoutParams) tvLegalText.getLayoutParams();
+        /*ConstraintLayout.LayoutParams tvLegalTextLayoutParams = (ConstraintLayout.LayoutParams) tvLegalText.getLayoutParams();
         tvLegalTextLayoutParams.setMargins(topBottomSpace * 2, topBottomSpace * 3, 0, 0);
         tvLegalText.setLayoutParams(tvLegalTextLayoutParams);
-        tvLegalText.setPadding(0, 0, topBottomSpace * 2, 0);
+        tvLegalText.setPadding(0, 0, topBottomSpace * 2, 0);*/
 
         ConstraintLayout.LayoutParams checkboxLayoutParams = (ConstraintLayout.LayoutParams) checkbox.getLayoutParams();
         checkboxLayoutParams.setMargins(topBottomSpace * 2, topBottomSpace * 3, 0, 0);
@@ -139,9 +141,11 @@ public class LegalAgreementActivity extends BaseActivity {
         RelativeLayout.LayoutParams btnAcceptContinueLayoutParams = (RelativeLayout.LayoutParams) btnAcceptContinue.getLayoutParams();
         btnAcceptContinueLayoutParams.setMargins(topBottomSpace * 2, 0, topBottomSpace * 2, topBottomSpace * 2);
         btnAcceptContinue.setLayoutParams(btnAcceptContinueLayoutParams);
-
     }
 
+    /**
+     * This method to update RegistationOwnerType to server.
+     */
     private void updateRegistationOwnerTypeRequest() {
         compositeDisposable.add(requestHandler.updateRegistationOwnerTypeRequest(ApiUtility.getInstance().getApiKeyMetaData(), getOwnerTypeId())
         .subscribeOn(Schedulers.io())
@@ -151,6 +155,9 @@ public class LegalAgreementActivity extends BaseActivity {
                 error->handleAgreementResponse(ApiResponse.error(error), ServiceType.REGISTATION_OWNER_TYPE)));
     }
 
+    /**
+     * This method to update legal AgreementAccept to server.
+     */
     private void updateAgreementAcceptRequest() {
         compositeDisposable.add(requestHandler.updateAgreementAcceptRequest(ApiUtility.getInstance().getApiKeyMetaData(), "1")
                 .subscribeOn(Schedulers.io())
@@ -158,7 +165,18 @@ public class LegalAgreementActivity extends BaseActivity {
                 .doOnSubscribe(d->handleAgreementResponse(ApiResponse.loading(), ServiceType.ACCEPT_LEGAL_AGREEMENT))
                 .subscribe(result->handleAgreementResponse(ApiResponse.success(result), ServiceType.ACCEPT_LEGAL_AGREEMENT),
                         error->handleAgreementResponse(ApiResponse.error(error), ServiceType.ACCEPT_LEGAL_AGREEMENT)));
+    }
 
+    /**
+     * This method to fetch LegalAgreement url
+     */
+    private void fetchLegalAgreementRequest() {
+        compositeDisposable.add(requestHandler.getOwnerAgreementRequest(ApiUtility.getInstance().getApiKeyMetaData())
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .doOnSubscribe(d->handleAgreementResponse(ApiResponse.loading(), ServiceType.GET_LEGAL_AGREEMENT))
+        .subscribe(result->handleAgreementResponse(ApiResponse.success(result), ServiceType.GET_LEGAL_AGREEMENT),
+                error->handleAgreementResponse(ApiResponse.error(error), ServiceType.GET_LEGAL_AGREEMENT)));
     }
 
     private void handleAgreementResponse(ApiResponse apiResponse, ServiceType serviceType) {
@@ -169,7 +187,15 @@ public class LegalAgreementActivity extends BaseActivity {
             case SUCCESS:
                 utility.dismissDialog();
                 if (apiResponse.isValidResponse()) {
-                    if (ServiceType.REGISTATION_OWNER_TYPE == serviceType) {
+                    if (ServiceType.GET_LEGAL_AGREEMENT == serviceType) {
+                        //Update webui.
+                        if (null != apiResponse.getResponseJsonObject()) {
+                            String legalAgreementUrl = apiResponse.getResponseJsonObject().optString(Constant.OWNER_AGREEMENT_RESPONSE);
+                            if (!TextUtils.isEmpty(legalAgreementUrl)) {
+                                legalArgumentWebView.loadUrl(legalAgreementUrl);
+                            }
+                        }
+                    } else if (ServiceType.REGISTATION_OWNER_TYPE == serviceType) {
                         updateAgreementAcceptRequest();
                     } else {
                         if (apiResponse.isValidResponse()) {
@@ -217,6 +243,6 @@ public class LegalAgreementActivity extends BaseActivity {
     }
 
     private enum ServiceType {
-        REGISTATION_OWNER_TYPE, ACCEPT_LEGAL_AGREEMENT
+        REGISTATION_OWNER_TYPE, ACCEPT_LEGAL_AGREEMENT, GET_LEGAL_AGREEMENT
     }
 }

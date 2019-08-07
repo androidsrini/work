@@ -79,6 +79,9 @@ dependencies {
     annotationProcessor files('libs/process.jar')
     implementation files('libs/process.jar')
     implementation files('libs/annotationbuilder.aar')
+    //Image picker lib
+    // url: https://github.com/maayyaannkk/ImagePicker
+    implementation 'com.github.maayyaannkk:ImagePicker:1.0.3'
 
     //RXJAva for edittext
     implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:2.1.1"
@@ -88,3 +91,4 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'*/
 }
 //apply plugin: 'com.google.gms.google-services'
+
