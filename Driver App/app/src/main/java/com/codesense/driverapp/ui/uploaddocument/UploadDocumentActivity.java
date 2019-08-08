@@ -12,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,12 +29,14 @@ import android.widget.TextView;
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.data.DocumentsListItem;
 import com.codesense.driverapp.data.DocumentsListStatusResponse;
+import com.codesense.driverapp.data.VehicleDetailRequest;
 import com.codesense.driverapp.data.VehicleTypeResponse;
 import com.codesense.driverapp.data.VehicleTypesItem;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,8 +47,21 @@ import in.mayanknagwanshi.imagepicker.ImageSelectActivity;
 
 public class UploadDocumentActivity extends DrawerActivity {
 
+    public static final int UPLOAD_DOCUMENT_STATUS_INDEX = 0;
+    public static final int UPLOAD_DOCUMENT_NAME_INDEX = 1;
     private static final String TAG = "Driver";
     private static final int IMAGE_PICKER = 0x0001;
+    private static final int UPLOAD_DOCUMENT_ICON_NAME_INDEX = 2;
+    /**
+     * To create UploadDocumentViewModel object.
+     */
+    @Inject
+    protected UploadDocumentViewModel uploadDocumentViewModel;
+    /**
+     * To create Utility object.
+     */
+    @Inject
+    protected Utility utility;
     View contentView;
     TextView tvRemaining;
     RelativeLayout vehicleTypeRelativeLayout;
@@ -58,32 +74,18 @@ public class UploadDocumentActivity extends DrawerActivity {
     View view2;
     RecyclerView recyclerView;
     Button uploadContentButton;
+    //DriverAppUI driverAppUI1;
     UploadDocumentAdapter adapter;
     int mSelectedItemType;
     boolean typeSelFirstTime;
     String typeValue;
     private List<VehicleTypesItem> vehicleTypesItems;
-    //DriverAppUI driverAppUI1;
-
-    public static final int UPLOAD_DOCUMENT_STATUS_INDEX = 0;
-    public static final int UPLOAD_DOCUMENT_NAME_INDEX = 1;
-    private static final int UPLOAD_DOCUMENT_ICON_NAME_INDEX = 2;
     private List<DocumentsListItem> uploadDocumentActionInfos;
     private DocumentsListItem selectedDocumetnsListItem;
-    /**
-     * To create UploadDocumentViewModel object.
-     */
-    @Inject
-    protected UploadDocumentViewModel uploadDocumentViewModel;
-
-    /**
-     * To create Utility object.
-     */
-    @Inject
-    protected Utility utility;
 
     /**
      * This method to start UploadDocumentActivity class
+     *
      * @param context
      */
     public static void start(Context context) {
@@ -111,6 +113,7 @@ public class UploadDocumentActivity extends DrawerActivity {
 
     /**
      * This method to handle api resonse
+     *
      * @param uploadDocumentApiResponse
      */
     private void handleApiResponse(UploadDocumentApiResponse uploadDocumentApiResponse) {
@@ -129,12 +132,30 @@ public class UploadDocumentActivity extends DrawerActivity {
                         if (null != vehicleTypeResponse && null != vehicleTypeResponse.getVehicleTypes()) {
                             vehicleTypesItems.addAll(vehicleTypeResponse.getVehicleTypes());
                         }
-                        uploadDocumentViewModel.fetchDriverDocumentListRequest();
+                        uploadDocumentViewModel.fetchDocumentListRequest();
                     } else if (UploadDocumentApiResponse.ServiceType.DRIVER == serviceType) {
                         updateDriverDocumentListUI(apiResponse);
-                        uploadDocumentViewModel.fetchVehicleListRequest();
                     } else if (UploadDocumentApiResponse.ServiceType.VEHICLE == serviceType) {
                         updateVehicleDocumentListUI(apiResponse);
+                    }
+                }
+                break;
+            case SUCCESS_MULTIPLE:
+                utility.dismissDialog();
+                if (UploadDocumentApiResponse.ServiceType.ALL_DOCUMENT == serviceType) {
+                    updateDocumentListUI(apiResponse);
+                } else if (UploadDocumentApiResponse.ServiceType.UPLOAD_DOCUEMNTS == serviceType) {
+                    JsonElement[] jsonElements = apiResponse.datas;
+                    boolean allAreSuccess = true;
+                    int count = 0;
+                    do {
+                        if (!apiResponse.isValidResponse(count)) {
+                            utility.showToastMsg(apiResponse.getResponseMessage(count));
+                            allAreSuccess = false;
+                        }
+                    } while (++ count < jsonElements.length);
+                    if (allAreSuccess) {
+                        utility.showToastMsg("All file are uploaded successfully");
                     }
                 }
                 break;
@@ -148,6 +169,7 @@ public class UploadDocumentActivity extends DrawerActivity {
      * This method to update Driver DocumentList UI.
      * @param apiResponse
      */
+    @Deprecated
     private void updateDriverDocumentListUI(ApiResponse apiResponse) {
         if (apiResponse.isValidResponse()) {
             DocumentsListStatusResponse documentsListStatusResponse = new Gson().fromJson(apiResponse.data, DocumentsListStatusResponse.class);
@@ -160,8 +182,10 @@ public class UploadDocumentActivity extends DrawerActivity {
 
     /**
      * This method to update Vehicle DocumentList UI.
+     *
      * @param apiResponse
      */
+    @Deprecated
     private void updateVehicleDocumentListUI(ApiResponse apiResponse) {
         if (apiResponse.isValidResponse()) {
             DocumentsListStatusResponse documentsListStatusResponse = new Gson().fromJson(apiResponse.data, DocumentsListStatusResponse.class);
@@ -172,8 +196,22 @@ public class UploadDocumentActivity extends DrawerActivity {
         adapter.notifyDataSetChanged();
     }
 
+    private void updateDocumentListUI(ApiResponse apiResponse) {
+        JsonElement[] response = apiResponse.datas;
+        int count = 0;
+        uploadDocumentActionInfos.clear();
+        do {
+            if (apiResponse.isValidResponse(count)) {
+                DocumentsListStatusResponse documentsListStatusResponse = new Gson().fromJson(response[count], DocumentsListStatusResponse.class);
+                uploadDocumentActionInfos.addAll(documentsListStatusResponse.getDocumentsList());
+            }
+        } while (++ count < response.length);
+        adapter.notifyDataSetChanged();
+    }
+
     /**
      * This method to update DocumetnsListItem and update adapter UI.
+     *
      * @param path image path
      */
     private void updateDocumentItem(@NonNull String path) {
@@ -183,10 +221,21 @@ public class UploadDocumentActivity extends DrawerActivity {
         }
     }
 
+    private VehicleDetailRequest createVehicleDetailRequestObject() {
+        VehicleDetailRequest vehicleDetailRequest = new VehicleDetailRequest();
+        vehicleDetailRequest.setVehicleTypeId(1);
+        vehicleDetailRequest.setVehicleName("MARUTHI OMNI");
+        vehicleDetailRequest.setVehicleNumber("TN38 AT0298");
+        return vehicleDetailRequest;
+    }
+
     private void functionality() {
-        uploadContentButton.setOnClickListener(((view)->{
-            if (null != selectedDocumetnsListItem)
-                uploadDocumentViewModel.uploadDocumentRequest(selectedDocumetnsListItem);
+        uploadContentButton.setOnClickListener(((view) -> {
+            if (isAnyItemDocumentSelected()) {
+                uploadDocumentViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
+            } else {
+                utility.showToastMsg("Please select document");
+            }
         }));
         adapter = new UploadDocumentAdapter(this, uploadDocumentActionInfos, screenWidth, screenHeight);
         recyclerView.setAdapter(adapter);
@@ -207,9 +256,29 @@ public class UploadDocumentActivity extends DrawerActivity {
         }));
 
         vehicleTypeRelativeLayout.setOnClickListener(v -> {
-            showListPopupScreen(vehicleTypeRelativeLayout, vehicleTypeTextView,  vehicleTypesItems);
+            showListPopupScreen(vehicleTypeRelativeLayout, vehicleTypeTextView, vehicleTypesItems);
         });
+    }
 
+    private List<DocumentsListItem> findSelectedDocumentList() {
+        List<DocumentsListItem> documentsListItems = new ArrayList<>();
+        int count = 0;
+        do {
+            DocumentsListItem documentsListItem = documentsListItems.get(count);
+            if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+                documentsListItems.add(documentsListItem);
+            }
+        } while (++ count < this.uploadDocumentActionInfos.size());
+        return documentsListItems;
+    }
+
+    private boolean isAnyItemDocumentSelected() {
+        for (DocumentsListItem documentsListItem: uploadDocumentActionInfos) {
+            if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void showImageFromGalary() {

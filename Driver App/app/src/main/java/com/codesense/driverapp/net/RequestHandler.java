@@ -1,6 +1,7 @@
 package com.codesense.driverapp.net;
 
 import com.codesense.driverapp.data.DocumentsListItem;
+import com.codesense.driverapp.data.VehicleDetailRequest;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.request.RegisterNewUser;
 import com.google.gson.JsonElement;
@@ -108,6 +109,18 @@ public class RequestHandler {
         return RequestBody.create(MediaType.parse("text/plain"), appSharedPreference.getUserID());
     }
 
+    private RequestBody getVehicleTypeId(VehicleDetailRequest vehicleDetailRequest) {
+        return RequestBody.create(MediaType.parse("text/plain"), String.valueOf(vehicleDetailRequest.getVehicleTypeId()));
+    }
+
+    private RequestBody getVehicleNumber(VehicleDetailRequest vehicleDetailRequest) {
+        return RequestBody.create(MediaType.parse("text/plain"), vehicleDetailRequest.getVehicleNumber());
+    }
+
+    private RequestBody getVehicleName(VehicleDetailRequest vehicleDetailRequest) {
+        return RequestBody.create(MediaType.parse("text/plain"), vehicleDetailRequest.getVehicleName());
+    }
+
     public RequestHandler(ApiCallInterface apiCallInterface, AppSharedPreference appSharedPreference) {
         this.apiCallInterface = apiCallInterface;
         this.appSharedPreference = appSharedPreference;
@@ -182,9 +195,12 @@ public class RequestHandler {
         return apiCallInterface.fetchVehicleListRequest(apikey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
     }
 
-    public Observable<JsonElement> uploadDocumentsRequest(String api, DocumentsListItem documentsListItem) {
+    public Observable<JsonElement> uploadDocumentsRequest(String api, DocumentsListItem documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
         return apiCallInterface.uploadDocumentsRequest(api, appSharedPreference.getAccessTokenKey(),
-                getUploadDocumentFileRequest(documentsListItem), getUploadDocumentUserID());
+                getUploadDocumentFileRequest(documentsListItem), getUploadDocumentUserID(),
+                getVehicleTypeId(vehicleDetailRequest),
+                getVehicleNumber(vehicleDetailRequest),
+                getVehicleName(vehicleDetailRequest));
     }
 
     public Observable<JsonElement> fetchOwnerSignupStatusRequest(String api) {

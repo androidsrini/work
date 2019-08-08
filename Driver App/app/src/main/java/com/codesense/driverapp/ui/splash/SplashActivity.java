@@ -96,8 +96,10 @@ public class SplashActivity extends BaseActivity {
                     } else {
                         UploadDocumentActivity.start(this);
                     }
+                    finish();
                 } else {
                     UploadDocumentActivity.start(this);
+                    finish();
                 }
                 break;
             case ERROR:

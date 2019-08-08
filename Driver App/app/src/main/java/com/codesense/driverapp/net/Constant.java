@@ -30,6 +30,9 @@ public final class Constant {
     public static final String NON_DRIVING_PARTNER = "Non Driving Partner";
     public static final String OWNER_AGREEMENT_RESPONSE = "owner_agreement";
     public static final String OTP_PARAM = "otp";
+    public static final String VEHICLE_TYPE_ID_PARAM = "vehicle_type_id";
+    public static final String VEHICLE_NUMBER_PARAM = "vehicle_number";
+    public static final String VEHICLE_NAME_PARAM = "vehicle_name";
     public static final String AGREEMENT_ACCEPT_REQUEST = "agreement_accept";
     public static final String MESSAGE_RESPONSE = "message";
     public static final String DRIVER_APP_API_KEY = "com.codesense.driverapp.API_KEY" ;

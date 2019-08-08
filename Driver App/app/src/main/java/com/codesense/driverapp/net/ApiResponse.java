@@ -11,9 +11,14 @@ import org.json.JSONObject;
 import static com.codesense.driverapp.net.Status.ERROR;
 import static com.codesense.driverapp.net.Status.LOADING;
 import static com.codesense.driverapp.net.Status.SUCCESS;
+import static com.codesense.driverapp.net.Status.SUCCESS_MULTIPLE;
 
 public class ApiResponse {
 
+    /**
+     * To use default method without index based argument.
+     */
+    private static final int DEFAULT_INDEX_POSITION = 0;
     /**
      * Api response not getting field
      */
@@ -62,13 +67,28 @@ public class ApiResponse {
      * This variable to parse and store JsonElement to JSONObject.
      */
     @Nullable
-    private final JSONObject jsonObject;
+    private final JSONObject[] jsonObject;
+
+    /**
+     * To store multi response json element.
+     */
+    @NonNull
+    public final JsonElement[] datas;
 
     private ApiResponse(Status status, @Nullable JsonElement data, @Nullable Throwable error) {
         this.status = status;
         this.data = data;
         this.error = error;
         this.jsonObject = findJSONObject(data);
+        datas = new JsonElement[]{data};
+    }
+
+    private ApiResponse(Status status, @Nullable JsonElement... data) {
+        this.status = status;
+        this.datas = data;
+        this.error = null;
+        this.jsonObject = findJSONObject(data);
+        this.data = data.length > 0 ? data[0] : null;
     }
 
     /**
@@ -77,13 +97,31 @@ public class ApiResponse {
      * @param jsonElement response
      * @return JSONObject or null.
      */
-    private JSONObject findJSONObject(JsonElement jsonElement) {
-        try {
-            return (null != jsonElement) ? new JSONObject(jsonElement.toString()) : null;
-        } catch (JSONException e) {
-            e.printStackTrace();
+    private JSONObject[] findJSONObject(JsonElement... jsonElement) {
+        if (null != jsonElement) {
+            JSONObject[] object = new JSONObject[jsonElement.length];
+            int count = 0;
+            do {
+                try {
+                    object[count] = null != jsonElement[count]
+                            ? new JSONObject(jsonElement[count].toString()) : null;
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            } while (++ count < jsonElement.length);
+            return object;
         }
         return null;
+    }
+
+    /**
+     * This method to find getting valied response or not based on index
+     * This method support multiple json response.
+     * @param position
+     * @return
+     */
+    public boolean isValidResponse(int position) {
+        return (null != jsonObject) && jsonObject[position].optInt(Constant.STATUS_PARAM) == SUCCESS_RESPONSE;
     }
 
     /**
@@ -91,20 +129,48 @@ public class ApiResponse {
      * @return boolean => true - valid, false => not valid.
      */
     public boolean isValidResponse() {
-        return (null != jsonObject) && jsonObject.optInt(Constant.STATUS_PARAM) == SUCCESS_RESPONSE;
+        return isValidResponse(DEFAULT_INDEX_POSITION);
+    }
+
+    /**
+     * This method to find response status based on position
+     * @param position
+     * @return
+     */
+    public int getResponseStatus(int position) {
+        return (null != jsonObject) ? jsonObject[position].optInt(Constant.STATUS_PARAM) : NO_RESPONSE;
     }
 
     public int getResponseStatus() {
-        return (null != jsonObject) ? jsonObject.optInt(Constant.STATUS_PARAM) : NO_RESPONSE;
+        return getResponseStatus(DEFAULT_INDEX_POSITION);
+    }
+
+    /**
+     * This method to return api response message based on position
+     * @param position
+     * @return
+     */
+    public String getResponseMessage(int position) {
+        return (null != jsonObject) ? jsonObject[position].optString(Constant.MESSAGE_RESPONSE) : null;
     }
 
     public String getResponseMessage() {
-        return (null != jsonObject) ? jsonObject.optString(Constant.MESSAGE_RESPONSE) : null;
+        return getResponseMessage(DEFAULT_INDEX_POSITION);
+    }
+
+    /**
+     * This method to return api response jsonObject based on position
+     * @param position
+     * @return
+     */
+    @Nullable
+    public JSONObject getResponseJsonObject(int position) {
+        return null != jsonObject ? jsonObject[position] : null;
     }
 
     @Nullable
     public JSONObject getResponseJsonObject() {
-        return jsonObject;
+        return getResponseJsonObject(DEFAULT_INDEX_POSITION);
     }
 
     public static ApiResponse loading() {
@@ -117,5 +183,9 @@ public class ApiResponse {
 
     public static ApiResponse error(@NonNull Throwable error) {
         return new ApiResponse(ERROR, null, error);
+    }
+
+    public static ApiResponse successMultiple(@NonNull JsonElement... jsonElement) {
+        return new ApiResponse(SUCCESS_MULTIPLE, jsonElement);
     }
 }

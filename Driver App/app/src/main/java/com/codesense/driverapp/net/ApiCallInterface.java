@@ -132,7 +132,10 @@ public interface ApiCallInterface {
     Observable<JsonElement> uploadDocumentsRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
                                                    @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
                                                    @Part MultipartBody.Part fileBody,
-                                                   @Part("user_id") RequestBody userId);
+                                                   @Part(Constant.USER_ID_PARAM) RequestBody userId,
+                                                   @Part(Constant.VEHICLE_TYPE_ID_PARAM) RequestBody vehicleTypeId,
+                                                   @Part(Constant.VEHICLE_NUMBER_PARAM) RequestBody vehicleNumber,
+                                                   @Part(Constant.VEHICLE_NAME_PARAM) RequestBody vehicleName);
 
 
     @POST(WebserviceUrls.ADD_VEHICLE_DOCUMENTS)
