@@ -70,4 +70,8 @@ public class AppSharedPreference {
     public String getOwnerType() {
         return sharedPreferences.getString(OWNER_TYPE_KEY, null);
     }
+
+    public void clear() {
+        sharedPreferences.edit().clear().apply();
+    }
 }

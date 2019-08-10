@@ -1,7 +1,9 @@
 package com.codesense.driverapp.di.utils;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.annotation.UiThread;
 import android.util.Base64;
 import android.util.Patterns;
@@ -90,6 +92,35 @@ public class Utility {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    /**
+     * This method to show
+     * @param context
+     * @param msg
+     * @param onClickListener
+     */
+    public void showOkDialog(Context context, String msg, DialogInterface.OnClickListener onClickListener) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+        alertDialog.setMessage(msg);
+        alertDialog.setPositiveButton(context.getString(R.string.ok_label), null != onClickListener ?
+                onClickListener : (DialogInterface.OnClickListener) (dialog, which) -> dialog.dismiss());
+        alertDialog.create().show();
+    }
+
+    /**
+     * This method to display Conformation dialog it will show two button, negative button default it will close dialog, positive button will handle
+     * @param context
+     * @param msg
+     * @param onClickListener
+     */
+    public void showConformationDialog(Context context, String msg, DialogInterface.OnClickListener onClickListener) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+        alertDialog.setMessage(msg);
+        alertDialog.setPositiveButton(context.getString(R.string.yes_label), null != onClickListener ?
+                onClickListener : (DialogInterface.OnClickListener) (dialog, which) -> dialog.dismiss());
+        alertDialog.setNegativeButton(context.getString(R.string.no_label), (dialog, which) -> dialog.dismiss());
+        alertDialog.create().show();
     }
 
     public String decrypt(String key, String encrypted) throws Exception {

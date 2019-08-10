@@ -390,12 +390,13 @@
     <string name="password_not_matched">Password does not matched</string>
     <string name="email_not_valid">Email not valid</string>
     <string name="mobile_number_not_valid">Mobile Number not valied</string>
-
-
     <!--Edit Mobile Number-->
     <string name="edit_mobile_number_text">Enter Mobile Number</string>
     <string name="edit_mobile_number_des_text">By continuing you may receive an SMS for verfication. Message and data rates may apply</string>
     <string name="enter_mobile_screen_text">Enter Your Mobile Number</string>
 
+    <string name="ok_label">Ok</string>
+    <string name="yes_label">Yes</string>
+    <string name="no_label">No</string>
 </resources>
 

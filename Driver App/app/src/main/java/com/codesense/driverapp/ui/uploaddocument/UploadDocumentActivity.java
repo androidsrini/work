@@ -2,6 +2,7 @@ package com.codesense.driverapp.ui.uploaddocument;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -34,6 +35,7 @@ import com.codesense.driverapp.data.VehicleTypeResponse;
 import com.codesense.driverapp.data.VehicleTypesItem;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.net.ApiResponse;
+import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -132,11 +134,19 @@ public class UploadDocumentActivity extends DrawerActivity {
                         if (null != vehicleTypeResponse && null != vehicleTypeResponse.getVehicleTypes()) {
                             vehicleTypesItems.addAll(vehicleTypeResponse.getVehicleTypes());
                         }
-                        uploadDocumentViewModel.fetchDocumentListRequest();
+                        if (appSharedPreference.getOwnerTypeId() == Constant.OWNER_CUM_DRIVER_TYPE) {
+                            uploadDocumentViewModel.fetchDocumentListRequest();
+                        } else {
+                            uploadDocumentViewModel.fetchVehicleListRequest();
+                        }
                     } else if (UploadDocumentApiResponse.ServiceType.DRIVER == serviceType) {
                         updateDriverDocumentListUI(apiResponse);
                     } else if (UploadDocumentApiResponse.ServiceType.VEHICLE == serviceType) {
                         updateVehicleDocumentListUI(apiResponse);
+                    } else if (UploadDocumentApiResponse.ServiceType.UPLOAD_DOCUEMNT == serviceType) {
+                        utility.showToastMsg("File are uploaded successfully");
+                        clearAndUpdateDocumentListUI();
+                        clearAllEditTextUI();
                     }
                 }
                 break;
@@ -157,12 +167,20 @@ public class UploadDocumentActivity extends DrawerActivity {
                     if (allAreSuccess) {
                         utility.showToastMsg("All file are uploaded successfully");
                     }
+                    clearAndUpdateDocumentListUI();
+                    clearAllEditTextUI();
                 }
                 break;
             case ERROR:
                 utility.dismissDialog();
                 break;
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        utility.dismissDialog();
     }
 
     /**
@@ -221,20 +239,29 @@ public class UploadDocumentActivity extends DrawerActivity {
         }
     }
 
+    /**
+     * This method to create VehicleDetailRequest Object.
+     * @return VehicleDetailRequest
+     */
     private VehicleDetailRequest createVehicleDetailRequestObject() {
         VehicleDetailRequest vehicleDetailRequest = new VehicleDetailRequest();
-        vehicleDetailRequest.setVehicleTypeId(1);
-        vehicleDetailRequest.setVehicleName("MARUTHI OMNI");
-        vehicleDetailRequest.setVehicleNumber("TN38 AT0298");
+        vehicleDetailRequest.setVehicleTypeId(getVehicleTypeId());
+        vehicleDetailRequest.setVehicleName(getEtVehicleName());
+        vehicleDetailRequest.setVehicleNumber(getEtVehicleNumber());
         return vehicleDetailRequest;
     }
 
+    /**
+     * This method to handle all view functionality takes.
+     */
     private void functionality() {
         uploadContentButton.setOnClickListener(((view) -> {
-            if (isAnyItemDocumentSelected()) {
-                uploadDocumentViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
-            } else {
-                utility.showToastMsg("Please select document");
+            if (isValidAllFields()) {
+                if (isAnyItemDocumentSelected()) {
+                    uploadDocumentViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
+                } else {
+                    utility.showToastMsg("Please select document");
+                }
             }
         }));
         adapter = new UploadDocumentAdapter(this, uploadDocumentActionInfos, screenWidth, screenHeight);
@@ -243,10 +270,17 @@ public class UploadDocumentActivity extends DrawerActivity {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
-                /*Intent intent = new Intent(UploadDocumentActivity.this, UploadDocumentSecondActivity.class);
-                startActivity(intent);*/
                 selectedDocumetnsListItem = uploadDocumentActionInfos.get(position);
-                showImageFromGalary();
+                String filePath = uploadDocumentActionInfos.get(position).getFilePath();
+                if (!TextUtils.isEmpty(filePath)) {
+                    utility.showConformationDialog(UploadDocumentActivity.this,
+                            "Are you sure you want to delete this file", (DialogInterface.OnClickListener) (dialog, which) -> {
+                                uploadDocumentActionInfos.get(position).setFilePath(null);
+                                adapter.notifyDataSetChanged();
+                            });
+                } else {
+                    showImageFromGalary();
+                }
             }
 
             @Override
@@ -254,17 +288,39 @@ public class UploadDocumentActivity extends DrawerActivity {
 
             }
         }));
-
         vehicleTypeRelativeLayout.setOnClickListener(v -> {
             showListPopupScreen(vehicleTypeRelativeLayout, vehicleTypeTextView, vehicleTypesItems);
         });
     }
 
+    /**
+     * This method to validate and display invalid field toast message.
+     * @return boolean
+     */
+    private boolean isValidAllFields() {
+        boolean isValid = true;
+        if (TextUtils.isEmpty(getVehicleTypeId())) {
+            utility.showToastMsg("Select Vehicle Type");
+            isValid = false;
+        } else if (TextUtils.isEmpty(getEtVehicleName())) {
+            utility.showToastMsg("Vehicle Name mandatory");
+            isValid = false;
+        } else if (TextUtils.isEmpty(getEtVehicleNumber())) {
+            utility.showToastMsg("Vehicle Number mandatory");
+            isValid = false;
+        }
+        return isValid;
+    }
+
+    /**
+     * This method to find selected document file list.
+     * @return List DocumentsListItem.
+     */
     private List<DocumentsListItem> findSelectedDocumentList() {
         List<DocumentsListItem> documentsListItems = new ArrayList<>();
         int count = 0;
         do {
-            DocumentsListItem documentsListItem = documentsListItems.get(count);
+            DocumentsListItem documentsListItem = uploadDocumentActionInfos.get(count);
             if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
                 documentsListItems.add(documentsListItem);
             }
@@ -272,6 +328,10 @@ public class UploadDocumentActivity extends DrawerActivity {
         return documentsListItems;
     }
 
+    /**
+     * This method to find any docuemnt are selected or not by user
+     * @return boolean
+     */
     private boolean isAnyItemDocumentSelected() {
         for (DocumentsListItem documentsListItem: uploadDocumentActionInfos) {
             if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
@@ -281,6 +341,9 @@ public class UploadDocumentActivity extends DrawerActivity {
         return false;
     }
 
+    /**
+     * This method to show Image Galary from external storage.
+     */
     private void showImageFromGalary() {
         Intent intent = new Intent(this, ImageSelectActivity.class);
         intent.putExtra(ImageSelectActivity.FLAG_COMPRESS, false);//default is true
@@ -289,10 +352,54 @@ public class UploadDocumentActivity extends DrawerActivity {
         startActivityForResult(intent, IMAGE_PICKER);
     }
 
+    /**
+     * This method will return VehicleType based on user selection.
+     * @return String
+     */
+    private String getVehicleTypeTextView() {
+        return vehicleTypeTextView.getText().toString().trim();
+    }
+
+    /**
+     * This method will return VehicleName based on user given.
+     * @return String
+     */
+    private String getEtVehicleName() {
+        return etVehicleName.getText().toString().trim();
+    }
+
+    /**
+     * This method will return VehicleNumber based on user given.
+     * @return String
+     */
+    private String getEtVehicleNumber() {
+        return etVehicleNumber.getText().toString().trim();
+    }
+
+    /**
+     * This method will return Vechicle type id based on user selection vechicle type.
+     * @return String
+     */
+    private String getVehicleTypeId() {
+        if (!TextUtils.isEmpty(getVehicleTypeTextView())) {
+            for (VehicleTypesItem v : vehicleTypesItems) {
+                if (v.getVehicleType().equalsIgnoreCase(getVehicleTypeTextView()))
+                    return v.getVehicleTypeId();
+            }
+        }
+        return null;
+    }
+
+    /**
+     * This method to show dropdown popup.
+     * @param view
+     * @param updateNameTextView
+     * @param list
+     */
     private void showListPopupScreen(View view, final TextView updateNameTextView, final List<VehicleTypesItem> list) {
         View customView = LayoutInflater.from(this).inflate(R.layout.spinner_pop_up_screen, null);
         int leftRightSpace = (int) (screenWidth * 0.0153);
-        int topBottomSpace = (int) (screenHeight * 0.0089);
+        //int topBottomSpace = (int) (screenHeight * 0.0089);
         final PopupWindow popupWindow;
 
         popupWindow = new PopupWindow(customView, leftRightSpace * 58, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -303,7 +410,7 @@ public class UploadDocumentActivity extends DrawerActivity {
 
             @NonNull
             @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
+            public View getView(int position, View convertView,@NonNull ViewGroup parent) {
                 View v = null;
                 v = super.getView(position, null, parent);
                 TextView tv = (TextView) v;
@@ -330,6 +437,7 @@ public class UploadDocumentActivity extends DrawerActivity {
         listView.setOnItemClickListener((parent, view3, position, id) -> {
             popupWindow.dismiss();
             VehicleTypesItem selectedState = list.get(position);
+
             updateNameTextView.setText(selectedState.getVehicleType());
             updateNameTextView.setTextColor(getResources().getColor(R.color.secondary_color));
             mSelectedItemType = position;
@@ -341,6 +449,9 @@ public class UploadDocumentActivity extends DrawerActivity {
         popupWindow.showAsDropDown(view);
     }
 
+    /**
+     * This method to create object for views.
+     */
     private void initially() {
         vehicleTypeArrowImageView = findViewById(R.id.vehicleTypeArrowImageView);
         tvRemaining = findViewById(R.id.tvRemaining);
@@ -355,6 +466,9 @@ public class UploadDocumentActivity extends DrawerActivity {
         uploadContentButton = findViewById(R.id.uploadContentButton);
     }
 
+    /**
+     * This method to resize views and update padding for views dynamically.
+     */
     private void setDynamicValue() {
         int topBottomSpace = (int) (screenHeight * 0.0089);
         int imgIconArrowWidth = (int) (screenWidth * 0.055);
@@ -397,6 +511,24 @@ public class UploadDocumentActivity extends DrawerActivity {
         RelativeLayout.LayoutParams recyclerViewLayoutParams = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
         recyclerViewLayoutParams.setMargins(0, topBottomSpace * 2, 0, 0);
         recyclerView.setLayoutParams(recyclerViewLayoutParams);
+    }
+
+    /**
+     * This method to remove all selected files and update DocumentList UI.
+     */
+    private void clearAndUpdateDocumentListUI() {
+        for (DocumentsListItem documentsListItem: uploadDocumentActionInfos)
+            documentsListItem.setFilePath(null);
+        adapter.notifyDataSetChanged();
+    }
+
+    /**
+     * This method to clear all EditText UI.
+     */
+    private void clearAllEditTextUI() {
+        vehicleTypeTextView.setText(null);
+        etVehicleNumber.setText(null);
+        etVehicleName.setText(null);
     }
 
     @Override

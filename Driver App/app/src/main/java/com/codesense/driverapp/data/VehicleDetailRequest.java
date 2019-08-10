@@ -1,14 +1,15 @@
 package com.codesense.driverapp.data;
 
 public class VehicleDetailRequest {
-    private int vehicleTypeId;
+
+    private String vehicleTypeId;
     private String vehicleNumber;
 
-    public int getVehicleTypeId() {
+    public String getVehicleTypeId() {
         return vehicleTypeId;
     }
 
-    public void setVehicleTypeId(int vehicleTypeId) {
+    public void setVehicleTypeId(String vehicleTypeId) {
         this.vehicleTypeId = vehicleTypeId;
     }
 

@@ -32,13 +32,21 @@ import javax.inject.Inject;
 public class DocumentStatusActivity extends DrawerActivity implements View.OnClickListener {
 
 
-    Button btnUpdate;
+    //Button btnUpdate;
     RecyclerView recyclerView;
     DocumentStatusAdapter adapter;
     List<DocumentsListItem> arraylist;
     @Inject protected AppSharedPreference appSharedPreference;
     @Inject protected DocumentStatusViewModel documentStatusViewModel;
     @Inject protected Utility utility;
+
+    /**
+     * This method to start DocumentStatusActivity class.
+     * @param context
+     */
+    public static void start(Context context) {
+        context.startActivity(new Intent(context, DocumentStatusActivity.class));
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -88,20 +96,7 @@ public class DocumentStatusActivity extends DrawerActivity implements View.OnCli
     }
 
     private void functionality() {
-
-        btnUpdate.setOnClickListener(this);
-        /*int storeInfoActionListSize = getResources().getInteger(R.integer.document_status_count);
-        List<TypedArray> typedArrayList = Utils.getMultiTypedArray(this, Utils.DOCUMENT_STATUS);
-        if (storeInfoActionListSize > typedArrayList.size()) {
-            storeInfoActionListSize = typedArrayList.size();
-        }
-        for (int index = 0; index < storeInfoActionListSize; index++) {
-            TypedArray typedArray = typedArrayList.get(index);
-            String status = typedArray.getString(UploadDocumentActivity.UPLOAD_DOCUMENT_STATUS_INDEX);
-            String title = typedArray.getString(UploadDocumentActivity.UPLOAD_DOCUMENT_NAME_INDEX);
-            int icon = 0;
-            arraylist.add(new UploadDocumentModel(status, title, icon));
-        }*/
+        //btnUpdate.setOnClickListener(this);
         adapter = new DocumentStatusAdapter(this, arraylist, screenWidth, screenHeight);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -122,25 +117,25 @@ public class DocumentStatusActivity extends DrawerActivity implements View.OnCli
     private void setDynamicValue() {
         int topBottomSpace = (int) (screenHeight * 0.0089);
 
-        RelativeLayout.LayoutParams btnUpdateLayoutParams = (RelativeLayout.LayoutParams) btnUpdate.getLayoutParams();
-        btnUpdateLayoutParams.setMargins(topBottomSpace * 2, 0, topBottomSpace * 2, topBottomSpace * 3);
-        btnUpdate.setLayoutParams(btnUpdateLayoutParams);
+        /*RelativeLayout.LayoutParams btnUpdateLayoutParams = (RelativeLayout.LayoutParams) btnUpdate.getLayoutParams();
+        btnUpdateLayoutParams.setMargins(topBottomSpace * 2, 0, topBottomSpace * 2, topBottomSpace * 3);*/
+        //btnUpdate.setLayoutParams(btnUpdateLayoutParams);
 
     }
 
     private void initially() {
 
         recyclerView = findViewById(R.id.recyclerView);
-        btnUpdate = findViewById(R.id.btnUpdate);
+        //btnUpdate = findViewById(R.id.btnUpdate);
     }
 
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()) {
+        /*switch (v.getId()) {
             case R.id.btnUpdate:
                 Intent intent = new Intent(this, VehicleListActivity.class);
                 startActivity(intent);
-        }
+        }*/
     }
 }

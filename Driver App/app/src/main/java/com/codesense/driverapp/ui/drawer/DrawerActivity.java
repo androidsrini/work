@@ -3,6 +3,7 @@ package com.codesense.driverapp.ui.drawer;
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -32,10 +33,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codesense.driverapp.R;
+import com.codesense.driverapp.di.utils.Utility;
+import com.codesense.driverapp.localstoreage.AppSharedPreference;
+import com.codesense.driverapp.ui.documentstatus.DocumentStatusActivity;
 import com.codesense.driverapp.ui.invitefriends.InviteFriendsActivity;
 import com.codesense.driverapp.ui.referalprogram.ReferalProgramActivity;
+import com.codesense.driverapp.ui.signin.LoginActivity;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 import dagger.android.support.DaggerAppCompatActivity;
 
@@ -65,7 +72,10 @@ public class DrawerActivity extends DaggerAppCompatActivity {
     ImageView drawerMenuIconSignOut;
     RelativeLayout drawerSignOutRelativeLayout;
     public static boolean isSignedIn;
-
+    @Inject
+    protected AppSharedPreference appSharedPreference;
+    @Inject
+    protected Utility utility;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -106,8 +116,6 @@ public class DrawerActivity extends DaggerAppCompatActivity {
                 null);
         drawerList.addHeaderView(header);
 
-
-//        frameLayout.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
         int slideMenuLeftRightSpace = (int) (screenWidth * 0.037); //0.3
         int slideMenuWidth = (int) (screenWidth * 0.0864); //0.7
         int slideMenuHeight = (int) (screenWidth * 0.0864);
@@ -127,7 +135,14 @@ public class DrawerActivity extends DaggerAppCompatActivity {
 
         drawerIcon.setBackgroundResource(R.drawable.ic_drawer);
 
-
+        drawerSignOutRelativeLayout.setOnClickListener((v)->{
+            utility.showConformationDialog(this, "Are you sure you want logout?",
+                    (DialogInterface.OnClickListener) (dialog, which) -> {
+                        appSharedPreference.clear();
+                        LoginActivity.start(this);
+                        finish();
+            });
+        });
         drawerIcon.setOnClickListener(v -> {
             // TODO Auto-generated method stub
             if (drawerLayout.isDrawerOpen(Gravity.START)) {
@@ -136,15 +151,7 @@ public class DrawerActivity extends DaggerAppCompatActivity {
                 drawerLayout.openDrawer(Gravity.START);
             }
         });
-
-
-       /* DrawerLayout.LayoutParams listViewparams = (DrawerLayout.LayoutParams) drawerList.getLayoutParams();//new DrawerLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        listViewparams.width = DrawerLayout.LayoutParams.MATCH_PARENT;
-        drawerList.setLayoutParams(listViewparams);*/
-
-
         loadMenu();
-
     }
 
     private void calculateScreenSize() {
@@ -217,8 +224,8 @@ public class DrawerActivity extends DaggerAppCompatActivity {
 
                 }
 
-
             } catch (Resources.NotFoundException e) {
+                e.printStackTrace();
             }
 
         }
@@ -258,14 +265,12 @@ public class DrawerActivity extends DaggerAppCompatActivity {
 //                        slideOffset * drawerList.getWidth());
             }
         };
-
         drawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
     }
 
 
     private View getActionBarView() {
-
         int actionViewResId = 0;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
             actionViewResId = getResources().getIdentifier(
@@ -355,12 +360,11 @@ public class DrawerActivity extends DaggerAppCompatActivity {
 
     private void selectItem(String[] strItem, int position) {
         Intent intent = null;
-
         currentPosition = position;
         if (strItem != null) {
             String menuLabel = strItem[0];
             if (menuLabel.equals("checkstatus")) {
-
+                DocumentStatusActivity.start(this);
             } else if (menuLabel.equals("referearn")) {
                 intent = new Intent(this, ReferalProgramActivity.class);
                 startActivity(intent);
@@ -413,5 +417,10 @@ public class DrawerActivity extends DaggerAppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        currentPosition = -1;
+    }
 
 }

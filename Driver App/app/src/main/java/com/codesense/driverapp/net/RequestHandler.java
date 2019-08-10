@@ -104,28 +104,28 @@ public class RequestHandler {
 
     private MultipartBody.Part getUploadDocumentFileRequest(DocumentsListItem documentsListItem) {
         File file = new File(documentsListItem.getFilePath());
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        RequestBody requestFile = RequestBody.create(MediaType.parse(Constant.MULTIPART_FORM_DATA), file);
         return MultipartBody.Part.createFormData(documentsListItem.getName(), file.getName(), requestFile);
     }
 
     private RequestBody getUploadDocumentFileName(DocumentsListItem documentsListItem) {
-        return RequestBody.create(MediaType.parse("text/plain"), documentsListItem.getName());
+        return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), documentsListItem.getName());
     }
 
     private RequestBody getUploadDocumentUserID() {
-        return RequestBody.create(MediaType.parse("text/plain"), appSharedPreference.getUserID());
+        return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), appSharedPreference.getUserID());
     }
 
     private RequestBody getVehicleTypeId(VehicleDetailRequest vehicleDetailRequest) {
-        return RequestBody.create(MediaType.parse("text/plain"), String.valueOf(vehicleDetailRequest.getVehicleTypeId()));
+        return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), vehicleDetailRequest.getVehicleTypeId());
     }
 
     private RequestBody getVehicleNumber(VehicleDetailRequest vehicleDetailRequest) {
-        return RequestBody.create(MediaType.parse("text/plain"), vehicleDetailRequest.getVehicleNumber());
+        return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), vehicleDetailRequest.getVehicleNumber());
     }
 
     private RequestBody getVehicleName(VehicleDetailRequest vehicleDetailRequest) {
-        return RequestBody.create(MediaType.parse("text/plain"), vehicleDetailRequest.getVehicleName());
+        return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), vehicleDetailRequest.getVehicleName());
     }
 
     public RequestHandler(ApiCallInterface apiCallInterface, AppSharedPreference appSharedPreference) {
