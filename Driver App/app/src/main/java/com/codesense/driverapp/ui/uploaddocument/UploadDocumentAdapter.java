@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.data.DocumentsListItem;
 
+import java.io.File;
 import java.util.List;
 
 public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAdapter.ViewHolder> {
@@ -33,6 +34,10 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
 
     }
 
+    private String findFileName(@NonNull String filePath) {
+        return new File(filePath).getName();
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -46,8 +51,8 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
 
         DocumentsListItem uploadDocumentModel = uploadDocumentModelList.get(position);
-        boolean isFileSelected = TextUtils.isEmpty(uploadDocumentModel.getFilePath());
-        String status = !isFileSelected ? activity.getString(R.string.document_status_completed)
+        boolean isFileSelected = !TextUtils.isEmpty(uploadDocumentModel.getFilePath());
+        String status = isFileSelected ? activity.getString(R.string.document_status_completed)
                 :  (null != uploadDocumentModel.getDocumentStatus()) ?
                 uploadDocumentModel.getDocumentStatus().getStatusMessage() : activity.getString(R.string.recommended_next_step);
         String title = uploadDocumentModel.getDisplayName();
@@ -55,10 +60,13 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
         viewHolder.tvDriverdesc.setText(title);
         if (!isFileSelected) {
             //To show selected image UI
-            viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
-        } else {
-            // To show unselected image and content
+            viewHolder.documentFileNameTextView.setVisibility(View.GONE);
             viewHolder.imgRightArrow.setBackgroundResource(R.drawable.right_only_bg);
+        } else {
+            viewHolder.documentFileNameTextView.setVisibility(View.VISIBLE);
+            viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFilePath()));
+            viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
+            // To show unselected image and content
         }
     }
 
@@ -71,7 +79,7 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
 
         private RelativeLayout rlDriveLicense;
         private ImageView imgRightArrow;
-        private TextView tvDriverText, tvDriverdesc;
+        private TextView tvDriverText, tvDriverdesc ,documentFileNameTextView;
         //int position;
 
         public ViewHolder(View view) {
@@ -81,6 +89,7 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
             tvDriverText = view.findViewById(R.id.tvDriverText);
             tvDriverdesc = view.findViewById(R.id.tvDriverdesc);
             imgRightArrow = view.findViewById(R.id.imgRightArrow);
+            documentFileNameTextView = view.findViewById(R.id.documentFileNameTextView);
 
             int topBottomSpace = (int) (height * 0.0089);
             int imgIconWidth = (int) (width * 0.105);
@@ -97,6 +106,7 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
 
             tvDriverText.setPadding(topBottomSpace * 3, topBottomSpace, 0, 0);
             tvDriverdesc.setPadding(topBottomSpace * 3, topBottomSpace * 2, 0, topBottomSpace * 3);
+            documentFileNameTextView.setPadding(topBottomSpace * 3, 0, 0, 0);
             imgRightArrow.setPadding(0, topBottomSpace * 3, topBottomSpace * 3, 0);
 
         }

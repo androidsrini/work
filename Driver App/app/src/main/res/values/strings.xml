@@ -390,5 +390,8 @@
     <string name="password_not_matched">Password does not matched</string>
     <string name="email_not_valid">Email not valid</string>
     <string name="mobile_number_not_valid">Mobile Number not valied</string>
+    <string name="ok_label">Ok</string>
+    <string name="yes_label">Yes</string>
+    <string name="no_label">No</string>
 </resources>
 

@@ -36,4 +36,8 @@ public final class Constant {
     public static final String AGREEMENT_ACCEPT_REQUEST = "agreement_accept";
     public static final String MESSAGE_RESPONSE = "message";
     public static final String DRIVER_APP_API_KEY = "com.codesense.driverapp.API_KEY" ;
+    public static final String MULTIPART_FORM_DATA = "multipart/form-data" ;
+    public static final String TEXT_PLAIN = "text/plain" ;
+    public static final int OWNER_CUM_DRIVER_TYPE = 1;
+    public static final int NON_DRIVING_PARTNER_TYPE = 2;
 }
