@@ -83,6 +83,13 @@ public class RequestHandler {
         return param;
     }
 
+    private HashMap<String, String> getChangeMobileNumberRequestParam(String userID, String phoneNumber) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, userID);
+        param.put(Constant.PHONE_NUMBER_PARAM, phoneNumber);
+        return param;
+    }
+
     /**
      * This method to create Owner type request.
      * @param ownerType
@@ -206,5 +213,9 @@ public class RequestHandler {
     public Observable<JsonElement> fetchOwnerSignupStatusRequest(String api) {
         return apiCallInterface.fetchOwnerSignupStatusRequest(api, appSharedPreference.getAccessTokenKey(),
                 getUserIDRequestParam());
+    }
+
+    public Observable<JsonElement> updateMobileNumber(String apiKey, String userID, String phoneNumber) {
+        return apiCallInterface.updateMobileNumber(apiKey, appSharedPreference.getAccessTokenKey(), getChangeMobileNumberRequestParam(userID, phoneNumber));
     }
 }

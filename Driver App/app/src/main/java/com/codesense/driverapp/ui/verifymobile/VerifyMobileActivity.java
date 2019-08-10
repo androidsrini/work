@@ -26,6 +26,7 @@ import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.ui.editmobilenumber.EditMobileNumberActivity;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.product.annotationbuilder.ProductBindView;
@@ -48,6 +49,7 @@ public class VerifyMobileActivity extends BaseActivity {
     private static final String TAG = "Driver";
     private static final String USER_ID_ARG = "UserID";
     private static final String PHONE_NUMBER_ARG = "PhoneNumber";
+
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     @Inject
     protected RequestHandler requestHandler;
@@ -467,12 +469,13 @@ public class VerifyMobileActivity extends BaseActivity {
     }
 
     @Onclick(R.id.btnEditNumber)
-    protected void editPhoneNumberRequest(View v) {
+    protected void btnEditNumber(View v) {
         //Show number edit dialog.
-        finish();
-        /*if (!TextUtils.isEmpty(getUserId())) {
-            sendOTPRequest(getUserId(), getPhoneNumber());
-        }*/
+        Intent intent = new Intent(this, EditMobileNumberActivity.class);
+        intent.putExtra(USER_ID_ARG, userID);
+        intent.putExtra(PHONE_NUMBER_ARG, phoneNumber);
+        startActivity(intent);
+
     }
 
     @Override

@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codesense.driverapp.R;
@@ -47,6 +50,8 @@ public class SelectTypeActivity extends BaseActivity {
     protected Utility utility;
     @Initialize(R.id.tvTitle)
     TextView tvTitle;
+    @Initialize(R.id.tvSelectTypeDesc)
+    TextView tvSelectTypeDesc;
     @Initialize(R.id.toolbarClose)
     ImageView toolbarClose;
     @Initialize(R.id.driverTypeRecyclerView)
@@ -84,10 +89,32 @@ public class SelectTypeActivity extends BaseActivity {
         fetchOwnerTypeRequest();
     }
 
-    /**
-     * This method to update SelectType recyclerview UI.
-     * @param ownerTypesItems list.
-     */
+
+    private void setDynamicValue() {
+
+        int imgIconWidth = (int) (screenWidth * 0.075);
+        int imgIconHeight = (int) (screenWidth * 0.075);
+
+        RelativeLayout.LayoutParams imgLayParams = (RelativeLayout.LayoutParams) toolbarClose.getLayoutParams();
+        imgLayParams.width = imgIconWidth;
+        imgLayParams.height = imgIconHeight;
+        toolbarClose.setLayoutParams(imgLayParams);
+
+        int topBottomSpace = (int) (screenHeight * 0.0089);
+
+        LinearLayout.LayoutParams tvRegisterDesLayoutParams = (LinearLayout.LayoutParams) tvSelectTypeDesc.getLayoutParams();
+        tvRegisterDesLayoutParams.setMargins(topBottomSpace * 2, topBottomSpace * 3, topBottomSpace * 2, 0);
+        tvSelectTypeDesc.setLayoutParams(tvRegisterDesLayoutParams);
+
+        LinearLayout.LayoutParams driverTypeRecyclerViewLayoutParams = (LinearLayout.LayoutParams) driverTypeRecyclerView.getLayoutParams();
+        driverTypeRecyclerViewLayoutParams.setMargins(topBottomSpace * 3, topBottomSpace * 3, topBottomSpace * 3, 0);
+        driverTypeRecyclerView.setLayoutParams(driverTypeRecyclerViewLayoutParams);
+    }
+
+        /**
+         * This method to update SelectType recyclerview UI.
+         * @param ownerTypesItems list.
+         */
     private void updateSelectTypeAdapter(List<OwnerTypesItem> ownerTypesItems) {
         this.runOnUiThread(()->{
             this.ownerTypesItems.clear();

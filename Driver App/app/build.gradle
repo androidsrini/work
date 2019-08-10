@@ -82,6 +82,8 @@ dependencies {
     //Image picker lib
     // url: https://github.com/maayyaannkk/ImagePicker
     implementation 'com.github.maayyaannkk:ImagePicker:1.0.3'
+    implementation 'com.hbb20:ccp:2.2.3'
+
 
     //RXJAva for edittext
     implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:2.1.1"

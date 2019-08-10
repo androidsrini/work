@@ -320,11 +320,11 @@ public class LaunchScreenActivity extends BaseActivity {
         ll_btn.setLayoutParams(ll_btnLayoutParams);
 
         LinearLayout.LayoutParams btn_signInLayoutParams = (LinearLayout.LayoutParams) btnSignIn.getLayoutParams();
-        btn_signInLayoutParams.setMargins(0, 0, topBottomSpace, 0);
+        btn_signInLayoutParams.setMargins(0, 0, topBottomSpace*3, 0);
         btnSignIn.setLayoutParams(btn_signInLayoutParams);
 
         LinearLayout.LayoutParams btn_registerLayoutParams = (LinearLayout.LayoutParams) btnRegister.getLayoutParams();
-        btn_registerLayoutParams.setMargins(topBottomSpace, 0, 0, 0);
+        btn_registerLayoutParams.setMargins(topBottomSpace*3, 0, 0, 0);
         btnRegister.setLayoutParams(btn_registerLayoutParams);
 
         LinearLayout.LayoutParams viewLayoutParams = (LinearLayout.LayoutParams) view.getLayoutParams();

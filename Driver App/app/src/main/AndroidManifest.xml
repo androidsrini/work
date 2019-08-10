@@ -99,6 +99,10 @@
             android:name=".ui.referalprogram.ReferalProgramActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name=".ui.editmobilenumber.EditMobileNumberActivity"
+            android:screenOrientation="portrait" />
+
         <service android:name=".ui.helper.LocationMonitoringService" />
 
         <activity
