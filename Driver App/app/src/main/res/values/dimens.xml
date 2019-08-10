@@ -4,5 +4,6 @@
     <dimen name="error_msg_strip_text_size">20sp</dimen>
     <dimen name="padding_10">10dp</dimen>
     <dimen name="padding_5">5dp</dimen>
+    <dimen name="padding_15">15dp</dimen>
     <dimen name="margin_10">10dp</dimen>
 </resources>

@@ -6,6 +6,7 @@
     <color name="secondary_color">#000000</color>
     <color name="low_contrast">#cccccc</color>
     <color name="primary_color">#f7950e</color>
+    <color name="action_bar_color">#D9830C</color>
     <color name="dim_secondary">#191919</color>
     <color name="high_contrast">#FF0000</color>
     <color name="third_color">#808080</color>

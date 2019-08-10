@@ -87,6 +87,7 @@ public class SelectTypeActivity extends BaseActivity {
         selectTypeAdapter = new SelectTypeAdapter(ownerTypesItems, this::handleOnSelectedTypeSelection);
         driverTypeRecyclerView.setAdapter(selectTypeAdapter);
         fetchOwnerTypeRequest();
+        setDynamicValue();
     }
 
 
