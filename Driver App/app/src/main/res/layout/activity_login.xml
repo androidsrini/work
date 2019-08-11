@@ -54,7 +54,7 @@
         android:backgroundTint="@color/primary_color"
         android:hint="@string/password_text"
         android:inputType="textPassword"
-        android:imeOptions="actionNext"
+        android:imeOptions="actionDone"
         android:singleLine="true"
         android:textColor="@color/secondary_color"
         android:textColorHint="@color/secondary_color"

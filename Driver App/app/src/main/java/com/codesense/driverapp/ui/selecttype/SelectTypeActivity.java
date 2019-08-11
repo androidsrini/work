@@ -108,7 +108,7 @@ public class SelectTypeActivity extends BaseActivity {
         tvSelectTypeDesc.setLayoutParams(tvRegisterDesLayoutParams);
 
         LinearLayout.LayoutParams driverTypeRecyclerViewLayoutParams = (LinearLayout.LayoutParams) driverTypeRecyclerView.getLayoutParams();
-        driverTypeRecyclerViewLayoutParams.setMargins(topBottomSpace * 3, topBottomSpace * 3, topBottomSpace * 3, 0);
+        driverTypeRecyclerViewLayoutParams.setMargins(topBottomSpace * 3, topBottomSpace * 5, topBottomSpace * 3, 0);
         driverTypeRecyclerView.setLayoutParams(driverTypeRecyclerViewLayoutParams);
     }
 

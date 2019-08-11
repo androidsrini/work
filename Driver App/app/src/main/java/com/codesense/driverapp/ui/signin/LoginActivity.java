@@ -213,6 +213,7 @@ public class LoginActivity extends BaseActivity {
                                 }
                             }
                             UploadDocumentActivity.start(this);
+                            finish();
                         }
                     }
                 }

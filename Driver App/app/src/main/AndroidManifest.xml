@@ -48,7 +48,8 @@
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.verifymobile.VerifyMobileActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"/>
         <activity
             android:name=".ui.selecttype.SelectTypeActivity"
             android:screenOrientation="portrait" />

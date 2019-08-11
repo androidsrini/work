@@ -151,7 +151,8 @@
                     android:layout_height="wrap_content"
                     android:background="@color/dim_secondary"
                     android:text="@string/edit_number_text"
-                    android:textSize="11sp"
+                    android:textSize="13sp"
+                    android:stateListAnimator="@null"
                     android:textColor="@color/background_color" />
             </LinearLayout>
 
@@ -167,7 +168,8 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/dim_secondary"
-                    android:textSize="11sp"
+                    android:textSize="13sp"
+                    android:stateListAnimator="@null"
                     android:text="@string/resend_text"
                     android:textColor="@color/background_color" />
             </LinearLayout>
@@ -195,8 +197,8 @@
 
                 <ImageButton
                     android:id="@+id/imgNext"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
                     android:layout_gravity="bottom|right"
                     android:layout_marginBottom="16dp"
                     android:layout_marginRight="16dp"
