@@ -26,6 +26,7 @@ import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
+import com.codesense.driverapp.ui.verifymobile.VerifyMobileActivity;
 import com.google.gson.Gson;
 import com.product.annotationbuilder.ProductBindView;
 import com.product.process.annotation.Initialize;
@@ -194,10 +195,14 @@ public class LoginActivity extends BaseActivity {
                             appSharedPreference.saveUserID(apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE));
                             appSharedPreference.saveAccessToken(apiResponse.getResponseJsonObject().optString(Constant.ACCESS_TOKEN_RESPONSE));
                             appSharedPreference.saveOwnerTypeId(apiResponse.getResponseJsonObject().optInt(Constant.OWNER_TYPE_ID_RESPONSE, -1));
+                            appSharedPreference.saveOtpVerify(apiResponse.getResponseJsonObject().optInt(Constant.OTP_VERIFY_RESPONSE, -1));
+                            appSharedPreference.saveMobileNumber(apiResponse.getResponseJsonObject().optString(Constant.MOBILE_NUMBER_RESPONSE));
                         }
                         fetchOwnerTypeRequest();
                     } else if (ServiceType.OWNER_TYPES == serviceType) {
-                        if (-1 == appSharedPreference.getOwnerTypeId() || 0 == appSharedPreference.getOwnerTypeId()) {
+                        if (-1 == appSharedPreference.getOtpVerify() || 0 == appSharedPreference.getOtpVerify()) {
+                            VerifyMobileActivity.start(this, appSharedPreference.getUserID(), appSharedPreference.getMobileNumberKey());
+                        } else if (-1 == appSharedPreference.getOwnerTypeId() || 0 == appSharedPreference.getOwnerTypeId()) {
                             SelectTypeActivity.start(this);
                             //TO kill this activity class from backstack
                             finish();

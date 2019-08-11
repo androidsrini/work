@@ -13,6 +13,7 @@ public class AppSharedPreference {
     private static final String MOBILE_NUMBER_KEY = "MobileNumberKey";
     private static final String OWNER_TYPE_ID_KEY = "OwnerTypeIdKey";
     private static final String OWNER_TYPE_KEY = "OwnerTypeKey";
+    private static final String OTP_VERIFY_KEY = "OtpVerifyKey";
     private static final String DEFAULT_VALUE = null;
     private SharedPreferences sharedPreferences;
 
@@ -55,6 +56,16 @@ public class AppSharedPreference {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(OWNER_TYPE_ID_KEY, ownerTypeId);
         editor.apply();
+    }
+
+    public void saveOtpVerify(int otpVerify) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(OTP_VERIFY_KEY, otpVerify);
+        editor.apply();
+    }
+
+    public int getOtpVerify() {
+        return sharedPreferences.getInt(OTP_VERIFY_KEY, 0);
     }
 
     public int getOwnerTypeId() {

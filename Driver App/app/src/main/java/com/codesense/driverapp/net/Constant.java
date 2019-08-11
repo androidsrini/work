@@ -15,6 +15,7 @@ public final class Constant {
     public static final String FIRST_NAME_PARAM = "first_name";
     public static final String LAST_NAME_PARAM = "last_name";
     public static final String MOBILE_NUMBER_PARAM = "mobile_number";
+    public static final String MOBILE_NUMBER_RESPONSE = "mobile_number";
     public static final String PASSWORD_PARAM = "password";
     public static final String COUNTRY_ID_PARAM = "country_id";
     public static final String CITY_ID_PARAM = "city_id";
@@ -38,6 +39,7 @@ public final class Constant {
     public static final String DRIVER_APP_API_KEY = "com.codesense.driverapp.API_KEY" ;
     public static final String MULTIPART_FORM_DATA = "multipart/form-data" ;
     public static final String TEXT_PLAIN = "text/plain" ;
+    public static final String OTP_VERIFY_RESPONSE = "otp_verify" ;
     public static final int OWNER_CUM_DRIVER_TYPE = 1;
     public static final int NON_DRIVING_PARTNER_TYPE = 2;
 }
