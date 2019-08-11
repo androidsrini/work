@@ -29,9 +29,9 @@
         <meta-data
             android:name="com.codesense.driverapp.API_KEY"
             android:value="4eb708abeccb276a446bdf6c75a065e332f1f77a76048ef97e200d0d55c7165bf392565391b328cc649c6e5506da693077ed4043de414a487be57e5f255437db" />
-
+        <!--.ui.splash.SplashActivity-->
         <activity
-            android:name=".ui.splash.SplashActivity"
+            android:name=".ui.legalagreement.LegalAgreementActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -53,9 +53,9 @@
         <activity
             android:name=".ui.selecttype.SelectTypeActivity"
             android:screenOrientation="portrait" />
-        <activity
+        <!--<activity
             android:name=".ui.legalagreement.LegalAgreementActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" />-->
         <activity
             android:name=".ui.signin.LoginActivity"
             android:screenOrientation="portrait" />

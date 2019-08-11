@@ -2,6 +2,7 @@ package com.codesense.driverapp.ui.legalagreement;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
@@ -9,9 +10,11 @@ import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -55,6 +58,8 @@ public class LegalAgreementActivity extends BaseActivity {
     Button btnAcceptContinue;
     @Initialize(R.id.legalArgumentWebView)
     WebView legalArgumentWebView;
+    @Initialize(R.id.webViewProgressBar)
+    ProgressBar webViewProgressBar;
     /**
      * To create RequestHandler object
      */
@@ -96,6 +101,24 @@ public class LegalAgreementActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         ProductBindView.bind(this);
         tvTitle.setText(getResources().getString(R.string.legal_title));
+        legalArgumentWebView.setWebViewClient(new WebViewClient() {
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView webView, String urlNewString) {
+                webView.loadUrl(urlNewString);
+                return true;
+            }
+
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                webViewProgressBar.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                webViewProgressBar.setVisibility(View.GONE);
+            }
+        });
         setDynamicValue();
         fetchLegalAgreementRequest();
     }

@@ -1,5 +1,7 @@
 package com.codesense.driverapp.ui.verifymobile;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -43,6 +45,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import android.support.design.widget.FloatingActionButton;
+
+import static android.content.Context.CLIPBOARD_SERVICE;
 
 public class VerifyMobileActivity extends BaseActivity {
 
@@ -85,6 +90,8 @@ public class VerifyMobileActivity extends BaseActivity {
     ImageView toolbarClose;
     @Initialize(R.id.errorResponseStripTextView)
     TextView errorResponseStripTextView;
+    @Initialize(R.id.nextFloatingActionButton)
+    FloatingActionButton nextFloatingActionButton;
     private String userID, phoneNumber;
 
     private long timeCountInMilliSeconds = 60000;
@@ -92,6 +99,7 @@ public class VerifyMobileActivity extends BaseActivity {
     private TimerStatus timerStatus = TimerStatus.STOPPED;
     private CountDownTimer countDownTimer;
     private boolean isValiedAllFields;
+    private ClipboardManager clipboardManager;
 
     public static void start(Context context, String userID, String phoneNumber) {
         Intent starter = new Intent(context, VerifyMobileActivity.class);
@@ -109,6 +117,8 @@ public class VerifyMobileActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ProductBindView.bind(this);
+        Object clipboardService = this.getSystemService(CLIPBOARD_SERVICE);
+        clipboardManager = (ClipboardManager)clipboardService;
         setDynamicValue();
         functionality();
         updateUI();
@@ -136,6 +146,10 @@ public class VerifyMobileActivity extends BaseActivity {
 
     @UiThread
     private void functionality() {
+        optNumber1.setOnLongClickListener(this::handleClipBoardPaste);
+        optNumber2.setOnLongClickListener(this::handleClipBoardPaste);
+        optNumber3.setOnLongClickListener(this::handleClipBoardPaste);
+        optNumber4.setOnLongClickListener(this::handleClipBoardPaste);
         optNumber1.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View arg0, MotionEvent arg1) {
                 view.setBackgroundResource(R.drawable.view_for_edittext_primary);
@@ -194,6 +208,24 @@ public class VerifyMobileActivity extends BaseActivity {
                 view3.setBackgroundResource(R.drawable.view_for_edittext_primary);
             }
         });
+    }
+
+    private boolean handleClipBoardPaste(View v) {
+        ClipData clipData = clipboardManager.getPrimaryClip();
+        int itemCount = clipData.getItemCount();
+        if(itemCount > 0) {
+            ClipData.Item item = clipData.getItemAt(0);
+            String text = item.getText().toString();
+            if (text.length() == 4) {
+                optNumber1.setText(text.substring(0, 1));
+                optNumber2.setText(text.substring(1, 2));
+                optNumber3.setText(text.substring(2, 3));
+                optNumber4.setText(text.substring(3, 4));
+            }
+            //destTextView.setText(text);
+            Log.d(TAG, " Clip board message: " + text);
+        }
+        return true;
     }
 
     @UiThread
@@ -271,10 +303,13 @@ public class VerifyMobileActivity extends BaseActivity {
         Observable<Boolean> mObsPhoneVerify1 = RxTextView.textChanges(optNumber1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(charSequence -> {
-                            boolean isField = null != charSequence && !charSequence.toString().equals("")
-                                    && TextUtils.isEmpty(optNumber2.getText());
+                            boolean isField = null != charSequence && !charSequence.toString().equals("");
+                            boolean nextViewIsEmpty =  TextUtils.isEmpty(optNumber2.getText());
                             if (isField) {
-                                optNumber2.requestFocus();
+                                optNumber1.setSelection(charSequence.length());
+                                if (nextViewIsEmpty) {
+                                    optNumber2.requestFocus();
+                                }
                             }
                             return isField;
                         }
@@ -282,20 +317,36 @@ public class VerifyMobileActivity extends BaseActivity {
         Observable<Boolean> mObsPhoneVerify2 = RxTextView.textChanges(optNumber2)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(charSequence -> {
-                    boolean isField = null != charSequence && !charSequence.toString().equals("")
-                            && TextUtils.isEmpty(optNumber3.getText());
+                    boolean isField = null != charSequence && !charSequence.toString().equals("");
+                    boolean nextViewIsEmpty =  TextUtils.isEmpty(optNumber3.getText());
+                    boolean previousViewIsEmpty =  TextUtils.isEmpty(optNumber1.getText());
                     if (isField) {
-                        optNumber3.requestFocus();
+                        optNumber2.setSelection(charSequence.length());
+                        if (nextViewIsEmpty) {
+                            optNumber3.requestFocus();
+                        }
+                    } else {
+                        if (!previousViewIsEmpty) {
+                            optNumber1.requestFocus();
+                        }
                     }
                     return isField;
                 });
         Observable<Boolean> mObsPhoneVerify3 = RxTextView.textChanges(optNumber3)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(charSequence -> {
-                    boolean isField = null != charSequence && !charSequence.toString().equals("")
-                            && TextUtils.isEmpty(optNumber4.getText());
+                    boolean isField = null != charSequence && !charSequence.toString().equals("");
+                    boolean nextViewIsEmpty =  TextUtils.isEmpty(optNumber4.getText());
+                    boolean previousViewIsEmpty =  TextUtils.isEmpty(optNumber2.getText());
                     if (isField) {
-                        optNumber4.requestFocus();
+                        optNumber3.setSelection(charSequence.length());
+                        if (nextViewIsEmpty) {
+                            optNumber4.requestFocus();
+                        }
+                    } else {
+                        if (!previousViewIsEmpty) {
+                            optNumber2.requestFocus();
+                        }
                     }
                     return isField;
                 });
@@ -303,7 +354,16 @@ public class VerifyMobileActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(charSequence -> {
                     //hideKeyboard();
-                    return charSequence != null && !charSequence.toString().equals("");
+                    boolean isFieldNotEmpty =  charSequence != null && !charSequence.toString().equals("");
+                    boolean previousViewIsEmpty =  TextUtils.isEmpty(optNumber3.getText());
+                    if (!isFieldNotEmpty)  {
+                        if (!previousViewIsEmpty) {
+                            optNumber3.requestFocus();
+                        }
+                    } else {
+                        optNumber4.setSelection(charSequence.length());
+                    }
+                    return isFieldNotEmpty;
                 });
 
         Disposable disposable = Observable
@@ -414,7 +474,7 @@ public class VerifyMobileActivity extends BaseActivity {
         finish();
     }
 
-    @Onclick(R.id.imgNext)
+    @Onclick(R.id.nextFloatingActionButton)
     public void imgNext(View v) {
         if (isValiedAllFields)
             verifyOTPRequest(getUserId(), getVerifyOtp());
