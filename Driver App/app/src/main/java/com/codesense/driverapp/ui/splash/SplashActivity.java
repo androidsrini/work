@@ -1,6 +1,5 @@
 package com.codesense.driverapp.ui.splash;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -18,10 +17,12 @@ import com.codesense.driverapp.ui.launchscreen.LaunchScreenActivity;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
 import com.codesense.driverapp.ui.verifymobile.VerifyMobileActivity;
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 
 import javax.inject.Inject;
 
+import io.fabric.sdk.android.Fabric;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -47,6 +48,7 @@ public class SplashActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         fetchOwnerSignupStatusRequest();
+        //adding user identity to crash report
         if (!TextUtils.isEmpty(appSharedPreference.getAccessTokenKey())
                 && !TextUtils.isEmpty(appSharedPreference.getUserID())) {
             fetchOwnerSignupStatusRequest();

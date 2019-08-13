@@ -37,6 +37,8 @@ import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
+import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 
@@ -92,12 +94,14 @@ public class UploadDocumentActivity extends DrawerActivity {
      */
     public static void start(Context context) {
         context.startActivity(new Intent(context, UploadDocumentActivity.class));
+        CrashlyticsHelper.startLog(UploadDocumentActivity.class.getName());
     }
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        CrashlyticsHelper.i("UploadDocument OnCreate start");
         //setContentView(R.layout.activity_upload_document);
         LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View contentView = inflater.inflate(R.layout.activity_upload_document, null, false);
@@ -108,9 +112,18 @@ public class UploadDocumentActivity extends DrawerActivity {
         titleTextView.setText(getResources().getString(R.string.upload_doc_text));
         uploadDocumentViewModel.getApiResponseMutableLiveData().observe(this, this::handleApiResponse);
         uploadDocumentViewModel.fetchVehicleTypesRequest();
+        updateCrashDetails();
         initially();
         setDynamicValue();
         functionality();
+    }
+
+    /**
+     * This method will update crash details.
+     */
+    private void updateCrashDetails() {
+        Crashlytics.setUserIdentifier(appSharedPreference.getUserID());
+        //Crashlytics.setUserEmail(appSharedPreference.);
     }
 
     /**

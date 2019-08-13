@@ -4,11 +4,13 @@ package com.codesense.driverapp.base;
 import com.codesense.driverapp.di.component.ApplicationComponent;
 import com.codesense.driverapp.di.component.DaggerApplicationComponent;
 import com.codesense.driverapp.di.module.NetworkModule;
+import com.crashlytics.android.Crashlytics;
 
 import javax.inject.Singleton;
 
 import dagger.android.AndroidInjector;
 import dagger.android.support.DaggerApplication;
+import io.fabric.sdk.android.Fabric;
 
 @Singleton
 public class BaseApplication extends DaggerApplication {
@@ -19,6 +21,7 @@ public class BaseApplication extends DaggerApplication {
     public void onCreate() {
         super.onCreate();
         baseApplication = this;
+        Fabric.with(this, new Crashlytics());
     }
 
     @Override
@@ -26,8 +29,6 @@ public class BaseApplication extends DaggerApplication {
 
         ApplicationComponent component = DaggerApplicationComponent.builder()
                 .networkModule(new NetworkModule(this))
-                /*.sharedPreferencesModule(new SharedPreferencesModule(this))
-                .networkModule(new NetworkModule())*/
                 .build();
         component.inject(this);
 

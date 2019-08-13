@@ -25,6 +25,7 @@ import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.ui.register.RegisterActivity;
 import com.codesense.driverapp.ui.signin.LoginActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.product.annotationbuilder.ProductBindView;
 import com.product.process.annotation.Initialize;
