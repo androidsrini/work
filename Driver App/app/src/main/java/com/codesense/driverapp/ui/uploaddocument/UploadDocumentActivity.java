@@ -38,6 +38,7 @@ import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
+import com.codesense.driverapp.ui.imagepicker.ImagePickerActivity;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -358,11 +359,13 @@ public class UploadDocumentActivity extends DrawerActivity {
      * This method to show Image Galary from external storage.
      */
     private void showImageFromGalary() {
-        Intent intent = new Intent(this, ImageSelectActivity.class);
+        /*Intent intent = new Intent(this, ImageSelectActivity.class);
         intent.putExtra(ImageSelectActivity.FLAG_COMPRESS, false);//default is true
         intent.putExtra(ImageSelectActivity.FLAG_CAMERA, false);//default is true
         intent.putExtra(ImageSelectActivity.FLAG_GALLERY, true);//default is true
-        startActivityForResult(intent, IMAGE_PICKER);
+        startActivityForResult(intent, IMAGE_PICKER);*/
+        startActivityForResult(new Intent(this, ImagePickerActivity.class), IMAGE_PICKER);
+        CrashlyticsHelper.startLog(ImagePickerActivity.class.getName());
     }
 
     /**
