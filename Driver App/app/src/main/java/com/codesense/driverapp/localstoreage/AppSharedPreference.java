@@ -2,6 +2,7 @@ package com.codesense.driverapp.localstoreage;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
 import com.codesense.driverapp.R;
 
 import javax.inject.Inject;
@@ -10,6 +11,7 @@ public class AppSharedPreference {
 
     private static final String ACCESS_TOKEN_KEY = "AccessTokenKey";
     private static final String USER_ID_KEY = "UserIDKey";
+    private static final String USER_TYPE = "userType";
     private static final String MOBILE_NUMBER_KEY = "MobileNumberKey";
     private static final String OWNER_TYPE_ID_KEY = "OwnerTypeIdKey";
     private static final String OWNER_TYPE_KEY = "OwnerTypeKey";
@@ -38,8 +40,18 @@ public class AppSharedPreference {
         editor.apply();
     }
 
+    public void saveUserType(String userType) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(USER_TYPE, userType);
+        editor.apply();
+    }
+
     public String getUserID() {
         return sharedPreferences.getString(USER_ID_KEY, DEFAULT_VALUE);
+    }
+
+    public String getUserType() {
+        return sharedPreferences.getString(USER_TYPE, DEFAULT_VALUE);
     }
 
     public void saveMobileNumber(String mobileNumber) {

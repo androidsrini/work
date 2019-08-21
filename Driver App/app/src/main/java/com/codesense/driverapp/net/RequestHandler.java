@@ -86,7 +86,8 @@ public class RequestHandler {
     private HashMap<String, String> getChangeMobileNumberRequestParam(String userID, String phoneNumber) {
         HashMap<String, String> param = new HashMap<>();
         param.put(Constant.USER_ID_PARAM, userID);
-        param.put(Constant.PHONE_NUMBER_PARAM, phoneNumber);
+        param.put(Constant.MOBILE_NUMBER_PARAM, phoneNumber);
+        param.put(Constant.USER_TYPE_RESPONSE, appSharedPreference.getUserType());
         return param;
     }
 
