@@ -10,6 +10,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -81,8 +82,23 @@ dependencies {
     implementation files('libs/annotationbuilder.aar')
     //Image picker lib
     // url: https://github.com/maayyaannkk/ImagePicker
-    implementation 'com.github.maayyaannkk:ImagePicker:1.0.3'
+    //implementation 'com.github.maayyaannkk:ImagePicker:1.0.3'
+    //https://github.com/DroidNinja/Android-FilePicker
+    implementation ('com.droidninja:filepicker:2.2.1') {
+        exclude group: 'android.support'
+        exclude module: 'appcompat-v7'
+        exclude module: 'support-v4'
+        exclude group: 'androidx.versionedparcelable'
+    }
     implementation 'com.hbb20:ccp:2.2.3'
+
+    //Easy Permission
+    /*implementation ('com.github.xinyuez:easypermissions:2.0.1') {
+        exclude group: 'com.android.support'
+        exclude module: 'appcompat-v7'
+        exclude module: 'support-v4'
+        exclude group: 'androidx.versionedparcelable'
+    }*/
 
     //RXJAva for edittext
     implementation "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:2.1.1"

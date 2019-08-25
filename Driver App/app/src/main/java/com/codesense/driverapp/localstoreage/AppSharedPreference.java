@@ -16,6 +16,7 @@ public class AppSharedPreference {
     private static final String OWNER_TYPE_ID_KEY = "OwnerTypeIdKey";
     private static final String OWNER_TYPE_KEY = "OwnerTypeKey";
     private static final String OTP_VERIFY_KEY = "OtpVerifyKey";
+    private static final String USER_TYPE_KEY = "UserTypeKey";
     private static final String DEFAULT_VALUE = null;
     private SharedPreferences sharedPreferences;
 

@@ -399,5 +399,8 @@
     <string name="ok_label">Ok</string>
     <string name="yes_label">Yes</string>
     <string name="no_label">No</string>
+    <!-- Image picker permission -->
+    <string name="photo_picker">We require this permission to select photo from gallery and camera.</string>
+    <string name="doc_picker">We need this pemission to read documents from device.</string>
 </resources>
 

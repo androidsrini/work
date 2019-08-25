@@ -176,4 +176,8 @@ public class Utility {
         String decrypted = new String(decryptedBytes);
         return decrypted;
     }
+
+    /*public boolean hasEnabledPermission(String permission) {
+
+    }*/
 }

@@ -125,7 +125,7 @@ public interface ApiCallInterface {
      * @param apiKey
      * @param accessToken
      * @return JsonElement
-     * @line reference: https://stackoverflow.com/questions/34562950/post-multipart-form-data-using-retrofit-2-0-including-image
+     * @link reference: https://stackoverflow.com/questions/34562950/post-multipart-form-data-using-retrofit-2-0-including-image
      */
     @Multipart
     @POST(WebserviceUrls.UPLOAD_DOCUMENTS)

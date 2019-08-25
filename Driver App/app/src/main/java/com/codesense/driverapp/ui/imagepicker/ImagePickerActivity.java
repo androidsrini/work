@@ -50,7 +50,7 @@ public class ImagePickerActivity extends BaseActivity {
             ImagePickerInfo imagePickerInfo = new ImagePickerInfo(imagecursor.getString(dataColumnIndex),
                     MediaStore.Images.Thumbnails.getThumbnail(
                             getApplicationContext().getContentResolver(), id,
-                            MediaStore.Images.Thumbnails.MICRO_KIND, null));
+                            MediaStore.Images.Thumbnails.MINI_KIND, null));
             filePath.add(imagePickerInfo);
         }
         Log.d(TAG, " Collected image size: " + filePath.size());
