@@ -113,6 +113,9 @@
         <activity
             android:name=".ui.register.CountryCitiesSelectionActivity"
             android:theme="@style/AppTheme" />
+        <activity android:name="com.library.fileimagepicker.filepicker.FilePickerActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"/>
     </application>
 
 </manifest>

@@ -14,8 +14,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -36,7 +36,6 @@ import com.codesense.driverapp.R;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.ui.documentstatus.DocumentStatusActivity;
-import com.codesense.driverapp.ui.invitefriends.InviteFriendsActivity;
 import com.codesense.driverapp.ui.referalprogram.ReferalProgramActivity;
 import com.codesense.driverapp.ui.signin.LoginActivity;
 
@@ -86,7 +85,7 @@ public class DrawerActivity extends DaggerAppCompatActivity {
         toolBar = findViewById(R.id.toolBar);
         setSupportActionBar(toolBar);
         getSupportActionBar().setIcon(new ColorDrawable(Color.TRANSPARENT));
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary_color)));
+        //getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.primary_color)));
         getSupportActionBar().setDisplayShowCustomEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayUseLogoEnabled(false);
@@ -102,10 +101,10 @@ public class DrawerActivity extends DaggerAppCompatActivity {
         this.getSupportActionBar().setCustomView(v);
 
 
-        titleTextView = findViewById(R.id.titleTextView);
+        titleTextView = v.findViewById(R.id.titleTextView);
         drawerList = findViewById(R.id.drawerList);
         frameLayout = findViewById(R.id.frameLayout);
-        drawerIcon = findViewById(R.id.drawerIcon);
+        drawerIcon = v.findViewById(R.id.drawerIcon);
         drawerLayout = findViewById(R.id.drawerLayout);
         drawerMenuIconSignOut = findViewById(R.id.drawerMenuIconSignOut);
         drawerSignOutRelativeLayout = findViewById(R.id.drawerSignOutRelativeLayout);
@@ -133,7 +132,7 @@ public class DrawerActivity extends DaggerAppCompatActivity {
         drawerMenuIconSignOutLay.height = menuWidth;
         drawerMenuIconSignOut.setLayoutParams(drawerMenuIconSignOutLay);
 
-        drawerIcon.setBackgroundResource(R.drawable.ic_drawer);
+        //drawerIcon.setBackgroundResource(R.drawable.ic_drawer);
 
         drawerSignOutRelativeLayout.setOnClickListener((v)->{
             utility.showConformationDialog(this, "Are you sure you want logout?",
@@ -237,7 +236,7 @@ public class DrawerActivity extends DaggerAppCompatActivity {
         drawerList.setAdapter(adapter);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
-                R.drawable.ic_drawer, // nav
+                toolBar, // nav
                 // menu
                 // toggle
                 // icon

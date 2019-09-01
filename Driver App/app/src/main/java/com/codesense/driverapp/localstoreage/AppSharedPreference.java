@@ -17,6 +17,7 @@ public class AppSharedPreference {
     private static final String OWNER_TYPE_KEY = "OwnerTypeKey";
     private static final String OTP_VERIFY_KEY = "OtpVerifyKey";
     private static final String USER_TYPE_KEY = "UserTypeKey";
+    private static final String PERMISSION_KEY = "PermissionKey";
     private static final String DEFAULT_VALUE = null;
     private SharedPreferences sharedPreferences;
 
@@ -93,6 +94,16 @@ public class AppSharedPreference {
 
     public String getOwnerType() {
         return sharedPreferences.getString(OWNER_TYPE_KEY, null);
+    }
+
+    public void savePermission(String permission, boolean isFirstTime) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(permission, isFirstTime);
+        editor.apply();
+    }
+
+    public boolean isFirstTime(String permission) {
+        return sharedPreferences.getBoolean(permission, true);
     }
 
     public void clear() {

@@ -9,21 +9,49 @@ public class CrashlyticsHelper {
     private static final String TAG = "DriverApp";
     private static final String START_CLASS = "START U0";
     private static final String VIEW_CLICK = "[view click]";
+    private static StringBuffer stringBuffer;
+
+    private static void createStringBufferObject() {
+        if (null == stringBuffer) {
+            stringBuffer = new StringBuffer();
+        }
+    }
+
+    private static void clearAllFromStringBuffer() {
+        if (null != stringBuffer) {
+            if (0 < stringBuffer.length()) {
+                stringBuffer.delete(0, stringBuffer.length());
+            }
+        } else {
+            createStringBufferObject();
+        }
+    }
+
+    private static String appendString(Object... objects) {
+        for (Object o: objects) {
+            stringBuffer.append(o);
+        }
+        return stringBuffer.toString();
+    }
 
     /**
      * This method will print info logs.
      * @param msg
      */
-    public static void i(String msg) {
-        Crashlytics.log(Log.INFO, TAG, msg);
+    public static void i(Object... msg) {
+        clearAllFromStringBuffer();
+        Crashlytics.log(Log.INFO, TAG, appendString(msg));
+        Log.i(TAG, appendString(msg));
     }
 
     /**
      * This method to print debug log
      * @param msg
      */
-    public static void d(String msg) {
-        Crashlytics.log(Log.DEBUG, TAG, msg);
+    public static void d(Object... msg) {
+        clearAllFromStringBuffer();
+        Crashlytics.log(Log.DEBUG, TAG, appendString(msg));
+        Log.d(TAG, appendString(msg));
     }
 
     /**
@@ -31,7 +59,9 @@ public class CrashlyticsHelper {
      * @param msg
      */
     public static void e(String msg) {
-        Crashlytics.log(Log.ERROR, TAG, msg);
+        clearAllFromStringBuffer();
+        Crashlytics.log(Log.ERROR, TAG, appendString(msg));
+        Log.e(TAG, appendString(msg));
     }
 
     /**
@@ -39,7 +69,9 @@ public class CrashlyticsHelper {
      * @param msg
      */
     public static void w(String msg) {
-        Crashlytics.log(Log.WARN, TAG, msg);
+        clearAllFromStringBuffer();
+        Crashlytics.log(Log.WARN, TAG, appendString(msg));
+        Log.w(TAG, appendString(msg));
     }
 
     /**
@@ -48,6 +80,8 @@ public class CrashlyticsHelper {
      */
     public static void exception(Exception e) {
         Crashlytics.logException(e);
+        clearAllFromStringBuffer();
+        Log.i(TAG, appendString(Log.getStackTraceString(e)));
     }
 
     /**

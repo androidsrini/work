@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -32,6 +33,7 @@ import com.codesense.driverapp.data.DocumentsListStatusResponse;
 import com.codesense.driverapp.data.VehicleDetailRequest;
 import com.codesense.driverapp.data.VehicleTypeResponse;
 import com.codesense.driverapp.data.VehicleTypesItem;
+import com.codesense.driverapp.di.utils.PermissionManager;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.Constant;
@@ -40,13 +42,13 @@ import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.library.fileimagepicker.filepicker.FilePickerBuilder;
+import com.library.fileimagepicker.filepicker.FilePickerConst;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
-
-import droidninja.filepicker.FilePickerBuilder;
 
 /*import droidninja.filepicker.FilePickerBuilder;
 import droidninja.filepicker.FilePickerConst;*/
@@ -72,6 +74,8 @@ public class UploadDocumentActivity extends DrawerActivity {
      */
     @Inject
     protected Utility utility;
+    @Inject
+    protected PermissionManager permissionManager;
     View contentView;
     TextView tvRemaining;
     RelativeLayout vehicleTypeRelativeLayout;
@@ -364,31 +368,23 @@ public class UploadDocumentActivity extends DrawerActivity {
      * This method to show Image Galary from external storage.
      */
     private void showImageFromGalary() {
-        /*Intent intent = new Intent(this, ImageSelectActivity.class);
-        intent.putExtra(ImageSelectActivity.FLAG_COMPRESS, false);//default is true
-        intent.putExtra(ImageSelectActivity.FLAG_CAMERA, false);//default is true
-        intent.putExtra(ImageSelectActivity.FLAG_GALLERY, true);//default is true
-        startActivityForResult(intent, IMAGE_PICKER);*/
-        /*startActivityForResult(new Intent(this, ImagePickerActivity.class), IMAGE_PICKER);
-        CrashlyticsHelper.startLog(ImagePickerActivity.class.getName());*/
-        /*if (EasyPermissions.hasPermissions(this, "1")) {
-            //onPickPhoto();
-        } else {
-            // Ask for one permission
-            EasyPermissions.requestPermissions(this, getString(R.string.photo_picker),
-                    RC_PHOTO_PICKER_PERM, "1");
-        }*/
+        String [] storage = permissionManager.getStorageReadAndWrightPermission();
+        //int totalPermission = storage.length;
+        if (permissionManager.initPermissionDialog(this, storage)) {
+            showImagePickerScreen();
+        }
     }
 
     private void showImagePickerScreen() {
         FilePickerBuilder.getInstance()
-                .setActivityTitle("Please select media")
+                .setActivityTitle("Please select image")
                 .enableVideoPicker(false)
                 .enableCameraSupport(true)
                 .showGifs(false)
                 .showFolderView(true)
                 .enableSelectAll(false)
                 .enableImagePicker(true)
+                .setMaxCount(1)
                 .withOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
                 .pickPhoto(this, IMAGE_PICKER);
     }
@@ -576,13 +572,50 @@ public class UploadDocumentActivity extends DrawerActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == IMAGE_PICKER && resultCode == Activity.RESULT_OK) {
-            String filePath = data.getStringExtra("");
+            List<String> filePath = data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_MEDIA);
             //Bitmap selectedImage = BitmapFactory.decodeFile(filePath);
             //.addAll(data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_MEDIA));
-            Log.d(TAG, " The image file path:" + filePath);
-            updateDocumentItem(filePath);
+            if (null != filePath && !filePath.isEmpty()) {
+                Log.d(TAG, " The image file path:" + filePath);
+                updateDocumentItem(filePath.get(0));
+            }
         } else {
             utility.showToastMsg("File not found");
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PermissionManager.PERMISSIONS_REQUEST) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // permission was granted, yay! Do the
+                // contacts-related task you need to do.
+                showImagePickerScreen();
+            } else {
+                // permission denied, boo! Disable the
+                // functionality that depends on this permission.
+                permissionManager.showRequestPermissionDialog(this, permissions, new PermissionManager.PermissionAskListener() {
+                    @Override
+                    public void onNeedPermission() {
+
+                    }
+
+                    @Override
+                    public void onPermissionPreviouslyDenied(String permission) {
+                        permissionManager.showPermissionNeededDialog(UploadDocumentActivity.this,
+                                getString(R.string.storage_picker), (dialogInterface, i) -> {
+                                    dialogInterface.dismiss();
+                                });
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+
+                    }
+                });
+            }
+
         }
     }
 
@@ -598,8 +631,5 @@ public class UploadDocumentActivity extends DrawerActivity {
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this);
-    }*/
+    */
 }
