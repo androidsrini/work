@@ -191,12 +191,13 @@ public class LoginActivity extends BaseActivity {
                 utility.dismissDialog();
                 if (null != apiResponse.getResponseJsonObject()) {
                     if (ServiceType.SIGNIN_OWNER == serviceType) {
-                        if (null != apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE)) {
+                        if (!TextUtils.isEmpty(apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE))) {
                             appSharedPreference.saveUserID(apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE));
                             appSharedPreference.saveAccessToken(apiResponse.getResponseJsonObject().optString(Constant.ACCESS_TOKEN_RESPONSE));
                             appSharedPreference.saveOwnerTypeId(apiResponse.getResponseJsonObject().optInt(Constant.OWNER_TYPE_ID_RESPONSE, -1));
                             appSharedPreference.saveOtpVerify(apiResponse.getResponseJsonObject().optInt(Constant.OTP_VERIFY_RESPONSE, -1));
                             appSharedPreference.saveMobileNumber(apiResponse.getResponseJsonObject().optString(Constant.MOBILE_NUMBER_RESPONSE));
+                            appSharedPreference.saveUserType(apiResponse.getResponseJsonObject().optString(Constant.USER_TYPE_RESPONSE));
                         }
                         fetchOwnerTypeRequest();
                     } else if (ServiceType.OWNER_TYPES == serviceType) {

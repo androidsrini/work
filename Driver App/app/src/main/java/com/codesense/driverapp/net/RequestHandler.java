@@ -37,6 +37,7 @@ public class RequestHandler {
         HashMap<String, String> param = new HashMap<>();
         param.put(Constant.USER_ID_PARAM, userID);
         param.put(Constant.PHONE_NUMBER_PARAM, phoneNumber);
+        param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
         return param;
     }
 
@@ -44,6 +45,7 @@ public class RequestHandler {
         HashMap<String, String> param = new HashMap<>();
         param.put(Constant.USER_ID_PARAM, userID);
         param.put(Constant.OTP_PARAM, otp);
+        param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
         return param;
     }
 
@@ -68,6 +70,7 @@ public class RequestHandler {
     private HashMap<String, String> getUserIDRequestParam() {
         HashMap<String, String> param = new HashMap<>();
         param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
+        param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
         return param;
     }
 
@@ -87,7 +90,7 @@ public class RequestHandler {
         HashMap<String, String> param = new HashMap<>();
         param.put(Constant.USER_ID_PARAM, userID);
         param.put(Constant.MOBILE_NUMBER_PARAM, phoneNumber);
-        param.put(Constant.USER_TYPE_RESPONSE, appSharedPreference.getUserType());
+        param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
         return param;
     }
 
