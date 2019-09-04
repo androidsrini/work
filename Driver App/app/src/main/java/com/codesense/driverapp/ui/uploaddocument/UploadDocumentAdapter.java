@@ -92,8 +92,8 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
             documentFileNameTextView = view.findViewById(R.id.documentFileNameTextView);
 
             int topBottomSpace = (int) (height * 0.0089);
-            int imgIconWidth = (int) (width * 0.105);
-            int imgIconHeight = (int) (width * 0.105);
+            int imgIconWidth = (int) (width * 0.085);
+            int imgIconHeight = (int) (width * 0.085);
 
             RelativeLayout.LayoutParams imgLayParams = (RelativeLayout.LayoutParams) imgRightArrow.getLayoutParams();
             imgLayParams.width = imgIconWidth;
