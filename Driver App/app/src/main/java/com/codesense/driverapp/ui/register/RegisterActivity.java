@@ -139,8 +139,7 @@ public class RegisterActivity extends BaseActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(textViewAfterTextChangeEvent -> {
-                    if (null != textViewAfterTextChangeEvent &&
-                            null != textViewAfterTextChangeEvent
+                    if (null != textViewAfterTextChangeEvent
                             && textViewAfterTextChangeEvent.length() > 0) {
                         findCityFromCityName(textViewAfterTextChangeEvent.toString());
                     } else {

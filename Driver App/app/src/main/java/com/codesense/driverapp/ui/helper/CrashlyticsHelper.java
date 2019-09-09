@@ -79,6 +79,14 @@ public class CrashlyticsHelper {
      * @param e
      */
     public static void exception(Exception e) {
+        exception(e.getCause());
+    }
+
+    /**
+     * This method to print exception log
+     * @param e
+     */
+    public static void exception(Throwable e) {
         Crashlytics.logException(e);
         clearAllFromStringBuffer();
         Log.i(TAG, appendString(Log.getStackTraceString(e)));

@@ -47,7 +47,6 @@ public class Utils {
     }
 
     public static void saveLongToPrefs(Context context, String key, long value) {
-
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(context);
         final SharedPreferences.Editor editor = prefs.edit();
@@ -56,7 +55,6 @@ public class Utils {
     }
 
     public static long getLongToPrefs(Context context, String key) {
-
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(context);
         return prefs.getLong(key, 0);
@@ -66,7 +64,6 @@ public class Utils {
         SharedPreferences sharedPrefs = PreferenceManager
                 .getDefaultSharedPreferences(context);
         return sharedPrefs.getInt(key, 0);
-
     }
 
     public static void saveStringToPrefs(Context context, String key,
@@ -76,7 +73,6 @@ public class Utils {
                 .getDefaultSharedPreferences(context);
         final SharedPreferences.Editor editor = prefs.edit();
         editor.putString(key, value);
-
         editor.commit();
     }
 
@@ -84,6 +80,5 @@ public class Utils {
         SharedPreferences sharedPrefs = PreferenceManager
                 .getDefaultSharedPreferences(context);
         return sharedPrefs.getString(key, null);
-
     }
 }

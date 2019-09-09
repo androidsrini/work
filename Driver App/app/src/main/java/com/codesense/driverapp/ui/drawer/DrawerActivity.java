@@ -17,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -35,6 +36,8 @@ import android.widget.TextView;
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
+import com.codesense.driverapp.net.Constant;
+import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
 import com.codesense.driverapp.ui.documentstatus.DocumentStatusActivity;
 import com.codesense.driverapp.ui.referalprogram.ReferalProgramActivity;
 import com.codesense.driverapp.ui.signin.LoginActivity;
@@ -48,14 +51,20 @@ import dagger.android.support.DaggerAppCompatActivity;
 @SuppressLint("Registered")
 public class DrawerActivity extends DaggerAppCompatActivity {
 
-
-    DrawerLayout drawerLayout;
+    private static final String SIGN_IN_DEFAULT = "signin_default";
+    private static final String ADD_VEHICLE = "add_vehicle";
+    public static boolean isSignedIn;
+    protected static int currentPosition = -1;
+    public TextView titleTextView;
+    public int screenWidth, screenHeight;
     protected FrameLayout frameLayout;
+    @Inject
+    protected AppSharedPreference appSharedPreference;
+    @Inject
+    protected Utility utility;
+    DrawerLayout drawerLayout;
     ListView drawerList;
     Button drawerIcon;
-    public TextView titleTextView;
-
-    private Toolbar toolBar;
     View v;
     ActionBar.LayoutParams params;
     ArrayList<NavDrawerItem> navDrawerItems;
@@ -63,18 +72,14 @@ public class DrawerActivity extends DaggerAppCompatActivity {
     int details, details1;
     TypedArray typedArray = null, typedArray1 = null;
     String MenuItem, MenuItem1;
-    String strcheckstatusTitle, strReferAndEarn, strManagevehicle, strManagedocument, strYourtrip, strEarningreports, strLivetracking, strSetting;
+    String strcheckstatusTitle, strReferAndEarn, strManagevehicle, strManagedocument, strYourtrip,
+            strEarningreports, strLivetracking, strSetting;
     NavDrawerListAdapter adapter;
-    private ActionBarDrawerToggle mDrawerToggle;
     String[] getItemValues;
-    public int screenWidth, screenHeight;
     ImageView drawerMenuIconSignOut;
     RelativeLayout drawerSignOutRelativeLayout;
-    public static boolean isSignedIn;
-    @Inject
-    protected AppSharedPreference appSharedPreference;
-    @Inject
-    protected Utility utility;
+    private Toolbar toolBar;
+    private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,7 +104,6 @@ public class DrawerActivity extends DaggerAppCompatActivity {
 
         v.setLayoutParams(params);
         this.getSupportActionBar().setCustomView(v);
-
 
         titleTextView = v.findViewById(R.id.titleTextView);
         drawerList = findViewById(R.id.drawerList);
@@ -134,13 +138,13 @@ public class DrawerActivity extends DaggerAppCompatActivity {
 
         //drawerIcon.setBackgroundResource(R.drawable.ic_drawer);
 
-        drawerSignOutRelativeLayout.setOnClickListener((v)->{
+        drawerSignOutRelativeLayout.setOnClickListener((v) -> {
             utility.showConformationDialog(this, "Are you sure you want logout?",
                     (DialogInterface.OnClickListener) (dialog, which) -> {
                         appSharedPreference.clear();
                         LoginActivity.start(this);
                         finish();
-            });
+                    });
         });
         drawerIcon.setOnClickListener(v -> {
             // TODO Auto-generated method stub
@@ -150,6 +154,7 @@ public class DrawerActivity extends DaggerAppCompatActivity {
                 drawerLayout.openDrawer(Gravity.START);
             }
         });
+        isSignedIn = appSharedPreference.isUserIdAvailable();
         loadMenu();
     }
 
@@ -178,13 +183,14 @@ public class DrawerActivity extends DaggerAppCompatActivity {
 
                 details = res.getIdentifier(strItem, "array", getPackageName());
                 typedArray = res.obtainTypedArray(details);
-
+                String type = null;
                 for (int k = 0; k < typedArray.length(); k++) {
                     MenuItem = typedArray.getString(1);
                     String menuIconName = "", menuLabel = "";
                     menuLabel = typedArray.getString(2);
 
                     if (k == 2) {
+                        type = typedArray.getString(k);
                         if (typedArray.getString(k).equals("checkstatus")) {
                             strcheckstatusTitle = typedArray.getString(6);
                         } else if (typedArray.getString(k).equals("referearn")) {
@@ -201,19 +207,34 @@ public class DrawerActivity extends DaggerAppCompatActivity {
                             strLivetracking = typedArray.getString(6);
                         } else if (typedArray.getString(k).equals("setting")) {
                             strSetting = typedArray.getString(6);
+                        } else if (typedArray.getString(k).equals(ADD_VEHICLE)) {
+                            strSetting = typedArray.getString(6);
                         }
                     }
                     menuIconName = typedArray.getString(7);
 
                     if (k == 8) {
-                        if (typedArray.getString(k).equals("Guest")) {
-                            if (!isSignedIn) {
+                        if (isSignedIn) {
+                            /*if (typedArray.getString(k).equals("SignedIn")) {
                                 navDrawerItems.add(new NavDrawerItem(MenuItem, menuIconName));
                                 selectedMenuList.add(strItem);
+                            } else */
+                            if (typedArray.getString(k).equals(SIGN_IN_DEFAULT)) {
+                                if (!TextUtils.isEmpty(type)) {
+                                    if (type.equals(ADD_VEHICLE) && Constant.OWNER_CUM_DRIVER.equals(appSharedPreference.getOwnerType())) {
+                                        navDrawerItems.add(new NavDrawerItem(MenuItem, menuIconName));
+                                        selectedMenuList.add(strItem);
+                                    } else {
+                                        navDrawerItems.add(new NavDrawerItem(MenuItem, menuIconName));
+                                        selectedMenuList.add(strItem);
+                                    }
+                                } else {
+                                    navDrawerItems.add(new NavDrawerItem(MenuItem, menuIconName));
+                                    selectedMenuList.add(strItem);
+                                }
                             }
-
-                        } else if (typedArray.getString(k).equals("SignedIn")) {
-                            if (isSignedIn) {
+                        } else if (typedArray.getString(k).equals("Guest")) {
+                            if (!isSignedIn) {
                                 navDrawerItems.add(new NavDrawerItem(MenuItem, menuIconName));
                                 selectedMenuList.add(strItem);
                             }
@@ -268,7 +289,6 @@ public class DrawerActivity extends DaggerAppCompatActivity {
         mDrawerToggle.syncState();
     }
 
-
     private View getActionBarView() {
         int actionViewResId = 0;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB) {
@@ -285,40 +305,13 @@ public class DrawerActivity extends DaggerAppCompatActivity {
         return null;
     }
 
-    protected static int currentPosition = -1;
-
-
-    private class SlideMenuClickListener implements
-            ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position,
-                                long id) {
-            TextView txtView = (TextView) view.findViewById(android.R.id.text1);
-            TextView txtView_section = (TextView) view
-                    .findViewById(android.R.id.text2);
-            if (position != 0) {
-                if (txtView != null && !txtView.getText().toString().trim().equals("")) {
-                    getItemValues = UserDefinedMethod(txtView);
-                    if (currentPosition != position) {
-                        selectItem(getItemValues, position);
-                    }
-                    drawerLayout.closeDrawers();
-                } else {
-                    if (txtView_section != null && txtView_section.getText().toString().trim().equals("")) {
-                        drawerLayout.closeDrawers();
-                    }
-                }
-            }
-        }
-    }
-
-
     @SuppressLint("ResourceType")
     public String[] UserDefinedMethod(TextView txtView) {
         // TODO Auto-generated method stub
         boolean getValue = false;
         Resources res = getResources();
         String menuLabelText = txtView.getText().toString();
+        Menu:
         for (int j = 1; j <= drawerItemcount; j++) {
             try {
                 String strItem = "drawermenuitem_" + j;
@@ -345,10 +338,7 @@ public class DrawerActivity extends DaggerAppCompatActivity {
                         // Title
                         // Label
                         getItemValues[5] = typedArray1.getString(7);
-                        getValue = true;
-                    }
-                    if (getValue) {
-                        break;
+                        break Menu;
                     }
                 }
             } catch (Resources.NotFoundException e) {
@@ -367,6 +357,8 @@ public class DrawerActivity extends DaggerAppCompatActivity {
             } else if (menuLabel.equals("referearn")) {
                 intent = new Intent(this, ReferalProgramActivity.class);
                 startActivity(intent);
+            } else if (menuLabel.equals(ADD_VEHICLE)) {
+                AddVehicleActivity.start(this);
             }
         }
     }
@@ -420,6 +412,30 @@ public class DrawerActivity extends DaggerAppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         currentPosition = -1;
+    }
+
+    private class SlideMenuClickListener implements
+            ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position,
+                                long id) {
+            TextView txtView = (TextView) view.findViewById(android.R.id.text1);
+            TextView txtView_section = (TextView) view
+                    .findViewById(android.R.id.text2);
+            if (position != 0) {
+                if (txtView != null && !txtView.getText().toString().trim().equals("")) {
+                    getItemValues = UserDefinedMethod(txtView);
+                    if (currentPosition != position) {
+                        selectItem(getItemValues, position);
+                    }
+                    drawerLayout.closeDrawers();
+                } else {
+                    if (txtView_section != null && txtView_section.getText().toString().trim().equals("")) {
+                        drawerLayout.closeDrawers();
+                    }
+                }
+            }
+        }
     }
 
 }

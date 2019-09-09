@@ -179,4 +179,14 @@ public interface ApiCallInterface {
     Observable<JsonElement> updateMobileNumber(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
                                                @FieldMap HashMap<String, String> params);
 
+    @POST(WebserviceUrls.GET_AVAILABLE_DRIVERS)
+    @FormUrlEncoded
+    Observable<JsonElement> fetchAvailableDrivers(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
+                                               @FieldMap HashMap<String, String> params);
+
+    @POST(WebserviceUrls.ADD_DRIVER_TO_OWNER)
+    @FormUrlEncoded
+    Observable<JsonElement> addDriverToOwnerRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
+                                                    @FieldMap HashMap<String, String> param);
+
 }

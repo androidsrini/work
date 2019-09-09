@@ -2,6 +2,7 @@ package com.codesense.driverapp.localstoreage;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
 
 import com.codesense.driverapp.R;
 
@@ -100,6 +101,10 @@ public class AppSharedPreference {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(permission, isFirstTime);
         editor.apply();
+    }
+
+    public boolean isUserIdAvailable() {
+        return !TextUtils.isEmpty(getUserID());
     }
 
     public boolean isFirstTime(String permission) {

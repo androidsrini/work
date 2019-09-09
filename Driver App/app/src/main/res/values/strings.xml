@@ -66,7 +66,7 @@
 
     <!--Side Drawer-->
     <string name="drawer_signout">Sign out</string>
-    <string name="drawermenuitem_count">8</string>
+    <string name="drawermenuitem_count">10</string>
     <array name="drawermenuitem_1">
         <item></item>
         <!-- Section Title -->
@@ -236,6 +236,48 @@
         <item>SignedIn</item>
         <!-- Login non login configuration-->
     </array>
+    <array name="drawermenuitem_9">
+        <item></item>
+        <!-- Section Title -->
+        <item>Check Status</item>
+        <!-- Menu Label -->
+        <item>checkstatus</item>
+        <!-- Enums - This field not editable -->
+        <item></item>
+        <!-- URL -->
+        <item></item>
+        <!-- Internal / External browser -->
+        <item></item>
+        <!-- video url / website url -->
+        <item>Check Status</item>
+        <!-- Screen Page Title Label -->
+        <item>@drawable/documents_icon</item>
+        <!-- sso configuration -->
+        <item>signin_default</item>
+        <!-- Login non login configuration-->
+        <!-- Olo Menu icon -->
+    </array>
+    <array name="drawermenuitem_10">
+        <item></item>
+        <!-- Section Title -->
+        <item>Add Vehicle</item>
+        <!-- Menu Label -->
+        <item>add_vehicle</item>
+        <!-- Enums - This field not editable -->
+        <item></item>
+        <!-- URL -->
+        <item></item>
+        <!-- Internal / External browser -->
+        <item></item>
+        <!-- video url / website url -->
+        <item></item>
+        <!-- Screen Page Title Label -->
+        <item></item>
+        <!-- sso configuration -->
+        <item>signin_default</item>
+        <!-- Login non login configuration-->
+        <!-- Olo Menu icon -->
+    </array>
     <!--Upload Documents-->
 
     <integer name="upload_document_count">3</integer>
@@ -403,5 +445,7 @@
     <string name="photo_picker">We require this permission to select photo from gallery and camera.</string>
     <string name="doc_picker">We need this pemission to read documents from device.</string>
     <string name="storage_picker">We need this pemission to read documents and image from device.</string>
+    <string name="add_driver_details">Add Driver Details</string>
+    <string name="add_driver">Add Driver</string>
 </resources>
 

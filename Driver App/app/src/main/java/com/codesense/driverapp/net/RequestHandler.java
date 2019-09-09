@@ -1,5 +1,7 @@
 package com.codesense.driverapp.net;
 
+import com.codesense.driverapp.data.AddDriverRequest;
+import com.codesense.driverapp.data.AddVehicleRequest;
 import com.codesense.driverapp.data.DocumentsListItem;
 import com.codesense.driverapp.data.VehicleDetailRequest;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
@@ -103,6 +105,28 @@ public class RequestHandler {
         HashMap<String, String> param = new HashMap<>();
         param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
         param.put(Constant.OWNER_TYPE_ID_PARAM, ownerType);
+        return param;
+    }
+
+    private HashMap<String, String> getAddDriverParam(AddDriverRequest addDriverRequest) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
+        param.put(Constant.COUNTRY_ID_PARAM, addDriverRequest.getCountryId());
+        param.put(Constant.EMAIL_ID_PARAM, addDriverRequest.getEmailId());
+        param.put(Constant.PASSWORD_PARAM, addDriverRequest.getPassword());
+        param.put(Constant.MOBILE_NUMBER_PARAM, addDriverRequest.getMobileNumber());
+        param.put(Constant.DRIVER_FIRST_NAME_PARAM, addDriverRequest.getDriverFirstName());
+        param.put(Constant.DRIVER_LAST_NAME_PARAM, addDriverRequest.getDriverLastName());
+        return param;
+    }
+
+    private HashMap<String, String> getAddVehicleParam(AddVehicleRequest addVehicleRequest) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
+        param.put(Constant.VEHICLE_NUMBER_PARAM, addVehicleRequest.getVehicleNumber());
+        param.put(Constant.VEHICLE_NAME_PARAM, addVehicleRequest.getVehicleName());
+        param.put(Constant.VEHICLE_TYPE_ID_PARAM, addVehicleRequest.getVehicleTypeId());
+        param.put(Constant.DRIVER_ID, addVehicleRequest.getDriverId());
         return param;
     }
 
@@ -221,5 +245,17 @@ public class RequestHandler {
 
     public Observable<JsonElement> updateMobileNumber(String apiKey, String userID, String phoneNumber) {
         return apiCallInterface.updateMobileNumber(apiKey, appSharedPreference.getAccessTokenKey(), getChangeMobileNumberRequestParam(userID, phoneNumber));
+    }
+
+    public Observable<JsonElement> fetchAvailableDrivers(String apiKey) {
+        return apiCallInterface.fetchAvailableDrivers(apiKey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
+    }
+
+    public Observable<JsonElement> addDriverToOwnerRequest(String apiKey, AddDriverRequest addDriverRequest) {
+        return apiCallInterface.addDriverToOwnerRequest(apiKey, appSharedPreference.getAccessTokenKey(), getAddDriverParam(addDriverRequest));
+    }
+
+    public Observable<JsonElement> addVehicleToOwnerRequest(String apiKey, AddVehicleRequest addVehicleRequest) {
+        return apiCallInterface.addVehicleToOwnerRequest(apiKey, appSharedPreference.getAccessTokenKey(), getAddVehicleParam(addVehicleRequest));
     }
 }

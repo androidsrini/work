@@ -7,6 +7,10 @@ import android.content.DialogInterface;
 import android.support.annotation.UiThread;
 import android.util.Base64;
 import android.util.Patterns;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.Toast;
 
 import com.codesense.driverapp.R;
@@ -17,7 +21,6 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.SecureRandom;
-import java.text.ParseException;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -177,7 +180,35 @@ public class Utility {
         return decrypted;
     }
 
-    /*public boolean hasEnabledPermission(String permission) {
+    /**
+     * This method to Expand views.
+     * @param view
+     */
+    public void expand(final View view) {
+        int matchParentMeasureSpec = View.MeasureSpec.makeMeasureSpec(((View) view.getParent()).getWidth(), View.MeasureSpec.EXACTLY);
+        int wrapContentMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        view.measure(matchParentMeasureSpec, wrapContentMeasureSpec);
+        final int targetHeight = view.getMeasuredHeight();
+        // Older versions of android (pre API 21) cancel animations for views with a height of 0.
+        view.getLayoutParams().height = 1;
+        view.setVisibility(View.VISIBLE);
+        Animation a = new Animation() {
+            @Override
+            protected void applyTransformation(float interpolatedTime, Transformation t) {
+                view.getLayoutParams().height = interpolatedTime == 1
+                        ? ViewGroup.LayoutParams.WRAP_CONTENT
+                        : (int) (targetHeight * interpolatedTime);
+                view.requestLayout();
+            }
 
-    }*/
+            @Override
+            public boolean willChangeBounds() {
+                return true;
+            }
+        };
+        // Expansion speed of 1dp/ms
+        a.setDuration((int) (targetHeight / view.getContext().getResources().getDisplayMetrics().density));
+        view.startAnimation(a);
+        //return view;
+    }
 }

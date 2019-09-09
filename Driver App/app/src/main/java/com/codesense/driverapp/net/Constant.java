@@ -42,6 +42,9 @@ public final class Constant {
     public static final String MULTIPART_FORM_DATA = "multipart/form-data" ;
     public static final String TEXT_PLAIN = "text/plain" ;
     public static final String OTP_VERIFY_RESPONSE = "otp_verify" ;
+    public static final String DRIVER_FIRST_NAME_PARAM = "driver_first_name" ;
+    public static final String DRIVER_LAST_NAME_PARAM = "driver_last_name" ;
+    public static final String DRIVER_ID = "driver_id" ;
     public static final int OWNER_CUM_DRIVER_TYPE = 1;
     public static final int NON_DRIVING_PARTNER_TYPE = 2;
 }
