@@ -126,7 +126,22 @@ public class RequestHandler {
         param.put(Constant.VEHICLE_NUMBER_PARAM, addVehicleRequest.getVehicleNumber());
         param.put(Constant.VEHICLE_NAME_PARAM, addVehicleRequest.getVehicleName());
         param.put(Constant.VEHICLE_TYPE_ID_PARAM, addVehicleRequest.getVehicleTypeId());
-        param.put(Constant.DRIVER_ID, addVehicleRequest.getDriverId());
+        param.put(Constant.AVAILABLE_DRIVER_ID, addVehicleRequest.getAvailableDriverId());
+        param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
+        param.put(Constant.COUNTRY_ID_PARAM, addVehicleRequest.getCountryId());
+        param.put(Constant.EMAIL_ID_PARAM, addVehicleRequest.getEmailId());
+        param.put(Constant.PASSWORD_PARAM, addVehicleRequest.getPassword());
+        param.put(Constant.MOBILE_NUMBER_PARAM, addVehicleRequest.getMobileNumber());
+        param.put(Constant.DRIVER_FIRST_NAME_PARAM, addVehicleRequest.getDriverFirstName());
+        param.put(Constant.DRIVER_LAST_NAME_PARAM, addVehicleRequest.getDriverLastName());
+        return param;
+    }
+
+    private HashMap<String, String> getOnlineStatusParam(String status) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
+        param.put(Constant.LIVE_STATUS, status);
+        param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
         return param;
     }
 
@@ -257,5 +272,9 @@ public class RequestHandler {
 
     public Observable<JsonElement> addVehicleToOwnerRequest(String apiKey, AddVehicleRequest addVehicleRequest) {
         return apiCallInterface.addVehicleToOwnerRequest(apiKey, appSharedPreference.getAccessTokenKey(), getAddVehicleParam(addVehicleRequest));
+    }
+
+    public Observable<JsonElement> setVehicleLiveStatusRequest(String apiKey, String status) {
+        return apiCallInterface.setVehicleLiveStatusRequest(apiKey, appSharedPreference.getAccessTokenKey(), getOnlineStatusParam(status));
     }
 }

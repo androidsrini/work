@@ -189,4 +189,9 @@ public interface ApiCallInterface {
     Observable<JsonElement> addDriverToOwnerRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
                                                     @FieldMap HashMap<String, String> param);
 
+    @POST(WebserviceUrls.SET_VEHICLE_LIVE_STATUS)
+    @FormUrlEncoded
+    Observable<JsonElement> setVehicleLiveStatusRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
+                                                    @FieldMap HashMap<String, String> param);
+
 }

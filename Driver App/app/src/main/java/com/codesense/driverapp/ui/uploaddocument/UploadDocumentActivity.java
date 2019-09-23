@@ -50,12 +50,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-/*import droidninja.filepicker.FilePickerBuilder;
-import droidninja.filepicker.FilePickerConst;*/
-/*import pub.devrel.easypermissions.AfterPermissionGranted;
-import pub.devrel.easypermissions.AppSettingsDialog;
-import pub.devrel.easypermissions.EasyPermissions;*/
-
 public class UploadDocumentActivity extends DrawerActivity {
 
     public static final int UPLOAD_DOCUMENT_STATUS_INDEX = 0;
@@ -585,7 +579,7 @@ public class UploadDocumentActivity extends DrawerActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode,@NonNull String[] permissions,@NonNull int[] grantResults) {
         if (requestCode == PermissionManager.PERMISSIONS_REQUEST) {
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

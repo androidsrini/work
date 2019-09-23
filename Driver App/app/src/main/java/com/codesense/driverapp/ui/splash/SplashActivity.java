@@ -1,5 +1,7 @@
 package com.codesense.driverapp.ui.splash;
 
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -12,17 +14,16 @@ import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.ApiResponse;
+import com.codesense.driverapp.net.NetworkChangeReceiver;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.ui.launchscreen.LaunchScreenActivity;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
 import com.codesense.driverapp.ui.verifymobile.VerifyMobileActivity;
-import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 
 import javax.inject.Inject;
 
-import io.fabric.sdk.android.Fabric;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -47,6 +48,7 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        registerReceiver(new NetworkChangeReceiver(), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         fetchOwnerSignupStatusRequest();
         //adding user identity to crash report
         if (!TextUtils.isEmpty(appSharedPreference.getAccessTokenKey())

@@ -83,7 +83,7 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    protected ApiCallInterface getApiCallInterface() {
+    public ApiCallInterface getApiCallInterface() {
         OkHttpClient okHttpClient = getRequestHeader();
         Retrofit retrofit = provideRetrofit(provideGson(), okHttpClient);
         return retrofit.create(ApiCallInterface.class);
@@ -91,7 +91,7 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    protected RequestHandler provideRequestHandler(ApiCallInterface apiCallInterface) {
+    public RequestHandler provideRequestHandler(ApiCallInterface apiCallInterface) {
          return new RequestHandler(apiCallInterface, provideAppSharedPreference(context));
     }
 
@@ -103,7 +103,7 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    protected AppSharedPreference provideAppSharedPreference(Context context) {
+    public AppSharedPreference provideAppSharedPreference(Context context) {
          return new AppSharedPreference(context);
     }
 }

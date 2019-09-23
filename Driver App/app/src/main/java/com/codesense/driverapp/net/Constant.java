@@ -45,6 +45,10 @@ public final class Constant {
     public static final String DRIVER_FIRST_NAME_PARAM = "driver_first_name" ;
     public static final String DRIVER_LAST_NAME_PARAM = "driver_last_name" ;
     public static final String DRIVER_ID = "driver_id" ;
+    public static final String ONLINE_STATUS = "Online" ;
+    public static final String OFFLINE_STATUS = "Offline" ;
+    public static final String LIVE_STATUS = "live_status" ;
+    public static final String AVAILABLE_DRIVER_ID = "available_driver_id" ;
     public static final int OWNER_CUM_DRIVER_TYPE = 1;
     public static final int NON_DRIVING_PARTNER_TYPE = 2;
 }

@@ -33,5 +33,7 @@ public class WebserviceUrls {
     public static final String GET_OWNER_SIGNUP_STATUS = "get_owner_signup_status";
     public static final String CHANGE_MOBILE_NUMBER = "change_mobile_number";
     public static final String GET_AVAILABLE_DRIVERS = "get_available_drivers";
+    public static final String SET_VEHICLE_LIVE_STATUS = "set_vehicle_live_status";
+    public static final String UPDATE_VEHICLE_LIVE_LOCATION = "update_vehicle_live_location";
 
 }

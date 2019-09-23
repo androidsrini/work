@@ -21,6 +21,7 @@ public class AddDriverRequest {
 
     @SerializedName("password")
     private String password;
+
     @SerializedName("mobile_number")
     private String mobileNumber;
 

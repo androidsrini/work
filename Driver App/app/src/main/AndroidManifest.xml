@@ -19,7 +19,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true"
         tools:replace="android:appComponentFactory">
         <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
         <meta-data
@@ -116,6 +115,12 @@
         <activity android:name="com.library.fileimagepicker.filepicker.FilePickerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"/>
+        <receiver android:name=".net.NetworkChangeReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

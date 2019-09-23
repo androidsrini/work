@@ -118,55 +118,34 @@
                 app:layout_constraintTop_toBottomOf="@+id/etVehicleNumber" />-->
 
             <android.support.design.widget.TextInputLayout
-                android:id="@+id/driverNameTextInputLayout"
-                android:layout_width="0dp"
+                android:id="@+id/driverNumberTextInputLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@+id/vehicleNumberTextInputLayout"
                 app:hintEnabled="false"
-                app:layout_constraintEnd_toStartOf="@+id/addDriverButton"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintRight_toLeftOf="@+id/addDriverButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/vehicleNumberTextInputLayout">
+                >
 
-                <android.support.v7.widget.AppCompatAutoCompleteTextView
-                    android:id="@+id/etDriverName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:hint="@string/add_vehicle_driver_name"
-                    android:imeOptions="actionNext"
-                    android:singleLine="true"
-                    android:textSize="18sp" />
-            </android.support.design.widget.TextInputLayout>
-
-            <Button
-                android:id="@+id/addDriverButton"
-                style="?attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:text="@string/add_driver"
-                android:background="@android:color/transparent"
-                android:visibility="gone"
-                app:layout_constraintRight_toRightOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/driverNameTextInputLayout"
+            <android.support.v7.widget.AppCompatAutoCompleteTextView
+                android:id="@+id/etDriverName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/add_vehicle_driver_name"
+                android:imeOptions="actionNext"
+                android:singleLine="true"
+                android:textSize="18sp"
+                app:layout_constraintTop_toBottomOf="@+id/vehicleNumberTextInputLayout"
                 />
 
-            <View
-                android:id="@+id/view3"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="3dp"
-                android:background="@color/primary_color"
-                app:layout_constraintTop_toBottomOf="@+id/driverNameTextInputLayout" />
+            </android.support.design.widget.TextInputLayout>
 
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/addDriverDetailsParentConstrainLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/view3">
+                app:layout_constraintTop_toBottomOf="@+id/driverNumberTextInputLayout">
 
             <View
                 android:id="@+id/firstDottedVerticalImageView"

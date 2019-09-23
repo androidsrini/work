@@ -19,6 +19,7 @@ public class AppSharedPreference {
     private static final String OTP_VERIFY_KEY = "OtpVerifyKey";
     private static final String USER_TYPE_KEY = "UserTypeKey";
     private static final String PERMISSION_KEY = "PermissionKey";
+    private static final String NETWORK_STATUS_KEY = "NetworkStatusKey";
     private static final String DEFAULT_VALUE = null;
     private SharedPreferences sharedPreferences;
 
@@ -111,7 +112,22 @@ public class AppSharedPreference {
         return sharedPreferences.getBoolean(permission, true);
     }
 
+    public void setNetworkStatus(String networkStatus) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(NETWORK_STATUS_KEY, networkStatus);
+        editor.apply();
+    }
+
+    public String getNetworkStatus() {
+        return sharedPreferences.getString(NETWORK_STATUS_KEY, null);
+    }
+
+    public boolean isInterNetStatusUpdated() {
+        return !TextUtils.isEmpty(getNetworkStatus());
+    }
+
     public void clear() {
         sharedPreferences.edit().clear().apply();
     }
+
 }
