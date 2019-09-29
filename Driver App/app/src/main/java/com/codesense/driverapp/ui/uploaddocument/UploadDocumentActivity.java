@@ -90,7 +90,7 @@ public class UploadDocumentActivity extends DrawerActivity {
     private List<VehicleTypesItem> vehicleTypesItems;
     private List<DocumentsListItem> uploadDocumentActionInfos;
     private DocumentsListItem selectedDocumetnsListItem;
-
+    private int selectedDocumentsListPosition;
     /**
      * This method to start UploadDocumentActivity class
      *
@@ -252,7 +252,7 @@ public class UploadDocumentActivity extends DrawerActivity {
     private void updateDocumentItem(@NonNull String path) {
         if (null != selectedDocumetnsListItem) {
             selectedDocumetnsListItem.setFilePath(path);
-            adapter.notifyDataSetChanged();
+            adapter.notifyItemChanged(selectedDocumentsListPosition);
         }
     }
 
@@ -287,6 +287,7 @@ public class UploadDocumentActivity extends DrawerActivity {
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
+                selectedDocumentsListPosition = position;
                 selectedDocumetnsListItem = uploadDocumentActionInfos.get(position);
                 String filePath = uploadDocumentActionInfos.get(position).getFilePath();
                 if (!TextUtils.isEmpty(filePath)) {
@@ -294,6 +295,7 @@ public class UploadDocumentActivity extends DrawerActivity {
                             "Are you sure you want to delete this file", (DialogInterface.OnClickListener) (dialog, which) -> {
                                 uploadDocumentActionInfos.get(position).setFilePath(null);
                                 adapter.notifyDataSetChanged();
+                                updateUploadContentButtonUI();
                             });
                 } else {
                     showImageFromGalary();
@@ -308,6 +310,14 @@ public class UploadDocumentActivity extends DrawerActivity {
         vehicleTypeRelativeLayout.setOnClickListener(v -> {
             showListPopupScreen(vehicleTypeRelativeLayout, vehicleTypeTextView, vehicleTypesItems);
         });
+    }
+
+    /**
+     * This method to update UploadContentButtonUI.
+     */
+    private void updateUploadContentButtonUI() {
+        //adapter.getSelectedFilesCount() > 0 ? Show update document UI button else Disable update document UI button.
+        uploadContentButton.setVisibility(adapter.getSelectedFilesCount() > 0 ? View.VISIBLE : View.GONE);
     }
 
     /**
@@ -572,6 +582,7 @@ public class UploadDocumentActivity extends DrawerActivity {
             if (null != filePath && !filePath.isEmpty()) {
                 Log.d(TAG, " The image file path:" + filePath);
                 updateDocumentItem(filePath.get(0));
+                updateUploadContentButtonUI();
             }
         } else {
             utility.showToastMsg("File not found");
@@ -612,7 +623,6 @@ public class UploadDocumentActivity extends DrawerActivity {
 
         }
     }
-
     /*@Override
     public void onPermissionsGranted(int requestCode, List<String> perms) {
         showImagePickerScreen();

@@ -145,6 +145,16 @@ public class RequestHandler {
         return param;
     }
 
+    private HashMap<String, String> getUpdateVehicleLocationParam(String userType, String latitude,
+                                                                  String longitude) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
+        param.put(Constant.USER_TYPE_REQUEST, userType);
+        param.put(Constant.LATITUDE, latitude);
+        param.put(Constant.LONGITUDE, longitude);
+        return param;
+    }
+
     private MultipartBody.Part getUploadDocumentFileRequest(DocumentsListItem documentsListItem) {
         File file = new File(documentsListItem.getFilePath());
         RequestBody requestFile = RequestBody.create(MediaType.parse(Constant.MULTIPART_FORM_DATA), file);
@@ -253,6 +263,11 @@ public class RequestHandler {
                 getVehicleName(vehicleDetailRequest));
     }
 
+    public Observable<JsonElement> uploadDocumentsWithoutVehicleRequest(String api, DocumentsListItem documentsListItem) {
+        return apiCallInterface.uploadDocumentsWithoutVehicleRequest(api, appSharedPreference.getAccessTokenKey(),
+                getUploadDocumentFileRequest(documentsListItem), getUploadDocumentUserID());
+    }
+
     public Observable<JsonElement> fetchOwnerSignupStatusRequest(String api) {
         return apiCallInterface.fetchOwnerSignupStatusRequest(api, appSharedPreference.getAccessTokenKey(),
                 getUserIDRequestParam());
@@ -276,5 +291,11 @@ public class RequestHandler {
 
     public Observable<JsonElement> setVehicleLiveStatusRequest(String apiKey, String status) {
         return apiCallInterface.setVehicleLiveStatusRequest(apiKey, appSharedPreference.getAccessTokenKey(), getOnlineStatusParam(status));
+    }
+
+    public Observable<JsonElement> updateVehicleLiveLocationRequest(String apiKey, String userType,
+                                                                    String latitude, String longitude) {
+        return apiCallInterface.updateVehicleLiveLocationRequest(apiKey, appSharedPreference.getAccessTokenKey(),
+                getUpdateVehicleLocationParam(userType, latitude, longitude));
     }
 }

@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.UiThread;
 import android.util.Base64;
 import android.util.Patterns;
@@ -210,5 +212,17 @@ public class Utility {
         a.setDuration((int) (targetHeight / view.getContext().getResources().getDisplayMetrics().density));
         view.startAnimation(a);
         //return view;
+    }
+
+    /**
+     * This method to find mobile internet connection status.
+     * If connection enabled return true else false.
+     * @param context
+     * @return
+     */
+    public boolean isOnline(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        return (netInfo != null && netInfo.isAvailable());
     }
 }

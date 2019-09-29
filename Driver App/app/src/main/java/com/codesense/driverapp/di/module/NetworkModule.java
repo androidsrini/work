@@ -97,7 +97,7 @@ public class NetworkModule {
 
     @Provides
     @Singleton
-    protected Utility provideUtility() {
+    public Utility provideUtility() {
          return new Utility(context);
     }
 

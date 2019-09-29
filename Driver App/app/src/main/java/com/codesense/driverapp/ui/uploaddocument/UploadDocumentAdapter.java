@@ -75,6 +75,20 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
         return uploadDocumentModelList.size();
     }
 
+    /**
+     * This method to return selected file list count
+     * @return int
+     */
+    public int getSelectedFilesCount() {
+        int  count = 0;
+        for (DocumentsListItem documentsListItem: uploadDocumentModelList) {
+            if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+                count ++;
+            }
+        }
+        return count;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private RelativeLayout rlDriveLicense;

@@ -126,6 +126,10 @@ dependencies {
      * Kotlin
      */
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:1.2.30"
+    /**
+     * Worker thread
+     */
+    implementation 'android.arch.work:work-runtime:1.0.0-alpha09'
     implementation project(path: ':filepicker')
 }
 apply plugin: 'com.google.gms.google-services'

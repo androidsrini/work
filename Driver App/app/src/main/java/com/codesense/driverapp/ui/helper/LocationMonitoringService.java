@@ -12,6 +12,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -28,49 +29,36 @@ public class LocationMonitoringService extends Service implements
     GoogleApiClient mLocationClient;
     LocationRequest mLocationRequest = new LocationRequest();
 
-
     public static final String ACTION_LOCATION_BROADCAST = LocationMonitoringService.class.getName() + "LocationBroadcast";
     public static final String EXTRA_LATITUDE = "extra_latitude";
     public static final String EXTRA_LONGITUDE = "extra_longitude";
-
     String deslat, deslng, driver_id, access_token, liveTrackId, route_id;
     double totalDistance, passedDistance;
     boolean isFirst = true;
-
+    AppSharedPreference appSharedPreference = new AppSharedPreference(getApplicationContext());
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
 //        myPref = new PreferencesManager(this);
-
 //        deslat = myPref.getStringValue("desLat");
 //        deslng = myPref.getStringValue("desLng");
-
 //        driver_id = myPref.getStringValue("driver_id");
 //        access_token = myPref.getStringValue("access_token");
 //        route_id = myPref.getStringValue("route_id");
 //        liveTrackId = myPref.getStringValue("liveTrackId");
 //        apiInterface = APIClient.getClient().create(APIInterface.class);
-
-
         mLocationClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-
         mLocationRequest.setInterval(3000);
         mLocationRequest.setFastestInterval(2000);
         mLocationRequest.setSmallestDisplacement(1);
-
-
         int priority = LocationRequest.PRIORITY_HIGH_ACCURACY; //by default
         //PRIORITY_BALANCED_POWER_ACCURACY, PRIORITY_LOW_POWER, PRIORITY_NO_POWER are the other priority modes
-
-
         mLocationRequest.setPriority(priority);
         mLocationClient.connect();
-
         //Make it stick to the notification panel so it is less prone to get cancelled by the Operating System.
         return START_STICKY;
     }
@@ -120,20 +108,16 @@ public class LocationMonitoringService extends Service implements
     @Override
     public void onLocationChanged(Location location) {
         Log.d(TAG, "Location changed");
-
-
         if (location != null) {
             Log.d(TAG, "== location != null");
-
+            appSharedPreference.setLastLocationLatitude(String.valueOf(location.getLatitude()));
+            appSharedPreference.setLastLocationLong(String.valueOf(location.getLongitude()));
             sendMessageToUI(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
         }
     }
 
-
     private void sendMessageToUI(String lat, String lng) {
-
         Log.d(TAG, "Sending info...");
-
         Intent intent = new Intent(ACTION_LOCATION_BROADCAST);
         intent.putExtra(EXTRA_LATITUDE, lat);
         intent.putExtra(EXTRA_LONGITUDE, lng);
@@ -145,7 +129,6 @@ public class LocationMonitoringService extends Service implements
         Log.d(TAG, "Failed to connect to Google API");
 
     }
-
 
     public double CalculationByDistance(LatLng StartP, LatLng EndP) {
         int Radius = 6371;// radius of earth in Km
@@ -168,9 +151,6 @@ public class LocationMonitoringService extends Service implements
         int meterInDec = Integer.valueOf(newFormat.format(meter));
         Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
                 + " Meter   " + meterInDec);
-
         return Radius * c;
     }
-
-
 }

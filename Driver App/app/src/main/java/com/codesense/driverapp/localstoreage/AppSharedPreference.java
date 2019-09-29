@@ -20,6 +20,8 @@ public class AppSharedPreference {
     private static final String USER_TYPE_KEY = "UserTypeKey";
     private static final String PERMISSION_KEY = "PermissionKey";
     private static final String NETWORK_STATUS_KEY = "NetworkStatusKey";
+    private static final String LAST_LOCATION_LAT = "LastLocationLat";
+    private static final String LAST_LOCATION_LONG = "LastLocationLong";
     private static final String DEFAULT_VALUE = null;
     private SharedPreferences sharedPreferences;
 
@@ -116,6 +118,26 @@ public class AppSharedPreference {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(NETWORK_STATUS_KEY, networkStatus);
         editor.apply();
+    }
+
+    public void setLastLocationLatitude(String latitude) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(LAST_LOCATION_LAT, latitude);
+        editor.apply();
+    }
+
+    public void setLastLocationLong(String lng) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(LAST_LOCATION_LONG, lng);
+        editor.apply();
+    }
+
+    public String getLastLocationLatitude() {
+        return sharedPreferences.getString(LAST_LOCATION_LAT, null);
+    }
+
+    public String getLastLocationLng() {
+        return sharedPreferences.getString(LAST_LOCATION_LONG, null);
     }
 
     public String getNetworkStatus() {

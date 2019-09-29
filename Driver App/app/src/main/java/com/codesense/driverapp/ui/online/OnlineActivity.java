@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.codesense.driverapp.R;
+import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.LocationMonitoringService;
 import com.codesense.driverapp.ui.helper.OnSwipeTouchListener;
@@ -41,6 +42,16 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.concurrent.TimeUnit;
+
+import javax.inject.Inject;
+
+import androidx.work.Constraints;
+import androidx.work.Data;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+
 public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback {
 
 
@@ -52,9 +63,11 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
     BroadcastReceiver broadcastReceiver;
     private String currentLat, currentLng;
     RelativeLayout rlAccept, rlEndTrip;
-
     GoogleMap map;
-
+    @Inject
+    protected RequestHandler requestHandler;
+    @Inject
+    protected OnlineViewModel onlineViewModel;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,8 +85,6 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
-
-
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -89,12 +100,9 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
                 broadcastReceiver, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST)
         );
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent i = new Intent(OnlineActivity.this, PickUpLocationAcceptActivity.class);
-                startActivity(i);
-            }
+        new Handler().postDelayed(() -> {
+            Intent i = new Intent(OnlineActivity.this, PickUpLocationAcceptActivity.class);
+            startActivity(i);
         }, TIME_OUT);
 
         rlEndTrip.setOnTouchListener(new OnSwipeTouchListener(OnlineActivity.this) {
@@ -114,6 +122,34 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
             }
 
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (utility.isOnline(this)) {
+            refreshLocation();
+        }
+    }
+
+    public static void refreshLocation() {
+        //define constraints
+        Constraints myConstraints = new Constraints.Builder()
+                .setRequiresDeviceIdle(false)
+                .setRequiresCharging(false)
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .setRequiresBatteryNotLow(true)
+                .setRequiresStorageNotLow(true)
+                .build();
+        Data source = new Data.Builder()
+                .putString("workType", "PeriodicTime")
+                .build();
+        PeriodicWorkRequest refreshCpnWork =
+                new PeriodicWorkRequest.Builder(LocationWorker.class, 2, TimeUnit.MINUTES)
+                        .setConstraints(myConstraints)
+                        .setInputData(source)
+                        .build();
+        WorkManager.getInstance().enqueue(refreshCpnWork);
     }
 
     private void checkAcceptable() {
@@ -233,7 +269,6 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
             Intent intent = new Intent(this, LocationMonitoringService.class);
             stopService(intent);
             if (isLocationEnabled(this)) {
-
                 //Start location sharing service to app server.........
                 Intent intent1 = new Intent(this, LocationMonitoringService.class);
                 startService(intent1);
@@ -265,28 +300,21 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
     private boolean checkPermissions() {
         int permissionState1 = ActivityCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_FINE_LOCATION);
-
         int permissionState2 = ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION);
-
         return permissionState1 == PackageManager.PERMISSION_GRANTED && permissionState2 == PackageManager.PERMISSION_GRANTED;
-
     }
 
     /**
      * Start permissions requests.
      */
     private void requestPermissions() {
-
         boolean shouldProvideRationale =
                 ActivityCompat.shouldShowRequestPermissionRationale(this,
                         android.Manifest.permission.ACCESS_FINE_LOCATION);
-
         boolean shouldProvideRationale2 =
                 ActivityCompat.shouldShowRequestPermissionRationale(this,
                         Manifest.permission.ACCESS_COARSE_LOCATION);
-
-
         // Provide an additional rationale to the img_user. This would happen if the img_user denied the
         // request previously, but didn't check the "Don't ask again" checkbox.
         if (!shouldProvideRationale || !shouldProvideRationale2) {
@@ -296,7 +324,6 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
 
         }
     }
-
 
     /**
      * Callback received when a permissions request has been completed.
@@ -314,11 +341,9 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
     }
 
     public void createLocationServiceError(final Activity activityObj) {
-
         AlertDialog alert;
         // show alert dialog if Internet is not connected
         AlertDialog.Builder builder = new AlertDialog.Builder(activityObj);
-
         builder.setMessage(
                 "You need to activate location service to use this feature. Please turn on network or GPS mode in location settings")
                 .setTitle("Need to enable location")
@@ -339,16 +364,11 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
 
     @Override
     public void onDestroy() {
-
-
         //Stop location sharing service to app server.........
-
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
         stopService(new Intent(OnlineActivity.this, LocationMonitoringService.class));
         mAlreadyStartedService = false;
         //Ends................................................
-
-
         super.onDestroy();
     }
 
@@ -356,24 +376,18 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
     public static boolean isLocationEnabled(Context context) {
         int locationMode;
         String locationProviders;
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             try {
                 locationMode = Settings.Secure.getInt(context.getContentResolver(), Settings.Secure.LOCATION_MODE);
-
             } catch (Settings.SettingNotFoundException e) {
                 e.printStackTrace();
                 return false;
             }
-
             return locationMode != Settings.Secure.LOCATION_MODE_OFF;
-
         } else {
             locationProviders = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
             return !TextUtils.isEmpty(locationProviders);
         }
-
-
     }
 
     @Override
@@ -383,11 +397,8 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
 
 
     private void updateLocationUI() {
-
         map.clear();
-
         LatLng loc = new LatLng(Double.parseDouble(currentLat), Double.parseDouble(currentLng));
-
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             //    ActivityCompat#requestPermissions
@@ -398,20 +409,13 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        map.setMyLocationEnabled(false);
-
         MarkerOptions markerOptions = new MarkerOptions();
-
         // Setting the position for the marker
         markerOptions.position(loc);
-
+        map.setMyLocationEnabled(false);
         map.getUiSettings().setMyLocationButtonEnabled(false);
         map.getUiSettings().setCompassEnabled(false);
-
-
         map.addMarker(markerOptions);
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 15));
-
-
     }
 }

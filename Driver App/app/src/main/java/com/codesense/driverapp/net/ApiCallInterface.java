@@ -137,6 +137,13 @@ public interface ApiCallInterface {
                                                    @Part(Constant.VEHICLE_NUMBER_PARAM) RequestBody vehicleNumber,
                                                    @Part(Constant.VEHICLE_NAME_PARAM) RequestBody vehicleName);
 
+    @Multipart
+    @POST(WebserviceUrls.UPLOAD_DOCUMENTS)
+    Observable<JsonElement> uploadDocumentsWithoutVehicleRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
+                                                   @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
+                                                   @Part MultipartBody.Part fileBody,
+                                                   @Part(Constant.USER_ID_PARAM) RequestBody userId);
+
 
     @POST(WebserviceUrls.ADD_VEHICLE_DOCUMENTS)
     @FormUrlEncoded
@@ -192,6 +199,11 @@ public interface ApiCallInterface {
     @POST(WebserviceUrls.SET_VEHICLE_LIVE_STATUS)
     @FormUrlEncoded
     Observable<JsonElement> setVehicleLiveStatusRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
+                                                    @FieldMap HashMap<String, String> param);
+
+    @POST(WebserviceUrls.UPDATE_VEHICLE_LIVE_LOCATION)
+    @FormUrlEncoded
+    Observable<JsonElement> updateVehicleLiveLocationRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
                                                     @FieldMap HashMap<String, String> param);
 
 }

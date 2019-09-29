@@ -4,17 +4,17 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.data.DocumentsListItem;
-import com.codesense.driverapp.ui.uploaddocument.UploadDocumentModel;
 
+import java.io.File;
 import java.util.List;
 
 public class DocumentStatusAdapter extends RecyclerView.Adapter<DocumentStatusAdapter.ViewHolder> {
@@ -34,6 +34,10 @@ public class DocumentStatusAdapter extends RecyclerView.Adapter<DocumentStatusAd
 
     }
 
+    private String findFileName(@NonNull String filePath) {
+        return new File(filePath).getName();
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
@@ -46,17 +50,36 @@ public class DocumentStatusAdapter extends RecyclerView.Adapter<DocumentStatusAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         DocumentsListItem uploadDocumentModel = uploadDocumentModelList.get(position);
-        String status = uploadDocumentModel.getDocumentStatus().getStatusMessage();
+        boolean isFileSelected = !TextUtils.isEmpty(uploadDocumentModel.getFilePath());
+        String status = isFileSelected ? activity.getString(R.string.document_status_completed)
+                :  (null != uploadDocumentModel.getDocumentStatus()) ?
+                uploadDocumentModel.getDocumentStatus().getStatusMessage() : activity.getString(R.string.recommended_next_step);
         String title = uploadDocumentModel.getDisplayName();
-
-        if (status.equalsIgnoreCase("completed")) {
+        if (isFileSelected) {
+            viewHolder.tvVehicleStatusText.setText(findFileName(uploadDocumentModel.getFilePath()));
+            viewHolder.imgRightArrow.setBackgroundResource(0);
+            viewHolder.imgRightArrow.setBackgroundResource(R.drawable.ic_file_upload);
+        } else {
+            viewHolder.tvVehicleStatusText.setText(status);
+            viewHolder.imgRightArrow.setBackgroundResource(0);
+            viewHolder.imgRightArrow.setBackgroundResource(R.drawable.ic_edit);
+        }
+        /*if (status.equalsIgnoreCase("completed")) {
             setCompleted(viewHolder);
         } else {
             setPending(viewHolder);
-        }
-
-        viewHolder.tvVehicleStatusText.setText(status);
+        }*/
         viewHolder.tvVehicledesc.setText(title);
+    }
+
+    public int getSelectedFilesCount() {
+        int count = 0;
+        for (DocumentsListItem documentsListItem: uploadDocumentModelList) {
+            if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+                count ++;
+            }
+        }
+        return count;
     }
 
     @Override
@@ -69,15 +92,13 @@ public class DocumentStatusAdapter extends RecyclerView.Adapter<DocumentStatusAd
 
         int imgIconWidth = (int) (width * 0.085);
         int imgIconHeight = (int) (width * 0.085);
-        RelativeLayout.LayoutParams imgLayParams = (RelativeLayout.LayoutParams) viewHolder.imgRightArrow.getLayoutParams();
+        ConstraintLayout.LayoutParams imgLayParams = (ConstraintLayout.LayoutParams) viewHolder.imgRightArrow.getLayoutParams();
         imgLayParams.width = imgIconWidth;
         imgLayParams.height = imgIconHeight;
         imgLayParams.setMargins(0, topBottomSpace * 3, topBottomSpace * 3, 0);
         viewHolder.imgRightArrow.setLayoutParams(imgLayParams);
         viewHolder.imgRightArrow.setPadding(0, topBottomSpace * 3, topBottomSpace * 3, 0);
-
-
-        viewHolder.rlDriverMain.setBackgroundColor(activity.getResources().getColor(R.color.background_color));
+        //viewHolder.rlDriverMain.setBackgroundColor(activity.getResources().getColor(R.color.background_color));
         viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
 
     }
@@ -87,31 +108,29 @@ public class DocumentStatusAdapter extends RecyclerView.Adapter<DocumentStatusAd
         int imgIconWidth = (int) (width * 0.085);
         int imgIconHeight = (int) (width * 0.085);
 
-        RelativeLayout.LayoutParams imgLayParams = (RelativeLayout.LayoutParams) viewHolder.imgRightArrow.getLayoutParams();
+        ConstraintLayout.LayoutParams imgLayParams = (ConstraintLayout.LayoutParams) viewHolder.imgRightArrow.getLayoutParams();
         imgLayParams.width = imgIconWidth;
         imgLayParams.height = imgIconHeight;
         imgLayParams.setMargins(0, topBottomSpace * 3, topBottomSpace * 3, 0);
         viewHolder.imgRightArrow.setLayoutParams(imgLayParams);
         viewHolder.imgRightArrow.setPadding(0, topBottomSpace * 3, topBottomSpace * 3, 0);
-
-
-        viewHolder.rlDriverMain.setBackgroundColor(activity.getResources().getColor(R.color.background_document_status));
-        viewHolder.imgRightArrow.setBackgroundResource(R.drawable.right_only_bg);
+        //viewHolder.rlDriverMain.setBackgroundColor(activity.getResources().getColor(R.color.background_document_status));
+        viewHolder.imgRightArrow.setBackgroundResource(R.drawable.ic_edit);
 
     }
 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private RelativeLayout rlDriverVehicle, rlDriverMain;
+        //private RelativeLayout rlDriverVehicle, rlDriverMain;
         private ImageView imgRightArrow;
         private TextView tvVehicleStatusText, tvVehicledesc;
 
         public ViewHolder(View view) {
             super(view);
 
-            rlDriverVehicle = view.findViewById(R.id.rlDriverVehicle);
-            rlDriverMain = view.findViewById(R.id.rlDriverMain);
+            /*rlDriverVehicle = view.findViewById(R.id.rlDriverVehicle);
+            rlDriverMain = view.findViewById(R.id.rlDriverMain);*/
             tvVehicleStatusText = view.findViewById(R.id.tvVehicleStatusText);
             tvVehicledesc = view.findViewById(R.id.tvVehicledesc);
             imgRightArrow = view.findViewById(R.id.imgRightArrow);
@@ -123,28 +142,27 @@ public class DocumentStatusAdapter extends RecyclerView.Adapter<DocumentStatusAd
             int imgIconWidth = (int) (width * 0.085);
             int imgIconHeight = (int) (width * 0.085);
 
-            RelativeLayout.LayoutParams imgLayParams = (RelativeLayout.LayoutParams) imgRightArrow.getLayoutParams();
+            ConstraintLayout.LayoutParams imgLayParams = (ConstraintLayout.LayoutParams) imgRightArrow.getLayoutParams();
             imgLayParams.width = imgIconWidth;
             imgLayParams.height = imgIconHeight;
-            imgLayParams.setMargins(0, topBottomSpace * 3, topBottomSpace * 3, 0);
+            //imgLayParams.setMargins(0, topBottomSpace * 3, topBottomSpace * 3, 0);
             imgRightArrow.setLayoutParams(imgLayParams);
 
-            ConstraintLayout.LayoutParams rlDriverLicenseVehicleComLayoutParams = (ConstraintLayout.LayoutParams) rlDriverMain.getLayoutParams();
+            /*ConstraintLayout.LayoutParams rlDriverLicenseVehicleComLayoutParams = (ConstraintLayout.LayoutParams) rlDriverMain.getLayoutParams();
             rlDriverLicenseVehicleComLayoutParams.setMargins(0, topBottomSpace * 2, 0, 0);
             rlDriverMain.setLayoutParams(rlDriverLicenseVehicleComLayoutParams);
 
             RelativeLayout.LayoutParams rlLegalLayoutParams = (RelativeLayout.LayoutParams) rlDriverVehicle.getLayoutParams();
             rlLegalLayoutParams.setMargins(topBottomSpace * 2, topBottomSpace, topBottomSpace * 2, topBottomSpace);
-            rlDriverVehicle.setLayoutParams(rlLegalLayoutParams);
+            rlDriverVehicle.setLayoutParams(rlLegalLayoutParams);*/
 
 //            RelativeLayout.LayoutParams rlDriveLicenseLayoutParams = (RelativeLayout.LayoutParams) rlDriveLicense.getLayoutParams();
 //            rlDriveLicenseLayoutParams.setMargins(topBottomSpace * 3, topBottomSpace * 3, topBottomSpace * 3, 0);
 //            rlDriveLicense.setLayoutParams(rlDriveLicenseLayoutParams);
 
-            tvVehicleStatusText.setPadding(topBottomSpace * 3, topBottomSpace, 0, 0);
+            /*tvVehicleStatusText.setPadding(topBottomSpace * 3, topBottomSpace, 0, 0);
             tvVehicledesc.setPadding(topBottomSpace * 3, topBottomSpace * 2, 0, topBottomSpace * 3);
-            imgRightArrow.setPadding(0, topBottomSpace * 3, topBottomSpace * 3, 0);
-
+            imgRightArrow.setPadding(0, topBottomSpace * 3, topBottomSpace * 3, 0);*/
         }
     }
 }

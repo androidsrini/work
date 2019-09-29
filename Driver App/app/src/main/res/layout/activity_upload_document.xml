@@ -109,6 +109,7 @@
     <Button
         android:id="@+id/uploadContentButton"
         android:text="@string/update_document_text"
-        style="@style/appButtonProperty" />
+        style="@style/appButtonProperty"
+        android:visibility="gone"/>
 
 </RelativeLayout>

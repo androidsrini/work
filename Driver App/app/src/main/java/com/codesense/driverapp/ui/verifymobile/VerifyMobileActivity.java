@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.constraint.ConstraintLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -45,9 +46,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import android.support.design.widget.FloatingActionButton;
-
-import static android.content.Context.CLIPBOARD_SERVICE;
 
 public class VerifyMobileActivity extends BaseActivity {
 
@@ -448,7 +446,12 @@ public class VerifyMobileActivity extends BaseActivity {
                 utility.dismissDialog();
                 if (ServiceType.SENT_OTP == serviceType) {
                     //Start countdown timer
-                    startStop();
+                    if (apiResponse.getResponseStatus() != ApiResponse.OTP_VALIDATION) {
+                        startStop();
+                    } else {
+                        //Disabled resend button because of 'OTP_VALIDATION'
+                        btnResend.setEnabled(false);
+                    }
                 } else if (ServiceType.VERIFY_OTP == serviceType) {
                     if (apiResponse.isValidResponse()) {
                         SelectTypeActivity.start(this);

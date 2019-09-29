@@ -1,53 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rlDriverMain"
+    app:layout_constraintTop_toTopOf="parent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_margin="@dimen/margin_10"
+    android:background="@color/background_document_status">
 
-    <RelativeLayout
-        android:id="@+id/rlDriverMain"
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/rlDriverVehicle"
+        app:layout_constraintVertical_weight="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/background_document_status">
+        android:background="@color/light_blue_color"
+        android:layout_margin="@dimen/margin_5"
+        >
 
-        <RelativeLayout
-            android:id="@+id/rlDriverVehicle"
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/imgRightArrow"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintVertical_weight="1"
-            android:background="@color/light_blue_color">
+            android:layout_alignParentEnd="true"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
 
-            <TextView
-                android:id="@+id/tvVehicleStatusText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="@string/document_verification_pending"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="@color/third_color" />
+        <TextView
+            android:id="@+id/tvVehicledesc"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tvVehicleStatusText"
+            android:layout_marginTop="5dp"
+            android:text="@string/docstatus_vehicle_commerical"
+            android:textColor="@color/secondary_color"
+            android:textSize="21sp"
+            android:textStyle="bold"
+            android:padding="@dimen/padding_5"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvVehicleStatusText"
+            app:layout_constraintRight_toLeftOf="@+id/imgRightArrow"
+            app:layout_constraintHorizontal_bias="0.0"
+            />
 
-            <TextView
-                android:id="@+id/tvVehicledesc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:text="@string/docstatus_vehicle_commerical"
-                android:textSize="21sp"
-                android:textStyle="bold"
-                android:textColor="@color/secondary_color"
-                android:layout_below="@+id/tvVehicleStatusText"
-                app:layout_constraintLeft_toLeftOf="parent" />
+        <TextView
+            android:id="@+id/tvVehicleStatusText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:text="@string/document_verification_pending"
+            android:textColor="@color/third_color"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:padding="@dimen/padding_5"
+            app:layout_constraintEnd_toStartOf="@+id/imgRightArrow"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/imgRightArrow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/imgRightArrow"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true" />
+    </android.support.constraint.ConstraintLayout>
 
-        </RelativeLayout>
+</RelativeLayout>
 
-    </RelativeLayout>
-
-</android.support.constraint.ConstraintLayout>
