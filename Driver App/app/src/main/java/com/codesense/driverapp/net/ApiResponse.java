@@ -62,7 +62,7 @@ public class ApiResponse {
     public final JsonElement data;
 
     @Nullable
-    private final Throwable error;
+    public final Throwable error;
     /**
      * This variable to parse and store JsonElement to JSONObject.
      */

@@ -22,6 +22,7 @@ public class AppSharedPreference {
     private static final String NETWORK_STATUS_KEY = "NetworkStatusKey";
     private static final String LAST_LOCATION_LAT = "LastLocationLat";
     private static final String LAST_LOCATION_LONG = "LastLocationLong";
+    private static final String USER_STATUS = "UserStatus";
     private static final String DEFAULT_VALUE = null;
     private SharedPreferences sharedPreferences;
 
@@ -130,6 +131,17 @@ public class AppSharedPreference {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(LAST_LOCATION_LONG, lng);
         editor.apply();
+    }
+
+    public void setUserStatusOnline(boolean isOnline) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(USER_STATUS, isOnline);
+        editor.apply();
+    }
+
+
+    public boolean isUserStatusOnline() {
+        return sharedPreferences.getBoolean(USER_STATUS, false);
     }
 
     public String getLastLocationLatitude() {

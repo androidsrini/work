@@ -24,15 +24,6 @@ public class OnlineViewModel extends ViewModel {
         this.requestHandler = requestHandler;
     }
 
-    public void updateLocationRequest(String apiKey, String status) {
-        disposables.add(requestHandler.setVehicleLiveStatusRequest(apiKey, status)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(d->apiResponseMutableLiveData.postValue(ApiResponse.loading()))
-                .subscribe(result->apiResponseMutableLiveData.postValue(ApiResponse.success(result)),
-                        error->apiResponseMutableLiveData.postValue(ApiResponse.error(error))));
-    }
-
     public void updateVehicleLiveLocationRequest(String apikey, String userType, String latitude, String longitude) {
         disposables.add(requestHandler.updateVehicleLiveLocationRequest(apikey, userType, latitude, longitude)
                 .subscribeOn(Schedulers.io())

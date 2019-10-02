@@ -26,8 +26,6 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.codesense.driverapp.R;
-import com.codesense.driverapp.di.utils.ApiUtility;
-import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
@@ -71,6 +69,10 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
     @Inject
     protected OnlineViewModel onlineViewModel;
 
+    /**
+     * This method to start this activity
+     * @param context
+     */
     public static void start(Context context) {
         context.startActivity(new Intent(context, OnlineActivity.class));
     }
@@ -128,16 +130,18 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
             }
 
         });
+        updateSwitchUI(true);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         boolean onlineStatus = utility.isOnline(this);
+        boolean isUserStatus = appSharedPreference.isUserStatusOnline();
         CrashlyticsHelper.d("App internet enabled: " + onlineStatus);
-        String status = onlineStatus ? Constant.ONLINE_STATUS : Constant.OFFLINE_STATUS;
-        if (utility.isOnline(this)) {
-            onlineViewModel.updateLocationRequest(ApiUtility.getInstance().getApiKeyMetaData(), status);
+        CrashlyticsHelper.d("App user status enabled: " + isUserStatus);
+        //String status = onlineStatus ? Constant.ONLINE_STATUS : Constant.OFFLINE_STATUS;
+        if (utility.isOnline(this) && isUserStatus) {
             refreshLocation();
         }
     }
@@ -370,6 +374,7 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
 
     @Override
     public void onDestroy() {
+        updateSwitchUI(false);
         //Stop location sharing service to app server.........
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
         stopService(new Intent(OnlineActivity.this, LocationMonitoringService.class));

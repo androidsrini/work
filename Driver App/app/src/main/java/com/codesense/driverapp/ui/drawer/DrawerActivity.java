@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -34,10 +35,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codesense.driverapp.R;
+import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
+import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.Constant;
+import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
+import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
 import com.codesense.driverapp.ui.online.OnlineActivity;
 import com.codesense.driverapp.ui.referalprogram.ReferalProgramActivity;
 import com.codesense.driverapp.ui.signin.LoginActivity;
@@ -47,9 +52,12 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import dagger.android.support.DaggerAppCompatActivity;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 @SuppressLint("Registered")
-public class DrawerActivity extends DaggerAppCompatActivity {
+public abstract class DrawerActivity extends DaggerAppCompatActivity {
 
     private static final String SIGN_IN_DEFAULT = "signin_default";
     private static final String ADD_VEHICLE = "add_vehicle";
@@ -78,8 +86,37 @@ public class DrawerActivity extends DaggerAppCompatActivity {
     String[] getItemValues;
     ImageView drawerMenuIconSignOut;
     RelativeLayout drawerSignOutRelativeLayout;
+    private SwitchCompat autoReloadEnableDisableSwitchCompat;
     private Toolbar toolBar;
     private ActionBarDrawerToggle mDrawerToggle;
+    private CompositeDisposable disposable = new CompositeDisposable();
+    /**
+     * To inject RequestHandler object and store to requestHandler
+     */
+    @Inject protected RequestHandler requestHandler;
+
+    public void updateLocationRequest(String apiKey, String status) {
+        disposable.add(requestHandler.setVehicleLiveStatusRequest(apiKey, status)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(d->apiResponseHandler(ApiResponse.loading()))
+                .subscribe(result->apiResponseHandler(ApiResponse.success(result)),
+                        error->apiResponseHandler(ApiResponse.error(error))));
+    }
+
+    private void apiResponseHandler(ApiResponse apiResponse) {
+        switch (apiResponse.status) {
+            case LOADING:
+                CrashlyticsHelper.d("Online status api loading");
+                break;
+            case SUCCESS:
+                CrashlyticsHelper.d("Online status api success" + apiResponse.data);
+                break;
+            case ERROR:
+                CrashlyticsHelper.d("Online status api error" + apiResponse.error);
+                break;
+        }
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -100,6 +137,7 @@ public class DrawerActivity extends DaggerAppCompatActivity {
 
         calculateScreenSize();
         v = inflater.inflate(R.layout.custom_title, null);
+        autoReloadEnableDisableSwitchCompat = v.findViewById(R.id.autoReloadEnableDisableSwitchCompat);
         params = new ActionBar.LayoutParams(ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
 
         v.setLayoutParams(params);
@@ -154,6 +192,11 @@ public class DrawerActivity extends DaggerAppCompatActivity {
                 drawerLayout.openDrawer(Gravity.START);
             }
         });
+        autoReloadEnableDisableSwitchCompat.setOnCheckedChangeListener((compoundButton, b) -> {
+            appSharedPreference.setUserStatusOnline(b);
+            String status = b ? Constant.ONLINE_STATUS : Constant.OFFLINE_STATUS;
+            updateLocationRequest(ApiUtility.getInstance().getApiKeyMetaData(), status);
+        });
         isSignedIn = appSharedPreference.isUserIdAvailable();
         loadMenu();
     }
@@ -165,6 +208,16 @@ public class DrawerActivity extends DaggerAppCompatActivity {
         windowmanager.getDefaultDisplay().getMetrics(displayMetrics);
         screenWidth = displayMetrics.widthPixels;
         screenHeight = displayMetrics.heightPixels;
+    }
+
+    /**
+     * This method to update autoReloadEnableDisableSwitchCompat visibility
+     * @param isVisible
+     */
+    protected void updateSwitchUI(boolean isVisible) {
+        if (null != autoReloadEnableDisableSwitchCompat) {
+            autoReloadEnableDisableSwitchCompat.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        }
     }
 
     @SuppressLint("ResourceType")
