@@ -38,7 +38,7 @@ import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
-import com.codesense.driverapp.ui.documentstatus.DocumentStatusActivity;
+import com.codesense.driverapp.ui.online.OnlineActivity;
 import com.codesense.driverapp.ui.referalprogram.ReferalProgramActivity;
 import com.codesense.driverapp.ui.signin.LoginActivity;
 
@@ -353,7 +353,8 @@ public class DrawerActivity extends DaggerAppCompatActivity {
         if (strItem != null) {
             String menuLabel = strItem[0];
             if (menuLabel.equals("checkstatus")) {
-                DocumentStatusActivity.start(this);
+                //DocumentStatusActivity.start(this);
+                OnlineActivity.start(this);
             } else if (menuLabel.equals("referearn")) {
                 intent = new Intent(this, ReferalProgramActivity.class);
                 startActivity(intent);

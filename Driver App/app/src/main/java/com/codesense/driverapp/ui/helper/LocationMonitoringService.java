@@ -35,10 +35,13 @@ public class LocationMonitoringService extends Service implements
     String deslat, deslng, driver_id, access_token, liveTrackId, route_id;
     double totalDistance, passedDistance;
     boolean isFirst = true;
-    AppSharedPreference appSharedPreference = new AppSharedPreference(getApplicationContext());
+    AppSharedPreference appSharedPreference;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if (null == appSharedPreference) {
+            appSharedPreference = new AppSharedPreference(getApplicationContext());
+        }
 //        myPref = new PreferencesManager(this);
 //        deslat = myPref.getStringValue("desLat");
 //        deslng = myPref.getStringValue("desLng");

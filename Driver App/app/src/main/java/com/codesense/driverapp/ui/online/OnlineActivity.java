@@ -26,8 +26,11 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.codesense.driverapp.R;
+import com.codesense.driverapp.di.utils.ApiUtility;
+import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
+import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
 import com.codesense.driverapp.ui.helper.LocationMonitoringService;
 import com.codesense.driverapp.ui.helper.OnSwipeTouchListener;
 import com.codesense.driverapp.ui.helper.Utils;
@@ -47,7 +50,6 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import androidx.work.Constraints;
-import androidx.work.Data;
 import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
@@ -68,6 +70,10 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
     protected RequestHandler requestHandler;
     @Inject
     protected OnlineViewModel onlineViewModel;
+
+    public static void start(Context context) {
+        context.startActivity(new Intent(context, OnlineActivity.class));
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -127,12 +133,16 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
     @Override
     protected void onStart() {
         super.onStart();
+        boolean onlineStatus = utility.isOnline(this);
+        CrashlyticsHelper.d("App internet enabled: " + onlineStatus);
+        String status = onlineStatus ? Constant.ONLINE_STATUS : Constant.OFFLINE_STATUS;
         if (utility.isOnline(this)) {
+            onlineViewModel.updateLocationRequest(ApiUtility.getInstance().getApiKeyMetaData(), status);
             refreshLocation();
         }
     }
 
-    public static void refreshLocation() {
+    public void refreshLocation() {
         //define constraints
         Constraints myConstraints = new Constraints.Builder()
                 .setRequiresDeviceIdle(false)
@@ -141,13 +151,9 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
                 .setRequiresBatteryNotLow(true)
                 .setRequiresStorageNotLow(true)
                 .build();
-        Data source = new Data.Builder()
-                .putString("workType", "PeriodicTime")
-                .build();
         PeriodicWorkRequest refreshCpnWork =
-                new PeriodicWorkRequest.Builder(LocationWorker.class, 2, TimeUnit.MINUTES)
+                new PeriodicWorkRequest.Builder(LocationWorker.class, 2, TimeUnit.SECONDS)
                         .setConstraints(myConstraints)
-                        .setInputData(source)
                         .build();
         WorkManager.getInstance().enqueue(refreshCpnWork);
     }
