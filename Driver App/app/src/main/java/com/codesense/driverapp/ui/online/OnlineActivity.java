@@ -26,6 +26,8 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.codesense.driverapp.R;
+import com.codesense.driverapp.di.utils.ApiUtility;
+import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
@@ -130,6 +132,18 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
             }
 
         });
+        autoReloadEnableDisableSwitchCompat.setOnCheckedChangeListener((compoundButton, b) -> {
+            appSharedPreference.setUserStatusOnline(b);
+            //String status = b ? Constant.ONLINE_STATUS : Constant.OFFLINE_STATUS;
+            onlineViewModel.updateLocationRequest(ApiUtility.getInstance().getApiKeyMetaData());
+            if (utility.isOnline(this)) {
+                if (b) {
+                    refreshLocation();
+                } else {
+                    stopLocation();
+                }
+            }
+        });
         updateSwitchUI(true);
     }
 
@@ -146,7 +160,21 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
         }
     }
 
-    public void refreshLocation() {
+    private void apiResponseHandler(ApiResponse apiResponse) {
+        switch (apiResponse.status) {
+            case LOADING:
+                CrashlyticsHelper.d("Online status api loading");
+                break;
+            case SUCCESS:
+                CrashlyticsHelper.d("Online status api success" + apiResponse.data);
+                break;
+            case ERROR:
+                CrashlyticsHelper.d("Online status api error" + apiResponse.error);
+                break;
+        }
+    }
+
+    private void refreshLocation() {
         //define constraints
         Constraints myConstraints = new Constraints.Builder()
                 .setRequiresDeviceIdle(false)
@@ -160,6 +188,10 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
                         .setConstraints(myConstraints)
                         .build();
         WorkManager.getInstance().enqueue(refreshCpnWork);
+    }
+
+    private void stopLocation() {
+        WorkManager.getInstance().cancelAllWork();
     }
 
     private void checkAcceptable() {

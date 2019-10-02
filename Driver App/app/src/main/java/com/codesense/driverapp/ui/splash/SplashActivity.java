@@ -16,7 +16,9 @@ import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.NetworkChangeReceiver;
 import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
 import com.codesense.driverapp.ui.launchscreen.LaunchScreenActivity;
+import com.codesense.driverapp.ui.online.OnlineActivity;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
 import com.codesense.driverapp.ui.verifymobile.VerifyMobileActivity;
@@ -49,7 +51,6 @@ public class SplashActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         registerReceiver(new NetworkChangeReceiver(), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        fetchOwnerSignupStatusRequest();
         //adding user identity to crash report
         if (!TextUtils.isEmpty(appSharedPreference.getAccessTokenKey())
                 && !TextUtils.isEmpty(appSharedPreference.getUserID())) {
@@ -97,6 +98,10 @@ public class SplashActivity extends BaseActivity {
                     } else if (utility.parseInt(signupStatus.getAgreementAccept()) == 0) {
                         //To show Agreement screen
                         SelectTypeActivity.start(this);
+                    } else if (1 == utility.parseInt(signupStatus.getIsActivated())
+                            && 1 == utility.parseInt(signupStatus.getVehicleActivation())) {
+                        //To show online screen.
+                        OnlineActivity.start(this);
                     } else {
                         UploadDocumentActivity.start(this);
                     }
@@ -108,6 +113,7 @@ public class SplashActivity extends BaseActivity {
                 break;
             case ERROR:
                 utility.dismissDialog();
+                CrashlyticsHelper.d("Failed response: " + apiResponse.error);
                 break;
         }
     }

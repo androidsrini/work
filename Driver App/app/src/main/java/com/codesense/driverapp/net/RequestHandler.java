@@ -137,21 +137,25 @@ public class RequestHandler {
         return param;
     }
 
-    private HashMap<String, String> getOnlineStatusParam(String status) {
+    private HashMap<String, String> getOnlineStatusParam() {
         HashMap<String, String> param = new HashMap<>();
         param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
-        param.put(Constant.LIVE_STATUS, status);
+        param.put(Constant.LIVE_STATUS, appSharedPreference.isUserStatusOnline() ? Constant.ONLINE_CODE
+                : Constant.OFFLINE_CODE);
+        param.put(Constant.LATITUDE, appSharedPreference.getLastLocationLatitude());
+        param.put(Constant.LONGITUDE, appSharedPreference.getLastLocationLng());
         param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
         return param;
     }
 
     private HashMap<String, String> getUpdateVehicleLocationParam(String userType, String latitude,
-                                                                  String longitude) {
+                                                                  String longitude, float speed) {
         HashMap<String, String> param = new HashMap<>();
         param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
         param.put(Constant.USER_TYPE_REQUEST, userType);
         param.put(Constant.LATITUDE, latitude);
         param.put(Constant.LONGITUDE, longitude);
+        param.put(Constant.SPEED_PER_MINUTE, String.valueOf(speed));
         return param;
     }
 
@@ -289,13 +293,15 @@ public class RequestHandler {
         return apiCallInterface.addVehicleToOwnerRequest(apiKey, appSharedPreference.getAccessTokenKey(), getAddVehicleParam(addVehicleRequest));
     }
 
-    public Observable<JsonElement> setVehicleLiveStatusRequest(String apiKey, String status) {
-        return apiCallInterface.setVehicleLiveStatusRequest(apiKey, appSharedPreference.getAccessTokenKey(), getOnlineStatusParam(status));
+    public Observable<JsonElement> setVehicleLiveStatusRequest(String apiKey) {
+        return apiCallInterface.setVehicleLiveStatusRequest(apiKey, appSharedPreference.getAccessTokenKey(),
+                getOnlineStatusParam());
     }
 
     public Observable<JsonElement> updateVehicleLiveLocationRequest(String apiKey, String userType,
-                                                                    String latitude, String longitude) {
+                                                                    String latitude, String longitude,
+                                                                    float speed) {
         return apiCallInterface.updateVehicleLiveLocationRequest(apiKey, appSharedPreference.getAccessTokenKey(),
-                getUpdateVehicleLocationParam(userType, latitude, longitude));
+                getUpdateVehicleLocationParam(userType, latitude, longitude, speed));
     }
 }

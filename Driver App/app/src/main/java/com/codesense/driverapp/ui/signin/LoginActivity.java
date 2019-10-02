@@ -18,11 +18,11 @@ import com.codesense.driverapp.R;
 import com.codesense.driverapp.base.BaseActivity;
 import com.codesense.driverapp.data.OwnerTypeResponse;
 import com.codesense.driverapp.data.OwnerTypesItem;
+import com.codesense.driverapp.data.SigninOwnerResponse;
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.ApiResponse;
-import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
@@ -189,16 +189,9 @@ public class LoginActivity extends BaseActivity {
                 break;
             case SUCCESS:
                 utility.dismissDialog();
-                if (null != apiResponse.getResponseJsonObject()) {
+                if (null != apiResponse.getResponseJsonObject() && apiResponse.isValidResponse()) {
                     if (ServiceType.SIGNIN_OWNER == serviceType) {
-                        if (!TextUtils.isEmpty(apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE))) {
-                            appSharedPreference.saveUserID(apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE));
-                            appSharedPreference.saveAccessToken(apiResponse.getResponseJsonObject().optString(Constant.ACCESS_TOKEN_RESPONSE));
-                            appSharedPreference.saveOwnerTypeId(apiResponse.getResponseJsonObject().optInt(Constant.OWNER_TYPE_ID_RESPONSE, -1));
-                            appSharedPreference.saveOtpVerify(apiResponse.getResponseJsonObject().optInt(Constant.OTP_VERIFY_RESPONSE, -1));
-                            appSharedPreference.saveMobileNumber(apiResponse.getResponseJsonObject().optString(Constant.MOBILE_NUMBER_RESPONSE));
-                            appSharedPreference.saveUserType(apiResponse.getResponseJsonObject().optString(Constant.USER_TYPE_RESPONSE));
-                        }
+                        updatePreferenceValues(apiResponse);
                         fetchOwnerTypeRequest();
                     } else if (ServiceType.OWNER_TYPES == serviceType) {
                         if (-1 == appSharedPreference.getOtpVerify() || 0 == appSharedPreference.getOtpVerify()) {
@@ -222,11 +215,28 @@ public class LoginActivity extends BaseActivity {
                             finish();
                         }
                     }
+                } else {
+                    utility.showToastMsg(apiResponse.getResponseMessage());
                 }
                 break;
             case ERROR:
                 utility.dismissDialog();
                 break;
+        }
+    }
+
+    private void updatePreferenceValues(ApiResponse apiResponse) {
+        if (null != apiResponse && null != apiResponse.getResponseJsonObject()) {
+            SigninOwnerResponse signinOwnerResponse = new Gson().fromJson(apiResponse.data, SigninOwnerResponse.class);
+            appSharedPreference.saveUserID(signinOwnerResponse.getUserId());
+            appSharedPreference.saveAccessToken(signinOwnerResponse.getAccessToken());
+            appSharedPreference.saveOwnerTypeId(signinOwnerResponse.getOwnerTypeId());
+            appSharedPreference.saveOtpVerify(signinOwnerResponse.getOtpVerify());
+            appSharedPreference.saveMobileNumber(signinOwnerResponse.getMobileNumber());
+            appSharedPreference.saveUserType(signinOwnerResponse.getUserType());
+            appSharedPreference.setCountryDialCode(signinOwnerResponse.getCountryDialCode());
+            appSharedPreference.setEmailId(signinOwnerResponse.getEmailId());
+            appSharedPreference.setProfilePicture(signinOwnerResponse.getProfilePicture());
         }
     }
 

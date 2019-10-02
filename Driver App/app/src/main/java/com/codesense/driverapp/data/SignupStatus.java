@@ -16,6 +16,12 @@ public class SignupStatus{
 	@SerializedName("owner_type_id")
 	private String ownerTypeId;
 
+	@SerializedName("vehicle_activation")
+	private String vehicleActivation;
+
+	@SerializedName("live_status")
+	private String liveStatus;
+
 	public void setOtpVerify(String otpVerify){
 		this.otpVerify = otpVerify;
 	}
@@ -48,6 +54,22 @@ public class SignupStatus{
 		return ownerTypeId;
 	}
 
+	public void setVehicleActivation(String vehicleActivation){
+		this.vehicleActivation = vehicleActivation;
+	}
+
+	public String getVehicleActivation(){
+		return vehicleActivation;
+	}
+
+	public void setLiveStatus(String liveStatus){
+		this.liveStatus = liveStatus;
+	}
+
+	public String getLiveStatus(){
+		return liveStatus;
+	}
+
 	@Override
  	public String toString(){
 		return 
@@ -56,6 +78,8 @@ public class SignupStatus{
 			",agreement_accept = '" + agreementAccept + '\'' + 
 			",is_activated = '" + isActivated + '\'' + 
 			",owner_type_id = '" + ownerTypeId + '\'' + 
+			",vehicle_activation = '" + vehicleActivation + '\'' + 
+			",live_status = '" + liveStatus + '\'' + 
 			"}";
 		}
 }

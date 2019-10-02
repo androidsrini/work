@@ -35,15 +35,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codesense.driverapp.R;
-import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
-import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.Constant;
-import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
-import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
-import com.codesense.driverapp.ui.online.OnlineActivity;
+import com.codesense.driverapp.ui.documentstatus.DocumentStatusActivity;
 import com.codesense.driverapp.ui.referalprogram.ReferalProgramActivity;
 import com.codesense.driverapp.ui.signin.LoginActivity;
 
@@ -52,9 +48,7 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import dagger.android.support.DaggerAppCompatActivity;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.schedulers.Schedulers;
 
 @SuppressLint("Registered")
 public abstract class DrawerActivity extends DaggerAppCompatActivity {
@@ -86,37 +80,10 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
     String[] getItemValues;
     ImageView drawerMenuIconSignOut;
     RelativeLayout drawerSignOutRelativeLayout;
-    private SwitchCompat autoReloadEnableDisableSwitchCompat;
     private Toolbar toolBar;
     private ActionBarDrawerToggle mDrawerToggle;
     private CompositeDisposable disposable = new CompositeDisposable();
-    /**
-     * To inject RequestHandler object and store to requestHandler
-     */
-    @Inject protected RequestHandler requestHandler;
-
-    public void updateLocationRequest(String apiKey, String status) {
-        disposable.add(requestHandler.setVehicleLiveStatusRequest(apiKey, status)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(d->apiResponseHandler(ApiResponse.loading()))
-                .subscribe(result->apiResponseHandler(ApiResponse.success(result)),
-                        error->apiResponseHandler(ApiResponse.error(error))));
-    }
-
-    private void apiResponseHandler(ApiResponse apiResponse) {
-        switch (apiResponse.status) {
-            case LOADING:
-                CrashlyticsHelper.d("Online status api loading");
-                break;
-            case SUCCESS:
-                CrashlyticsHelper.d("Online status api success" + apiResponse.data);
-                break;
-            case ERROR:
-                CrashlyticsHelper.d("Online status api error" + apiResponse.error);
-                break;
-        }
-    }
+    protected SwitchCompat autoReloadEnableDisableSwitchCompat;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -192,11 +159,7 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
                 drawerLayout.openDrawer(Gravity.START);
             }
         });
-        autoReloadEnableDisableSwitchCompat.setOnCheckedChangeListener((compoundButton, b) -> {
-            appSharedPreference.setUserStatusOnline(b);
-            String status = b ? Constant.ONLINE_STATUS : Constant.OFFLINE_STATUS;
-            updateLocationRequest(ApiUtility.getInstance().getApiKeyMetaData(), status);
-        });
+        autoReloadEnableDisableSwitchCompat.setChecked(appSharedPreference.isUserStatusOnline());
         isSignedIn = appSharedPreference.isUserIdAvailable();
         loadMenu();
     }
@@ -406,8 +369,8 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
         if (strItem != null) {
             String menuLabel = strItem[0];
             if (menuLabel.equals("checkstatus")) {
-                //DocumentStatusActivity.start(this);
-                OnlineActivity.start(this);
+                DocumentStatusActivity.start(this);
+                //OnlineActivity.start(this);
             } else if (menuLabel.equals("referearn")) {
                 intent = new Intent(this, ReferalProgramActivity.class);
                 startActivity(intent);
@@ -491,5 +454,4 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
             }
         }
     }
-
 }

@@ -23,6 +23,10 @@ public class AppSharedPreference {
     private static final String LAST_LOCATION_LAT = "LastLocationLat";
     private static final String LAST_LOCATION_LONG = "LastLocationLong";
     private static final String USER_STATUS = "UserStatus";
+    private static final String COUNTRY_DIAL_CODE_KEY = "CountryDialCodeKey";
+    private static final String EMAIL_ID_KEY = "EmailIdKey";
+    private static final String PROFILE_PICTURE_KEY = "ProfilePictureKey";
+    private static final String SPEED_KEY = "SpeedKey";
     private static final String DEFAULT_VALUE = null;
     private SharedPreferences sharedPreferences;
 
@@ -139,6 +143,45 @@ public class AppSharedPreference {
         editor.apply();
     }
 
+    public void setCountryDialCode(String countryDialCode) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(COUNTRY_DIAL_CODE_KEY, countryDialCode);
+        editor.apply();
+    }
+
+    public void setEmailId(String emailId) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(EMAIL_ID_KEY, emailId);
+        editor.apply();
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(PROFILE_PICTURE_KEY, profilePicture);
+        editor.apply();
+    }
+
+    public void setSpeed(float speed) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putFloat(SPEED_KEY, speed);
+        editor.apply();
+    }
+
+    public float getSpeed() {
+        return sharedPreferences.getFloat(SPEED_KEY, 0f);
+    }
+
+    public String getCountryDialCode() {
+        return sharedPreferences.getString(COUNTRY_DIAL_CODE_KEY, null);
+    }
+
+    public String getEmailId() {
+        return sharedPreferences.getString(EMAIL_ID_KEY, null);
+    }
+
+    public String getProfilePicture() {
+        return sharedPreferences.getString(PROFILE_PICTURE_KEY, null);
+    }
 
     public boolean isUserStatusOnline() {
         return sharedPreferences.getBoolean(USER_STATUS, false);

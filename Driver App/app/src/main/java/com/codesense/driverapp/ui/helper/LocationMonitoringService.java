@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -21,48 +22,122 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.text.DecimalFormat;
 
+/**
+ * This class to access location lat and long values in background
+ * @link https://stackoverflow.com/questions/36321661/how-can-i-use-fused-location-provider-inside-a-service-class
+ */
 public class LocationMonitoringService extends Service implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         com.google.android.gms.location.LocationListener {
 
     private static final String TAG = LocationMonitoringService.class.getSimpleName();
-    GoogleApiClient mLocationClient;
-    LocationRequest mLocationRequest = new LocationRequest();
+    GoogleApiClient mGoogleApiClient;
+    LocationRequest mLocationRequest;
 
     public static final String ACTION_LOCATION_BROADCAST = LocationMonitoringService.class.getName() + "LocationBroadcast";
     public static final String EXTRA_LATITUDE = "extra_latitude";
     public static final String EXTRA_LONGITUDE = "extra_longitude";
-    String deslat, deslng, driver_id, access_token, liveTrackId, route_id;
-    double totalDistance, passedDistance;
-    boolean isFirst = true;
+    private static final long INTERVAL = 1000 * 30 * 60;
+    private static final long FASTEST_INTERVAL = 1000 * 25 * 60;
+    private static final long MEDIUM_INTERVAL = 1000 * 30 * 60;
     AppSharedPreference appSharedPreference;
 
+    /**
+     * This method to find location permission enabled or not
+     * @return boolean
+     */
+    private boolean hasLocationPermissionEnabled() {
+        return (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    /**
+     * This method to create location request object
+     */
+    private void createLocationRequest() {
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(MEDIUM_INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+    }
+
+    /**
+     * This method to start location
+     * it will call while create new object for this service class
+     */
+    private void startLocationUpdates() {
+        if (mGoogleApiClient != null) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+            Log.d(TAG, "Location update started ..............: ");
+        }
+    }
+
+    /**
+     * This method to stop location
+     * it will call while stop this service
+     */
+    private void stopLocationUpdates() {
+        if (mGoogleApiClient != null && mGoogleApiClient.isConnected() && LocationServices.FusedLocationApi != null) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(
+                    mGoogleApiClient, this);
+            Log.d(TAG, "Location update stopped .......................");
+            mGoogleApiClient.disconnect();
+        }
+    }
+
+    /**
+     * This method to find speed per seconds and update the values in preferences.
+     * convert Meters/Second to  kmph-1   then you need to multipl the  Meters/Second answer from 3.6
+     * @link http://mycodingworld1.blogspot.com/2015/12/calculate-speed-from-gps-location.html
+     * @param speed
+     */
+    private void updateSpeed(float speed) {
+        float nSpeed = speed * 3.6f;
+        //Convert meters/second to miles/hour
+        nSpeed = nSpeed * 2.2369362920544f/3.6f;
+        appSharedPreference.setSpeed(nSpeed);
+    }
+
+    /**
+     * This callback method will call when create object.
+     * @link https://stackoverflow.com/questions/29343922/googleapiclient-is-throwing-googleapiclient-is-not-connected-yet-after-onconne
+     */
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public void onCreate() {
+        super.onCreate();
         if (null == appSharedPreference) {
             appSharedPreference = new AppSharedPreference(getApplicationContext());
         }
-//        myPref = new PreferencesManager(this);
-//        deslat = myPref.getStringValue("desLat");
-//        deslng = myPref.getStringValue("desLng");
-//        driver_id = myPref.getStringValue("driver_id");
-//        access_token = myPref.getStringValue("access_token");
-//        route_id = myPref.getStringValue("route_id");
-//        liveTrackId = myPref.getStringValue("liveTrackId");
-//        apiInterface = APIClient.getClient().create(APIInterface.class);
-        mLocationClient = new GoogleApiClient.Builder(this)
+        createLocationRequest();
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-        mLocationRequest.setInterval(3000);
-        mLocationRequest.setFastestInterval(2000);
-        mLocationRequest.setSmallestDisplacement(1);
-        int priority = LocationRequest.PRIORITY_HIGH_ACCURACY; //by default
-        //PRIORITY_BALANCED_POWER_ACCURACY, PRIORITY_LOW_POWER, PRIORITY_NO_POWER are the other priority modes
-        mLocationRequest.setPriority(priority);
-        mLocationClient.connect();
-        //Make it stick to the notification panel so it is less prone to get cancelled by the Operating System.
+
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        //
+        if (Build.VERSION_CODES.M >= Build.VERSION.SDK_INT) {
+            if (hasLocationPermissionEnabled()) {
+                if (!mGoogleApiClient.isConnected()) {
+                    mGoogleApiClient.connect();
+                } else {
+                    startLocationUpdates();
+                }
+            }
+        } else {
+            if (!mGoogleApiClient.isConnected()) {
+                mGoogleApiClient.connect();
+            } else {
+                startLocationUpdates();
+            }
+        }
         return START_STICKY;
     }
 
@@ -77,25 +152,10 @@ public class LocationMonitoringService extends Service implements
      */
     @Override
     public void onConnected(Bundle dataBundle) {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-
-            Log.d(TAG, "== Error On onConnected() Permission not granted");
-            //Permission not granted by user so cancel the further execution.
-
-            return;
+        CrashlyticsHelper.d(TAG, "onConnected - isConnected ...............: " + mGoogleApiClient.isConnected());
+        if (mGoogleApiClient.isConnected()) {
+            startLocationUpdates();
         }
-
-
-        LocationServices.FusedLocationApi.requestLocationUpdates(mLocationClient, mLocationRequest, this);
-
-        Log.d(TAG, "Connected to Google API");
     }
 
     /*
@@ -113,6 +173,7 @@ public class LocationMonitoringService extends Service implements
         Log.d(TAG, "Location changed");
         if (location != null) {
             Log.d(TAG, "== location != null");
+            updateSpeed(location.getSpeed());
             appSharedPreference.setLastLocationLatitude(String.valueOf(location.getLatitude()));
             appSharedPreference.setLastLocationLong(String.valueOf(location.getLongitude()));
             sendMessageToUI(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
@@ -155,5 +216,14 @@ public class LocationMonitoringService extends Service implements
         Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
                 + " Meter   " + meterInDec);
         return Radius * c;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (hasLocationPermissionEnabled()) {
+            stopLocationUpdates();
+        }
+        CrashlyticsHelper.d(TAG, "Service Stopped!");
     }
 }
