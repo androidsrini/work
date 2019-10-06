@@ -458,7 +458,7 @@ public class RegisterActivity extends BaseActivity {
     /**
      * This method is used for get country object from data base based on user enter value.
      *
-     * @param e Editable argument
+     * @param s Editable argument
      */
     private void findCountryFromCountryName(String s) {
         compositeDisposable.add(DatabaseClient.getInstance(this).getAppDatabase().countryDao().findByCountryName(s)

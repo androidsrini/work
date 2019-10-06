@@ -21,6 +21,9 @@ public interface CityDao {
     @Query("SELECT * FROM CitiesItem")
     Single<List<CitiesItem>> getCityList();
 
+    @Query("SELECT * FROM CitiesItem")
+    List<CitiesItem> getCityListByNormalThread();
+
     /**
      * This method will return all city based on city ids param.
      * @param cityIds country ids.

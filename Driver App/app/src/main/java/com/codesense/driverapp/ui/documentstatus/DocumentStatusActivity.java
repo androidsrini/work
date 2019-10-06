@@ -19,6 +19,8 @@ import android.widget.Button;
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.data.DocumentsListItem;
 import com.codesense.driverapp.data.DocumentsListStatusResponse;
+import com.codesense.driverapp.data.VehicleDetailRequest;
+import com.codesense.driverapp.data.VehicleDetails;
 import com.codesense.driverapp.di.utils.PermissionManager;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
@@ -51,6 +53,7 @@ public class DocumentStatusActivity extends DrawerActivity implements View.OnCli
     @Inject protected PermissionManager permissionManager;
     private DocumentsListItem selectedDocumetnsListItem;
     private int selectedItemPosition;
+    private DocumentsListStatusResponse documentsListStatusResponse;
 
     /**
      * This method to start DocumentStatusActivity class.
@@ -97,7 +100,7 @@ public class DocumentStatusActivity extends DrawerActivity implements View.OnCli
                     clearAndUpdateDocumentListUI();
                 } else {
                     if (apiResponse.isValidResponse()) {
-                        DocumentsListStatusResponse documentsListStatusResponse = new Gson().fromJson(apiResponse.data, DocumentsListStatusResponse.class);
+                        documentsListStatusResponse = new Gson().fromJson(apiResponse.data, DocumentsListStatusResponse.class);
                         if (documentsListStatusResponse != null) {
                             arraylist.clear();
                             if (null != documentsListStatusResponse.getDocumentsList()) {
@@ -213,12 +216,23 @@ public class DocumentStatusActivity extends DrawerActivity implements View.OnCli
 
     }
 
+    private VehicleDetailRequest getVehicleDetailRequest() {
+        VehicleDetailRequest vehicleDetailRequest = new VehicleDetailRequest();
+        if (null != documentsListStatusResponse) {
+            VehicleDetails vehicleDetails = documentsListStatusResponse.getVehicleDetails();
+            vehicleDetailRequest.setVehicleName(vehicleDetails.getVehicleNumber());
+            vehicleDetailRequest.setVehicleNumber(vehicleDetails.getVehicleNumber());
+            vehicleDetailRequest.setVehicleTypeId(vehicleDetails.getVehicleTypeId());
+        }
+        return vehicleDetailRequest;
+    }
+
     private void initially() {
         uploadContentButton = findViewById(R.id.uploadContentButton);
         recyclerView = findViewById(R.id.recyclerView);
         uploadContentButton.setOnClickListener(((view) -> {
             if (isAnyItemDocumentSelected()) {
-                documentStatusViewModel.uploadDocumentRequest(findSelectedDocumentList());
+                documentStatusViewModel.uploadDocumentRequest(findSelectedDocumentList(), getVehicleDetailRequest());
             } else {
                 utility.showToastMsg("Please select document");
             }

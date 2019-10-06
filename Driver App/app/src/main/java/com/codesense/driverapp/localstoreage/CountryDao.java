@@ -21,6 +21,9 @@ public interface CountryDao {
      * @return List<Country></Country>
      */
     @Query("SELECT * FROM CountriesItem")
+    List<CountriesItem> getCountryListByNormalThread();
+
+    @Query("SELECT * FROM CountriesItem")
     Single<List<CountriesItem>> getCountryList();
 
     /**

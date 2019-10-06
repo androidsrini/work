@@ -121,6 +121,11 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
+        <service android:name=".localstoreage.ApiLocationService" android:process=":remote">
+            <intent-filter>
+                <action android:name="localstoreage.LocationService"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

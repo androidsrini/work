@@ -3,6 +3,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.codesense.driverapp.data.DocumentsListItem;
+import com.codesense.driverapp.data.VehicleDetailRequest;
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
@@ -29,7 +30,7 @@ public class DocumentStatusViewModel extends ViewModel {
         this.requestHandler = requestHandler;
     }
 
-    private Observable<MergedResponse> createObservableObject(List<DocumentsListItem> documentsListItem) {
+    private Observable<MergedResponse> createObservableObject(List<DocumentsListItem> documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
         if (documentsListItem.size() > 10) {
             throw new IllegalArgumentException("uploadDocumentRequest api support 9 items only");
         }
@@ -45,8 +46,8 @@ public class DocumentStatusViewModel extends ViewModel {
         Observable<JsonElement> observable9 = null;
         int count = 0;
         do {
-            Observable<JsonElement> observable = requestHandler.uploadDocumentsWithoutVehicleRequest(ApiUtility.getInstance().getApiKeyMetaData(),
-                    documentsListItem.get(count));
+            Observable<JsonElement> observable = requestHandler.uploadDocumentsRequest(ApiUtility.getInstance().getApiKeyMetaData(),
+                    documentsListItem.get(count), vehicleDetailRequest);
             switch (count) {
                 case 0:
                     observable1 = observable;
@@ -146,13 +147,13 @@ public class DocumentStatusViewModel extends ViewModel {
      *
      * @param documentsListItem
      */
-    public void uploadDocumentRequest(List<DocumentsListItem> documentsListItem) {
+    public void uploadDocumentRequest(List<DocumentsListItem> documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
         if (null != requestHandler && null != documentsListItem) {
             if (1 == documentsListItem.size()) {
-                uploadDocumentRequest(documentsListItem.get(0));
+                uploadDocumentRequest(documentsListItem.get(0), vehicleDetailRequest);
                 return;
             }
-            disposables.add(createObservableObject(documentsListItem)
+            disposables.add(createObservableObject(documentsListItem, vehicleDetailRequest)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnSubscribe(d -> apiResponseMutableLiveData.setValue(DocumentStatusApiResponse.newInstance(ApiResponse.loading(),
@@ -170,9 +171,10 @@ public class DocumentStatusViewModel extends ViewModel {
      *
      * @param documentsListItem
      */
-    public void uploadDocumentRequest(DocumentsListItem documentsListItem) {
+    public void uploadDocumentRequest(DocumentsListItem documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
         if (null != requestHandler) {
-            disposables.add(requestHandler.uploadDocumentsWithoutVehicleRequest(ApiUtility.getInstance().getApiKeyMetaData(), documentsListItem).
+            disposables.add(requestHandler.uploadDocumentsRequest(ApiUtility.getInstance().getApiKeyMetaData(),
+                    documentsListItem, vehicleDetailRequest).
                     subscribeOn(Schedulers.io()).
                     observeOn(AndroidSchedulers.mainThread()).
                     doOnSubscribe(d -> apiResponseMutableLiveData.setValue(DocumentStatusApiResponse.newInstance(ApiResponse.loading(),
