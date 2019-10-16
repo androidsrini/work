@@ -7,17 +7,18 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.base.BaseActivity;
+import com.codesense.driverapp.ui.accept.AcceptActivity;
 import com.codesense.driverapp.ui.helper.Utils;
 import com.product.annotationbuilder.ProductBindView;
 import com.product.process.annotation.Initialize;
 import com.product.process.annotation.Onclick;
 
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class PickUpLocationAcceptActivity extends BaseActivity {
@@ -120,16 +121,17 @@ public class PickUpLocationAcceptActivity extends BaseActivity {
 
     private String hmsTimeFormatter(long milliSeconds) {
 
-        String hms = String.format("%02d:%02d",
+        String hms = String.format(Locale.getDefault(),"%02d:%02d",
                 TimeUnit.MILLISECONDS.toMinutes(milliSeconds) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(milliSeconds)),
                 TimeUnit.MILLISECONDS.toSeconds(milliSeconds) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliSeconds)));
-
         return hms;
     }
 
     @Onclick(R.id.btnAccept)
     public void btnAccept(View v) {
-        Utils.saveIntegerToPrefs(this, "acceptDrive", 1);
+        //Utils.saveIntegerToPrefs(this, "acceptDrive", 1);
+        //TODO show accept screen
+        AcceptActivity.start(this);
         finish();
     }
 

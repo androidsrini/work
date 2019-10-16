@@ -3,13 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.codesense.driverapp">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
     <application
         android:name=".base.BaseApplication"
         android:allowBackup="true"
@@ -20,16 +13,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:appComponentFactory">
-        <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
-        <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBDjZ8yAkQrA4vWlYu3Og1Nxcntp7388uQ" />
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-        <meta-data
-            android:name="com.codesense.driverapp.API_KEY"
-            android:value="4eb708abeccb276a446bdf6c75a065e332f1f77a76048ef97e200d0d55c7165bf392565391b328cc649c6e5506da693077ed4043de414a487be57e5f255437db" />
+        <activity android:name=".ui.accept.AcceptActivity">
+        </activity>
 
         <activity
             android:name=".ui.splash.SplashActivity"
@@ -40,17 +25,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.launchscreen.LaunchScreenActivity"
+        <activity
+            android:name=".ui.launchscreen.LaunchScreenActivity"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.register.RegisterActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ui.verifymobile.VerifyMobileActivity"
-            android:screenOrientation="portrait"
-            android:launchMode="singleTask"/>
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name=".ui.selecttype.SelectTypeActivity"
             android:screenOrientation="portrait" />
@@ -100,32 +87,57 @@
         <activity
             android:name=".ui.referalprogram.ReferalProgramActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".ui.editmobilenumber.EditMobileNumberActivity"
             android:screenOrientation="portrait" />
-
-        <service android:name=".ui.helper.LocationMonitoringService" />
-        <activity android:name=".ui.imagepicker.ImagePickerActivity"
-            android:screenOrientation="portrait"/>
-
+        <activity
+            android:name=".ui.imagepicker.ImagePickerActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.register.CountryCitiesSelectionActivity"
             android:theme="@style/AppTheme" />
-        <activity android:name="com.library.fileimagepicker.filepicker.FilePickerActivity"
+        <activity
+            android:name="com.library.fileimagepicker.filepicker.FilePickerActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"/>
-        <receiver android:name=".net.NetworkChangeReceiver"
+            android:theme="@style/AppTheme" />
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="false" />
+
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyAuo9b45x7mXBqCtDDEwCxPYirpUyOB2oY" />
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.codesense.driverapp.API_KEY"
+            android:value="4eb708abeccb276a446bdf6c75a065e332f1f77a76048ef97e200d0d55c7165bf392565391b328cc649c6e5506da693077ed4043de414a487be57e5f255437db" />
+        <receiver
+            android:name=".net.NetworkChangeReceiver"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
-        <service android:name=".localstoreage.ApiLocationService" android:process=":remote">
+
+        <service android:name=".ui.helper.LocationMonitoringService" />
+
+        <service
+            android:name=".localstoreage.ApiLocationService"
+            android:process=":remote">
             <intent-filter>
-                <action android:name="localstoreage.LocationService"/>
+                <action android:name="localstoreage.LocationService" />
             </intent-filter>
         </service>
     </application>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 </manifest>

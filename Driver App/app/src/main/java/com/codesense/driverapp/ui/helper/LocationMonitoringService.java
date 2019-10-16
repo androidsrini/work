@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.google.android.gms.common.ConnectionResult;
@@ -99,6 +100,11 @@ public class LocationMonitoringService extends Service implements
         //Convert meters/second to miles/hour
         nSpeed = nSpeed * 2.2369362920544f/3.6f;
         appSharedPreference.setSpeed(nSpeed);
+        showToast("speed: " + nSpeed);
+    }
+
+    private void showToast(String msg) {
+        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -172,6 +178,7 @@ public class LocationMonitoringService extends Service implements
     public void onLocationChanged(Location location) {
         Log.d(TAG, "Location changed");
         if (location != null) {
+            //showToast("Location changed");
             Log.d(TAG, "== location != null");
             updateSpeed(location.getSpeed());
             appSharedPreference.setLastLocationLatitude(String.valueOf(location.getLatitude()));

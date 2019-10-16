@@ -294,8 +294,6 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
         //This method will executed only once.
 
         if (!mAlreadyStartedService) {
-
-
             if (isLocationEnabled(this)) {
 
                 //Start location sharing service to app server.........
@@ -304,7 +302,6 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
             } else {
                 createLocationServiceError(OnlineActivity.this);
             }
-
             mAlreadyStartedService = true;
             //Ends................................................
         } else {

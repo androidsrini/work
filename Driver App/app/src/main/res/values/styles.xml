@@ -34,6 +34,21 @@
         <item name="colorControlHighlight">@color/primary_color</item>
     </style>
 
+    <style name="Fat">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="Large">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+    </style>
+
+    <style name="Wrap">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
     <style name="TitlebarText" parent="@android:style/TextAppearance.Medium">
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">23sp</item>
@@ -81,6 +96,37 @@
         <item name="android:layout_marginTop">10dp</item>
         <item name="android:background">@drawable/dotted_horizontal_drawable</item>
         <item name="android:layerType">software</item>
+    </style>
+
+    <style name="OnlineFooterStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@color/primary_color</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:padding">10dp</item>
+        <item name="android:weightSum">1</item>
+    </style>
+
+    <style name="OnlineFooterButtonStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">15dp</item>
+        <item name="android:layout_weight">0.5</item>
+        <item name="android:background">@drawable/button_filled_secondary</item>
+        <item name="android:textColor">@color/background_color</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="Fat.PickupLabelStyle">
+        <item name="android:textColor">@color/primary_color</item>
+        <item name="android:layout_toStartOf">@+id/pickupNavigationImageView</item>
+    </style>
+
+    <style name="Fat.PickupAddressStyle">
+        <item name="android:textColor">@color/background_color</item>
+        <item name="android:layout_toStartOf">@+id/pickupNavigationImageView</item>
+        <item name="android:layout_below">@+id/pickupTitleTextView</item>
     </style>
 
 </resources>

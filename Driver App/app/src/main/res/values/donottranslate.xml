@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">DriverApp</string>
+    <string name="welcome_text_prefix">Welcome to the </string>
+    <string name="welcome_text_sufix">" "VAVA</string>
+    <string name="driver_text">Driver app</string>
+    <string name="sign_in_button">SIGN IN</string>
+    <string name="register_button">REGISTER</string>
+    <string name="or_ride_with_vava">Or Ride with VAVA</string>
+    <string name="register_des_text">Let\'s start with creating \n your account </string>
+    <string name="first_name_text">First Name</string>
+    <string name="last_name_text">Last Name</string>
+
+    <!--Verify Mobile-->
+    <string name="email_text">Email address</string>
+    <string name="phone_text">Phone Number</string>
+    <string name="password_text">Password</string>
+    <string name="confirm_password_text">Confirm Password</string>
+
+    <!--Select Type-->
+    <string name="city_text">City</string>
+    <string name="country_text">Country</string>
+    <string name="invite_text">Invite Code</string>
+    <string name="register_policy_text_first_prefix1">By proceeding, I agree to</string>
+    <string name="register_policy_app_name">" "VAVA\'s</string>
+    <string name="register_policy_text_prefix2">Terms of Use</string>
+
+
+    <!--Legal agreement-->
+
+    <string name="register_policy_text_first_sufix1">and acknowledge that I have read the </string>
+    <string name="register_policy_text_first_sufix2"> Privacy Policy</string>
+    <string name="register_policy_text_second">I also agree that <b>VAVA</b> or representatives may contact me by Email, Phone or SMS(including by automated means) at the email address or number provide, including for marketing purposes.</string>
+    <string name="verify_title">Verify Mobile</string>
+
+
+    <!--Side Drawer-->
+    <string name="verify_mobile_text_place_holder">Enter the 4-digit code to sent to you at %1$s</string>
+    <string name="edit_number_text">Edit Number</string>
+    <string name="resend_text">Resend OTP</string>
+    <string name="select_type_title">Select Type</string>
+    <string name="select_type_des">Please choose how would like to partner with us.</string>
+
+    <string name="select_type_driver_text">Driver cum owner</string>
+    <string name="select_type_driver_desc">Choose this option if you own the vehicle and plan to drive yourself too</string>
+    <string name="select_type_non_driver_text">Non-Driver Partner</string>
+    <string name="select_type_non_driver_desc">Choose this option if you own the vehicle, but you don\'t drive. You have driver under</string>
+
+    <string name="legal_title">Legal Agreement</string>
+    <string name="legal_text">I understand that the information provided by me may be used by     ,or its affiliates(\'   \'),Authbridge Research Servies Private Limited or its affiliates(being a third party agency appointed by    ), or any other third party appointed by Uber from time-time, to verify and validate the information I have provided as</string>
+    <string name="legal_checkbox_text">By clicking "I accept" or signing below (as such may be required by applicable law), Driver expressly acknowledges that he or she(i) has read and understood this Addendum;(ii) has had the opportunity to consult with other(including an attorney)regarding this Addendum;(iii)agree to be bound by term and condition this Addendum:and(iv)is legally competent to enter into this Addendum</string>
+    <!--Upload Documents-->
+
+    <string name="legal_button">I ACCEPT/CONTINUE</string>
+    <string name="drawer_signout">Sign out</string>
+
+    <string name="drawermenuitem_count">10</string>
+    <string name="upload_doc_text">Upload Documents</string>
+
+
+    <string name="upload_remaining_text">Remaining Steps</string>
+    <string name="vehicle_type">Vehicle Type</string>
+
+    <string name="vehicle_name">Vehicle Name</string>
+    <string name="vehicle_number">Vehicle Number</string>
+
+    <string name="recommended_next_step">Recommended next step</string>
+    <string name="driver_license">Driver\'s license</string>
+    <string name="driver_license_back_side">Driver\'s license Backside</string>
+    <string name="driver_profile_image">Driver\'s Profile Image</string>
+    <string name="vehicle_registration">Vehicle Certification of Registration</string>
+    <string name="vehicle_commerical_insurance">Vehicle Commercial Insurance</string>
+    <string name="vehicle_permit">Vehicle Permit</string>
+    <string name="verify_btn">Verify</string>
+    <string name="document_status_title">Document Status</string>
+    <string name="document_status_completed">Completed</string>
+    <string name="document_verification_pending">Verification Pending</string>
+    <string name="docstatus_legal_agreement">Legal Agreement</string>
+    <string name="docstatus_licence_front_side">Driver\'s License - Front side</string>
+
+
+    <string name="docstatus_licence_back_side">Driver\'s License - Back side</string>
+
+
+    <!--Document Status-->
+
+    <string name="docstatus_vehicle_commerical">Vehicle Commercial Insurance</string>
+    <string name="update_document_text">Update Documents</string>
+
+    <string name="vehicle_list_title">Vehicle</string>
+    <string name="add_vehicle_text">Add Vehicle</string>
+    <string name="name">Ravi</string>
+    <string name="vehicle_no">TN 01 1234</string>
+    <string name="add_vehicle_title">Add Vehicle</string>
+    <string name="add_vehicle_driver_name">Driver Name</string>
+    <string name="add_vehicle_driver_contact">Driver Contact Number</string>
+    <string name="add_vehicle_driver_email">Driver Email Address</string>
+    <string name="add_vehicle_password">Password</string>
+    <string name="add_vehicle_confirm_password">Confirm Password</string>
+    <string name="online_text">Online</string>
+
+
+    <!--Vehicle List-->
+    <string name="cancel_button">Cancel</string>
+    <string name="arrived_button">Arrived</string>
+    <string name="pick_up_location_title">Pick Up Location</string>
+    <string name="pick_up_destination_address">Destination Address</string>
+
+    <!--Add Vehicle-->
+    <string name="reject_button">Reject</string>
+    <string name="accept_button">Accept</string>
+    <string name="slide_to_end">Slide to End Trip</string>
+    <string name="payment_type_title">Payment Type</string>
+    <string name="payment_type_prepaid_text">Prepaid</string>
+    <string name="payment_type_postpaid_text">Postpaid</string>
+
+    <!--Online-->
+    <string name="payment_type_prepaid_des">Choose this option when you are paying earlier</string>
+    <string name="payment_type_postpaid_des">Choose this option for final payment</string>
+    <string name="paymentButton_text">Submit</string>
+    <string name="online_pick_up_location_title">Pickup Location</string>
+
+
+    <!--Pick Up Location Accept-->
+
+    <string name="setting_title">Setting</string>
+    <string name="setting_add_bank">Add Bank Details</string>
+    <string name="setting_type_pay">Type of Payment</string>
+    <string name="invite_friends_title">Invite Friends</string>
+
+    <string name="invite_friend_share_code_text">SHARE YOUR INVITE CODE</string>
+
+
+    <!--Payment Type-->
+    <string name="invite_friend_share_desc">Invite your friends by sharing above invite code and earn the referral amount</string>
+    <string name="invite_friend_button">Invite Friends</string>
+    <string name="loading">Loading...</string>
+    <string name="referal_earn_title">Referal and Earning</string>
+    <string name="referal_inivite_friends">Invite Friends</string>
+    <string name="referal_code_earning">Referal Earnings</string>
+
+
+    <!--Setting-->
+    <string name="login_btn">Sign In</string>
+    <string name="login_title">Sign In</string>
+    <string name="first_name_empty">Required First Name</string>
+
+    <string name="last_name_empty">Required Last Name</string>
+    <string name="email_address_empty">Required Email Address</string>
+    <string name="phone_number_empty">Required Phone Number</string>
+    <string name="password_empty">Required Password</string>
+    <string name="confirm_password_empty">Required Confirm Password</string>
+
+
+    <!--Referal Program-->
+    <string name="password_not_matched">Password does not matched</string>
+    <string name="email_not_valid">Email not valid</string>
+    <string name="mobile_number_not_valid">Mobile Number not valied</string>
+
+    <!--LOgin-->
+    <string name="edit_mobile_number_text">Enter Mobile Number</string>
+    <string name="edit_mobile_number_des_text">By continuing you may receive an SMS for verfication. Message and data rates may apply</string>
+
+    <!-- Register screen error msg -->
+    <string name="enter_mobile_screen_text">Enter Your Mobile Number</string>
+    <string name="ok_label">Ok</string>
+    <string name="yes_label">Yes</string>
+    <string name="no_label">No</string>
+    <string name="photo_picker">We require this permission to select photo from gallery and camera.</string>
+    <string name="doc_picker">We need this pemission to read documents from device.</string>
+    <string name="storage_picker">We need this pemission to read documents and image from device.</string>
+    <string name="add_driver_details">Add Driver Details</string>
+    <string name="add_driver">Add Driver</string>
+</resources>
