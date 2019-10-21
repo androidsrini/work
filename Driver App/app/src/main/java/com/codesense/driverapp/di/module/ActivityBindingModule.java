@@ -11,9 +11,11 @@ import com.codesense.driverapp.ui.launchscreen.LaunchScreenActivity;
 import com.codesense.driverapp.ui.legalagreement.LegalAgreementActivity;
 import com.codesense.driverapp.ui.online.OnlineActivity;
 import com.codesense.driverapp.ui.paymentType.PaymentActivity;
+import com.codesense.driverapp.ui.paymentsummary.PaymentSummaryActivity;
 import com.codesense.driverapp.ui.pickuplocationaccept.PickUpLocationAcceptActivity;
 import com.codesense.driverapp.ui.referalprogram.ReferalProgramActivity;
 import com.codesense.driverapp.ui.register.RegisterActivity;
+import com.codesense.driverapp.ui.review.SubmitReviewActivity;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
 import com.codesense.driverapp.ui.setting.SettingActivity;
 import com.codesense.driverapp.ui.signin.LoginActivity;
@@ -91,4 +93,10 @@ public abstract class ActivityBindingModule {
 
     @ContributesAndroidInjector
     abstract AcceptActivity bindAcceptActivity();
+
+    @ContributesAndroidInjector
+    abstract PaymentSummaryActivity bindPaymentSummaryActivity();
+
+    @ContributesAndroidInjector
+    abstract SubmitReviewActivity bindSubmitReviewActivity();
 }

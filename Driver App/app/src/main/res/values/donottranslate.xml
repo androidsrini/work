@@ -98,6 +98,7 @@
     <string name="add_vehicle_password">Password</string>
     <string name="add_vehicle_confirm_password">Confirm Password</string>
     <string name="online_text">Online</string>
+    <string name="rating_and_review_label">Rating &#38; Review</string>
 
 
     <!--Vehicle List-->
@@ -171,4 +172,28 @@
     <string name="storage_picker">We need this pemission to read documents and image from device.</string>
     <string name="add_driver_details">Add Driver Details</string>
     <string name="add_driver">Add Driver</string>
+
+    <!-- Accept screen -->
+    <string name="dummy_pickup_location" translatable="false">B 250-c, Mondeal Sequare, PrahladNagar - SG Highway, Ahmedabad, Gujarath 380015, India</string>
+
+    <!-- payment summary -->
+    <string name="payment_summary_title_label">Payment Summary</string>
+    <string name="total_fare_label">Total Fare</string>
+    <string name="total_fare_placeholder">RS.%1$d</string>
+    <string name="dummy_transaction_id">#v000001</string>
+    <string name="dummy_transaction_date">Mon,3 sep 2019</string>
+    <string name="dummy_drop_location">Longtown Cartisle UK</string>
+    <string name="distance_travel_label">Distance Travelled</string>
+    <string name="time_taken_label">Time Taken</string>
+    <string name="base_tare_label">Base Tare</string>
+    <string name="trans_waiting_fee_placeholder">In trans waiting fee(%1$d minute)</string>
+    <string name="tax_label">Tax</string>
+    <string name="subtotal_label">Subtotal</string>
+    <string name="discount_label">Discount</string>
+    <string name="total_label">Total</string>
+    <string name="payment_type_label">Payment Type</string>
+    <string name="collect_payment_label">Collect Payment</string>
+    <string name="submit_action">Submit</string>
+    <string name="submit_review_text">Submit Your Review</string>
+    <string name="comment_here_text">Comment here</string>
 </resources>

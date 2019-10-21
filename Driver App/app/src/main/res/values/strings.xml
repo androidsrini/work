@@ -1,5 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:locale="languageCode">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="languageCode">
     <array name="drawermenuitem_1">
         <item></item>
         <!-- Section Title -->
@@ -230,8 +229,6 @@
     <integer name="upload_document_count">3</integer>
     <integer name="upload_document2_count">3</integer>
     <integer name="document_status_count">4</integer>
-    <!-- Accept screen -->
-    <string name="dummy_pickup_location" translatable="false">B 250-c, Mondeal Sequare, PrahladNagar - SG Highway, Ahmedabad, Gujarath 380015, India</string>
     <!--Edit Mobile Number-->
     <string-array name="upload_document_item_0">
         <item>Recommended next step</item>
@@ -279,5 +276,7 @@
         <item>Verification Pending</item>
         <item>Vehicle Commercial Insurance</item>
     </string-array>
+    <string name="successfully_finished_txt">Successfully Finished</string>
+    <string name="successfully_finished_visit_again_txt">Current trip is successfully finished visit again</string>
 </resources>
 

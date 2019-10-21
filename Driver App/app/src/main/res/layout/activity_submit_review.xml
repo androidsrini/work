@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.review.SubmitReviewActivity">
+
+    <!--<include layout="@layout/toolbar_lay" />-->
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/primary_color"/>
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/submitMapView"
+        style="@style/Fat"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@+id/toolBar"
+        app:layout_constraintBottom_toTopOf="@+id/submitReviewFooterConstraintLayout"/>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/submitReviewFooterConstraintLayout"
+        style="@style/Fat"
+        android:layout_height="150dp"
+        android:padding="20dp"
+        android:background="@drawable/white_card"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+
+        <TextView
+            android:id="@+id/submitReviewLabelTextView"
+            style="@style/Fat"
+            android:text="@string/submit_review_text"
+            android:textColor="@color/secondary_color"
+            />
+
+        <RatingBar
+            style="@style/Widget.AppCompat.RatingBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_10"
+            app:layout_constraintTop_toBottomOf="@+id/submitReviewLabelTextView"
+            app:layout_constraintRight_toLeftOf="@+id/submitButton"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <Button
+            android:id="@+id/submitButton"
+            style="@style/Wrap"
+            android:text="@string/submit_action"
+            android:background="@drawable/yellow_button_drawable"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/submitReviewLabelTextView"
+            />
+
+        <EditText
+            style="@style/Fat"
+            android:hint="@string/comment_here_text"
+            app:layout_constraintTop_toBottomOf="@+id/submitButton"
+            />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>
