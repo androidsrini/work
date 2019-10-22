@@ -24,6 +24,7 @@ import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.ui.online.OnlineActivity;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
 import com.codesense.driverapp.ui.verifymobile.VerifyMobileActivity;
@@ -200,7 +201,7 @@ public class LoginActivity extends BaseActivity {
                             SelectTypeActivity.start(this);
                             //TO kill this activity class from backstack
                             finish();
-                        } else {
+                        } else if (-1 == appSharedPreference.getIsActivate() || 0 == appSharedPreference.getOtpVerify()){
                             //To show dashboard screen.
                             OwnerTypeResponse ownerTypeResponse = new Gson().fromJson(apiResponse.data, OwnerTypeResponse.class);
                             if (null != ownerTypeResponse) {
@@ -212,6 +213,9 @@ public class LoginActivity extends BaseActivity {
                                 }
                             }
                             UploadDocumentActivity.start(this);
+                            finish();
+                        }else{
+                            OnlineActivity.start(this);
                             finish();
                         }
                     }
@@ -237,6 +241,7 @@ public class LoginActivity extends BaseActivity {
             appSharedPreference.setCountryDialCode(signinOwnerResponse.getCountryDialCode());
             appSharedPreference.setEmailId(signinOwnerResponse.getEmailId());
             appSharedPreference.setProfilePicture(signinOwnerResponse.getProfilePicture());
+            appSharedPreference.saveIsActivate(signinOwnerResponse.getIs_activated());
         }
     }
 

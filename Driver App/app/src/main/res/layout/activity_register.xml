@@ -157,6 +157,8 @@
                     android:layout_height="wrap_content"
                     android:textSize="18sp"
                     android:hint="@string/country_text"
+                    android:singleLine="true"
+                    android:imeOptions="actionDone"
                     android:backgroundTint="@color/primary_color"
                     android:textColorHint="@color/secondary_color"
                     android:textColor="@color/secondary_color"

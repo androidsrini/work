@@ -39,6 +39,8 @@ public class SigninOwnerResponse{
 
 	@SerializedName("status")
 	private int status;
+@SerializedName("is_activated")
+	private int is_activated;
 
 	public void setEmailId(String emailId){
 		this.emailId = emailId;
@@ -134,6 +136,14 @@ public class SigninOwnerResponse{
 
 	public int getStatus(){
 		return status;
+	}
+
+	public int getIs_activated() {
+		return is_activated;
+	}
+
+	public void setIs_activated(int is_activated) {
+		this.is_activated = is_activated;
 	}
 
 	@Override
