@@ -3,10 +3,13 @@ package com.codesense.driverapp.ui.accept
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.Toast
 import com.codesense.driverapp.R
 import com.codesense.driverapp.ui.drawer.DrawerActivity
+import com.codesense.driverapp.ui.paymentsummary.PaymentSummaryActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapsInitializer
@@ -18,6 +21,7 @@ import kotlinx.android.synthetic.main.activity_accept.*
 class AcceptActivity : DrawerActivity(), OnMapReadyCallback {
 
     val position = LatLng(-33.920455, 18.466941)
+    lateinit var handler: Handler;
 
     override fun onMapReady(p0: GoogleMap?) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
@@ -34,6 +38,13 @@ class AcceptActivity : DrawerActivity(), OnMapReadyCallback {
         }
     }
 
+    private fun showEndTripUI() {
+        handler.postDelayed(Runnable {
+            endTripConstrainRelativeLayout.visibility = View.VISIBLE
+            startTripConstrainLinearLayout.visibility = View.GONE
+        }, 2000)
+    }
+
     companion object {
         val TAG = AcceptActivity::class.java.name
         @JvmStatic
@@ -45,6 +56,7 @@ class AcceptActivity : DrawerActivity(), OnMapReadyCallback {
         val view = LayoutInflater.from(this).inflate(R.layout.activity_accept, null)
         frameLayout.addView(view)
         titleTextView.text = getResources().getString(R.string.online_text)
+        handler = Handler()
         with(acceptMapView) {
             acceptMapView.onCreate(savedInstanceState)
             acceptMapView.getMapAsync{
@@ -53,6 +65,10 @@ class AcceptActivity : DrawerActivity(), OnMapReadyCallback {
                 setMapLocation(it)
             }
         }
+        endTripConstrainRelativeLayout.setOnClickListener({
+            PaymentSummaryActivity.start(this@AcceptActivity)
+        })
+        showEndTripUI()
         //setContentView(R.layout.activity_accept)
     }
 

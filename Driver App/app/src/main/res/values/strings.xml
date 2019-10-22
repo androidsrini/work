@@ -226,6 +226,7 @@
     <color name="light_blue_color">#D6EAF8</color>
     <color name="dark_grey">#515A5A</color>
     <color name="background_document_status">#FA8072</color>
+    <color name="transprent_black">#80000000</color>
     <integer name="upload_document_count">3</integer>
     <integer name="upload_document2_count">3</integer>
     <integer name="document_status_count">4</integer>
@@ -278,5 +279,14 @@
     </string-array>
     <string name="successfully_finished_txt">Successfully Finished</string>
     <string name="successfully_finished_visit_again_txt">Current trip is successfully finished visit again</string>
+    <string name="ride_label">Your Rides</string>
+    <string name="dummy_sedan">Sedan</string>
+    <string name="canceled">Canceled</string>
+    <string name="dummy_month">Mon 19 Sept, 2018</string>
+    <string name="dummy_time">08:12</string>
+    <string name="dummy_price">$155</string>
+    <string name="past_ride_tab">Past</string>
+    <string name="upcoming_ride_tab">Upcoming</string>
+    <string name="slide_end_trip_txt"><![CDATA[>>> Slide to End Trip >>>]]></string>
 </resources>
 

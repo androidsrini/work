@@ -1,6 +1,9 @@
 package com.codesense.driverapp.ui.review
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
 import android.view.animation.AnimationUtils
@@ -10,6 +13,7 @@ import android.widget.ImageView
 import android.widget.Toast
 import com.codesense.driverapp.R
 import com.codesense.driverapp.ui.drawer.DrawerActivity
+import com.codesense.driverapp.ui.history.RideHistoryActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapsInitializer
@@ -21,6 +25,12 @@ import kotlinx.android.synthetic.main.activity_submit_review.*
 class SubmitReviewActivity : DrawerActivity(), OnMapReadyCallback {
 
     val position = LatLng(-33.920455, 18.466941)
+    lateinit var handler: Handler
+
+    companion object {
+        @JvmStatic
+        fun start(context: Context) = context.startActivity(Intent(context, SubmitReviewActivity::class.java))
+    }
 
     override fun onMapReady(p0: GoogleMap?) {
 
@@ -58,10 +68,7 @@ class SubmitReviewActivity : DrawerActivity(), OnMapReadyCallback {
 
         button_close.setOnClickListener {
             alertDialog.dismiss()
-            //supportFragmentManager.fragments.clear()
-            /*val intent = Intent(this@CheckOut, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            startActivity(intent)*/
+           RideHistoryActivity.start(this@SubmitReviewActivity)
         }
     }
 
@@ -74,6 +81,7 @@ class SubmitReviewActivity : DrawerActivity(), OnMapReadyCallback {
         actionBar!!.title = getString(R.string.rating_and_review_label)
         //actionBar.setHomeAsUpIndicator(android.R.drawable.)
         actionBar.setDisplayHomeAsUpEnabled(true);
+        handler = Handler()
         with(submitMapView) {
             submitMapView.onCreate(savedInstanceState)
             submitMapView.getMapAsync{
@@ -83,7 +91,10 @@ class SubmitReviewActivity : DrawerActivity(), OnMapReadyCallback {
             }
         }
         submitButton.setOnClickListener{ showSuccessTrip() }
-        //showSuccessTrip()
+        handler.postDelayed(Runnable {
+            showSuccessTrip()
+        }, 2000)
+        //
     }
 
     override fun onResume() {

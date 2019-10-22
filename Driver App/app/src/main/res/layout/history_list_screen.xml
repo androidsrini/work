@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/white_card">
+
+    <ImageView
+        android:id="@+id/carTypeImageView"
+        style="@style/Wrap"
+        android:layout_marginStart="@dimen/margin_10"
+        android:adjustViewBounds="true"
+        android:src="@drawable/hatchback"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/rideCalenderImageView"
+        android:layout_width="@dimen/radius_list_icon_size"
+        android:layout_height="@dimen/radius_list_icon_size"
+        android:layout_marginStart="@dimen/margin_10"
+        android:src="@drawable/ic_calendar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/carTypeImageView" />
+
+    <ImageView
+        android:id="@+id/rideTimeImageView"
+        android:layout_width="@dimen/radius_list_icon_size"
+        android:layout_height="@dimen/radius_list_icon_size"
+        android:layout_marginStart="@dimen/margin_10"
+        android:src="@drawable/ic_access_time_black_24dp"
+        app:layout_constraintLeft_toRightOf="@+id/rideMonthTextView"
+        app:layout_constraintTop_toBottomOf="@+id/carTypeImageView" />
+
+    <TextView
+        android:id="@+id/textView"
+        style="@style/Wrap"
+        android:layout_marginStart="@dimen/margin_10"
+        android:text="@string/dummy_sedan"
+        android:gravity="center_vertical"
+        app:layout_constrainedHeight="true"
+        app:layout_constraintBottom_toTopOf="@+id/rideMonthTextView"
+        app:layout_constraintLeft_toRightOf="@+id/carTypeImageView"
+        app:layout_constraintStart_toEndOf="@+id/carTypeImageView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        style="@style/RideHistoryCancelStyle"
+        android:text="@string/canceled"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <TextView
+        android:id="@+id/rideMonthTextView"
+        style="@style/Wrap"
+        android:layout_marginStart="@dimen/margin_10"
+        android:text="@string/dummy_month"
+        app:layout_constraintLeft_toRightOf="@+id/rideCalenderImageView"
+        app:layout_constraintTop_toBottomOf="@+id/carTypeImageView" />
+
+    <TextView
+        android:id="@+id/rideTimeTextView"
+        style="@style/Wrap"
+        android:layout_marginStart="@dimen/margin_10"
+        android:text="@string/dummy_time"
+        app:layout_constraintLeft_toRightOf="@+id/rideTimeImageView"
+        app:layout_constraintTop_toBottomOf="@+id/carTypeImageView" />
+
+    <TextView
+        style="@style/Wrap"
+        android:layout_marginBottom="@dimen/margin_10"
+        android:layout_marginEnd="@dimen/margin_10"
+        android:text="@string/dummy_price"
+        android:textColor="@android:color/holo_red_dark"
+        android:textSize="@dimen/ride_price_txt_size"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/dividerView"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <View
+        android:id="@+id/dividerView"
+        style="@style/Fat"
+        android:layout_height="1dp"
+        android:layout_margin="@dimen/margin_10"
+        android:background="@android:color/darker_gray"
+        app:layout_constraintTop_toBottomOf="@+id/rideMonthTextView" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/addressContainerRelativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/dividerView">
+
+        <LinearLayout
+            android:id="@+id/pickupConstrainLinearLayout"
+            style="@style/Fat"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/pickupPointImageView"
+                style="@style/Wrap"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_marginStart="@dimen/margin_10"
+                android:layout_marginTop="@dimen/margin_10"
+                android:src="@drawable/pointer_in_screen_green" />
+
+            <TextView
+                android:id="@+id/pickupLocationAddressTextView"
+                style="@style/Fat"
+                android:layout_marginEnd="@dimen/margin_10"
+                android:layout_marginStart="@dimen/margin_10"
+                android:layout_marginTop="@dimen/margin_10"
+                android:text="@string/dummy_pickup_location" />
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/Fat"
+            android:layout_below="@+id/locationDividerLineView"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/locationDividerLineView">
+
+            <ImageView
+                android:id="@+id/dropPointImageView"
+                style="@style/Wrap"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_marginStart="@dimen/margin_10"
+                android:src="@drawable/drop_pointer_red" />
+
+            <TextView
+                android:id="@+id/dropLocationAddressTextView"
+                style="@style/Wrap"
+                android:layout_marginEnd="@dimen/margin_10"
+                android:layout_marginStart="@dimen/margin_10"
+                android:text="@string/dummy_drop_location" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/locationDividerLineView"
+            style="@style/Wrap"
+            android:layout_width="30dp"
+            android:layout_height="50dp"
+            android:layout_below="@+id/pickupConstrainLinearLayout"
+            android:layout_marginEnd="-50dp"
+            android:background="@drawable/landscap_dotted_line"
+            android:layerType="software"
+            android:rotation="90"
+            app:layout_constraintRight_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pickupConstrainLinearLayout" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

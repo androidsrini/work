@@ -7,6 +7,7 @@
     tools:context=".ui.paymentsummary.PaymentSummaryActivity">
 
     <Button
+        android:id="@+id/collectPaymentButton"
         style="@style/Fat"
         android:layout_margin="@dimen/margin_10"
         android:background="@drawable/yellow_button_drawable"
@@ -62,7 +63,7 @@
                 android:layout_width="10dp"
                 android:layout_height="10dp"
                 android:layout_marginStart="@dimen/margin_10"
-                android:src="@drawable/pointer_in_screen_green" />
+                android:src="@drawable/drop_pointer_red" />
 
             <TextView
                 android:id="@+id/dropLocationAddressTextView"

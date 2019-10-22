@@ -24,9 +24,9 @@
         />
     <ImageView
         android:id="@+id/pickupNavigationImageView"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/ic_near_me_yellow_24dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_navigate"
         android:layout_centerVertical="true"
         android:layout_alignParentEnd="true"
         />
@@ -88,21 +88,53 @@
 
     </RelativeLayout>
 
-    <LinearLayout
+
+    <FrameLayout
         android:id="@+id/acceptBottomConstrainLinearLayout"
+        style="@style/OnlineFooterStyle"
         app:layout_constraintBottom_toBottomOf="parent"
-        style="@style/OnlineFooterStyle">
+        >
+        <LinearLayout
+            android:id="@+id/startTripConstrainLinearLayout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            style="@style/OnlineFooterStyle"
+            android:visibility="visible">
 
-        <Button
-            android:id="@+id/btnReject"
-            android:text="@string/cancel_button"
-            style="@style/OnlineFooterButtonStyle" />
+            <Button
+                android:id="@+id/btnReject"
+                android:text="@string/cancel_button"
+                style="@style/OnlineFooterButtonStyle" />
 
-        <Button
-            android:id="@+id/btnAccept"
-            android:text="@string/arrived_button"
-            style="@style/OnlineFooterButtonStyle" />
+            <Button
+                android:id="@+id/btnAccept"
+                android:text="@string/arrived_button"
+                style="@style/OnlineFooterButtonStyle" />
 
-    </LinearLayout>
+        </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/endTripConstrainRelativeLayout"
+            style="@style/Fat"
+            android:visibility="gone">
+
+            <View
+                style="@style/Fat"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:background="@color/transprent_black"/>
+
+            <TextView
+                style="@style/Fat"
+                android:layout_centerVertical="true"
+                android:gravity="center"
+                android:textColor="@color/background_color"
+                android:text="@string/slide_end_trip_txt"
+                android:textSize="20sp"
+                android:layout_toEndOf="@+id/endTripImageView"/>
+        <ImageView
+            android:id="@+id/endTripImageView"
+            style="@style/Wrap"
+            android:src="@drawable/ic_endtripicon"/>
+        </RelativeLayout>
+    </FrameLayout>
 
 </android.support.constraint.ConstraintLayout>
