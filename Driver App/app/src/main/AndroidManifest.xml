@@ -11,15 +11,21 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:replace="android:appComponentFactory">
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+        <activity android:name=".ui.receipt.ReceiptActivity"
+            android:theme="@style/AppThemeWithoutSideDrawer">
+        </activity>
 
-        <!--<activity android:name=".ui.review.SubmitReviewActivity"/>-->
-        <activity android:name=".ui.paymentsummary.PaymentSummaryActivity"/>
-        <activity android:name=".ui.accept.AcceptActivity"></activity>
-        <activity android:name=".ui.review.SubmitReviewActivity">
+        <activity android:name=".ui.paymentsummary.PaymentSummaryActivity" /> <!-- <activity android:name=".ui.review.SubmitReviewActivity"/> -->
+        <activity android:name=".ui.accept.AcceptActivity" />
+        <activity android:name=".ui.review.SubmitReviewActivity"
+            android:theme="@style/AppThemeWithoutSideDrawer"
+            />
+        <activity android:name=".ui.history.RideHistoryActivity"
+            android:theme="@style/AppThemeWithoutSideDrawer"
+            >
         </activity>
         <activity
             android:name=".ui.splash.SplashActivity"
@@ -104,10 +110,10 @@
             android:name="com.library.fileimagepicker.filepicker.FilePickerActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
             android:value="false" />
+
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyAuo9b45x7mXBqCtDDEwCxPYirpUyOB2oY" />
@@ -117,7 +123,6 @@
         <meta-data
             android:name="com.codesense.driverapp.API_KEY"
             android:value="4eb708abeccb276a446bdf6c75a065e332f1f77a76048ef97e200d0d55c7165bf392565391b328cc649c6e5506da693077ed4043de414a487be57e5f255437db" />
-
         <receiver
             android:name=".net.NetworkChangeReceiver"
             android:exported="false">
@@ -127,6 +132,7 @@
         </receiver>
 
         <service android:name=".ui.helper.LocationMonitoringService" />
+
         <service
             android:name=".localstoreage.ApiLocationService"
             android:process=":remote">
@@ -134,13 +140,16 @@
                 <action android:name="localstoreage.LocationService" />
             </intent-filter>
         </service>
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
     </application>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
-
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
 </manifest>

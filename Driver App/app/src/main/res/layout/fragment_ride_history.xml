@@ -11,7 +11,7 @@
         android:id="@+id/historyRecyclerView"
         style="@style/Large"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
-        tools:listitem="@layout/history_list_screen"
+        tools:listitem="@layout/cancel_history_list_screen"
         />
 
 </android.support.constraint.ConstraintLayout>

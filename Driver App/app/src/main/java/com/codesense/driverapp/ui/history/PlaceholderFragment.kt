@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.codesense.driverapp.R
+import com.codesense.driverapp.ui.receipt.ReceiptActivity
 
 /**
  * A placeholder fragment containing a simple view.
@@ -17,9 +18,6 @@ class PlaceholderFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        /*pageViewModel = ViewModelProviders.of(this).get(PageViewModel::class.java).apply {
-            setIndex(arguments?.getInt(ARG_SECTION_NUMBER) ?: 1)
-        }*/
     }
 
     override fun onCreateView(
@@ -29,29 +27,24 @@ class PlaceholderFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_ride_history, container, false)
         var historyRecyclerView = root.findViewById<RecyclerView>(R.id.historyRecyclerView);
         with(historyRecyclerView) {
-            adapter = HistoryRecyclerAdapter()
+            adapter = HistoryRecyclerAdapter(object : HistoryRecyclerAdapter.OnHistorySelection{
+                override fun onItemClick(position: Int) {
+                    ReceiptActivity.start(context)
+                }
+            })
         }
         return root
     }
 
     companion object {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private const val ARG_SECTION_NUMBER = "section_number"
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
         @JvmStatic
-        fun newInstance(sectionNumber: Int): PlaceholderFragment {
-            return PlaceholderFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(ARG_SECTION_NUMBER, sectionNumber)
-                }
-            }
+        fun newInstance(): PlaceholderFragment {
+            return PlaceholderFragment()
         }
     }
 }

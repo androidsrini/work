@@ -89,6 +89,7 @@ public class SplashActivity extends BaseActivity {
                 if (apiResponse.isValidResponse()) {
                     SiginUpStatusResponse siginUpStatusResponse = new Gson().fromJson(apiResponse.data, SiginUpStatusResponse.class);
                     SignupStatus signupStatus = siginUpStatusResponse.getSignupStatus();
+                    appSharedPreference.saveIsActivate(utility.parseInt(signupStatus.getIsActivated()));
                     if (utility.parseInt(signupStatus.getOtpVerify()) == 0) {
                         //To show OTP screen.
                         VerifyMobileActivity.start(this, appSharedPreference.getUserID(), appSharedPreference.getMobileNumberKey());

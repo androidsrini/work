@@ -4,21 +4,22 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
-import android.view.LayoutInflater
-import android.view.View
+import android.view.*
+import android.widget.LinearLayout
 import android.widget.Toast
 import com.codesense.driverapp.R
 import com.codesense.driverapp.ui.drawer.DrawerActivity
 import com.codesense.driverapp.ui.paymentsummary.PaymentSummaryActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.activity_accept.*
 
-class AcceptActivity : DrawerActivity(), OnMapReadyCallback {
+
+
+class AcceptActivity : DrawerActivity(), OnMapReadyCallback, View.OnTouchListener, View.OnDragListener {
 
     val position = LatLng(-33.920455, 18.466941)
     lateinit var handler: Handler;
@@ -45,6 +46,36 @@ class AcceptActivity : DrawerActivity(), OnMapReadyCallback {
         }, 2000)
     }
 
+    override fun onDrag(v: View, event: DragEvent): Boolean {
+        // TODO Auto-generated method stub
+        if (event.action == DragEvent.ACTION_DROP) {
+            //we want to make sure it is dropped only to left and right parent view
+            val view = event.localState as View
+            if (v.id == R.id.leftSideLinearLayout
+                    || v.id == R.id.rightSideLinearLayout) {
+                val source = view.parent as ViewGroup
+                source.removeView(view)
+
+                val target = v as LinearLayout
+                target.addView(view)
+            }
+            //make view visible as we set visibility to invisible while starting drag
+            view.visibility = View.VISIBLE
+        }
+        return true
+    }
+
+    override fun onTouch(view: View, event: MotionEvent): Boolean {
+        // TODO Auto-generated method stub
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            val shadowBuilder = View.DragShadowBuilder(view)
+            view.startDrag(null, shadowBuilder, view, 0)
+            view.visibility = View.VISIBLE
+            return true
+        }
+        return false
+    }
+
     companion object {
         val TAG = AcceptActivity::class.java.name
         @JvmStatic
@@ -60,11 +91,12 @@ class AcceptActivity : DrawerActivity(), OnMapReadyCallback {
         with(acceptMapView) {
             acceptMapView.onCreate(savedInstanceState)
             acceptMapView.getMapAsync{
-                onCreate(null)
-                MapsInitializer.initialize(applicationContext)
                 setMapLocation(it)
             }
         }
+        /*endTripImageView.setOnTouchListener(this)
+        leftSideLinearLayout.setOnDragListener(this)
+        rightSideLinearLayout.setOnDragListener(this)*/
         endTripConstrainRelativeLayout.setOnClickListener({
             PaymentSummaryActivity.start(this@AcceptActivity)
         })

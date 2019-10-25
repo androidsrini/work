@@ -14,4 +14,5 @@
     <dimen name="radius_25">25dp</dimen>
     <dimen name="radius_list_icon_size">15dp</dimen>
     <dimen name="ride_price_txt_size">20sp</dimen>
+    <dimen name="receipt_map_size">150dp</dimen>
 </resources>

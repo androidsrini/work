@@ -277,6 +277,7 @@
             android:text="@string/total_fare_label" />
 
         <TextView
+            android:id="@+id/paymentTextView"
             style="@style/Wrap.PaymentSummeryHeader"
             android:layout_below="@+id/paymentSummeryHeaderTextView"
             android:text="@string/total_fare_placeholder"

@@ -54,6 +54,7 @@ import io.reactivex.disposables.CompositeDisposable;
 public abstract class DrawerActivity extends DaggerAppCompatActivity {
 
     private static final String SIGN_IN_DEFAULT = "signin_default";
+    private static final String SIGN_IN= "SignedIn";
     private static final String ADD_VEHICLE = "add_vehicle";
     public static boolean isSignedIn;
     protected static int currentPosition = -1;
@@ -84,6 +85,7 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private CompositeDisposable disposable = new CompositeDisposable();
     protected SwitchCompat autoReloadEnableDisableSwitchCompat;
+    private boolean isActivated;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -161,6 +163,7 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
         });
         autoReloadEnableDisableSwitchCompat.setChecked(appSharedPreference.isUserStatusOnline());
         isSignedIn = appSharedPreference.isUserIdAvailable();
+        isActivated = 1 == appSharedPreference.getIsActivate();
         loadMenu();
     }
 
@@ -235,7 +238,8 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
                                 navDrawerItems.add(new NavDrawerItem(MenuItem, menuIconName));
                                 selectedMenuList.add(strItem);
                             } else */
-                            if (typedArray.getString(k).equals(SIGN_IN_DEFAULT)) {
+                            if ((isActivated && typedArray.getString(k).equals(SIGN_IN))
+                            || typedArray.getString(k).equals(SIGN_IN_DEFAULT)) {
                                 if (!TextUtils.isEmpty(type)) {
                                     if (type.equals(ADD_VEHICLE) && Constant.OWNER_CUM_DRIVER.equals(appSharedPreference.getOwnerType())) {
                                         navDrawerItems.add(new NavDrawerItem(MenuItem, menuIconName));

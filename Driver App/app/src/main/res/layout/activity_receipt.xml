@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.receipt.ReceiptActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolBar"
+        style="@style/Fat"
+        android:background="@color/primary_color"
+        android:layout_height="?attr/actionBarSize"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/receiptMapView"
+        style="@style/Large"
+        android:layout_height="@dimen/receipt_map_size"
+        app:layout_constraintTop_toBottomOf="@+id/toolBar"
+        />
+    <RelativeLayout
+        android:id="@+id/acceptPersonConstrainRelativeLayout"
+        style="@style/Fat"
+        android:layout_below="@+id/receiptMapView"
+        android:padding="10dp"
+        android:background="@color/secondary_color"
+        app:layout_constraintTop_toBottomOf="@+id/receiptMapView">
+
+        <ImageView
+            android:id="@+id/imgProfile"
+            style="@style/Wrap"
+            android:layout_centerVertical="true"
+            android:src="@drawable/user" />
+
+        <TextView
+            android:id="@+id/UserName"
+            style="@style/Wrap"
+            android:layout_toEndOf="@+id/imgProfile"
+            android:text="Vijay"
+            android:layout_marginTop="6dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@color/background_color"
+            android:textSize="23sp"
+            android:textStyle="bold" />
+
+        <RatingBar
+            android:id="@+id/ratingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?attr/ratingBarStyleSmall"
+            android:layout_below="@+id/UserName"
+            android:layout_toEndOf="@+id/imgProfile"
+            android:numStars="5"
+            android:layout_marginTop="5dp"
+            android:progressBackgroundTint="@color/background_color"
+            android:progressTint="@color/primary_color"
+            android:rating="3"
+            android:transformPivotX="0dp" />
+
+        <TextView
+            android:id="@+id/carTypeTextView"
+            style="@style/Wrap"
+            android:text="@string/dummy_sedan"
+            android:textColor="@color/background_color"
+            android:layout_alignParentEnd="true"
+            android:gravity="top"
+            />
+
+        <TextView
+            style="@style/Wrap"
+            android:text="@string/dummy_transaction_date"
+            android:textColor="@color/background_color"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@+id/carTypeTextView"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/bookingIdTextView"
+        style="@style/Fat"
+        android:text="@string/booking_id_place_holder"
+        app:layout_constraintTop_toBottomOf="@+id/acceptPersonConstrainRelativeLayout"
+        android:gravity="center"
+        android:textColor="@color/secondary_color"
+        />
+
+    <android.support.constraint.ConstraintLayout
+        style="@style/Fat"
+        android:background="@drawable/white_card"
+        app:layout_constraintTop_toBottomOf="@+id/bookingIdTextView"
+        >
+
+        <TextView
+            android:id="@+id/distanceTravelledLabelTextView"
+            style="@style/Wrap.ReceiptLabelStyle"
+            android:text="@string/distance_travelled_label"
+            app:layout_constraintRight_toLeftOf="@+id/distanceTravelledValueTextView"
+            app:layout_constraintLeft_toLeftOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/distanceTravelledValueTextView"
+            style="@style/Wrap.ReceiptValueStyle"
+            android:text="@string/distance_travelled_label"
+            app:layout_constraintRight_toRightOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/timeTakenLabelTextView"
+            style="@style/Wrap.ReceiptLabelStyle"
+            android:text="@string/time_taken_label"
+            app:layout_constraintRight_toLeftOf="@+id/timeTakenValueTextView"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/distanceTravelledLabelTextView"
+            />
+
+        <TextView
+            android:id="@+id/timeTakenValueTextView"
+            style="@style/Wrap.ReceiptValueStyle"
+            android:text="@string/time_taken_label"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/distanceTravelledValueTextView"
+            />
+
+        <TextView
+            android:id="@+id/baseTareLabelTextView"
+            style="@style/Wrap.ReceiptLabelStyle"
+            android:text="@string/base_tare_label"
+            app:layout_constraintRight_toLeftOf="@+id/baseTareValueTextView"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timeTakenLabelTextView"
+            />
+
+        <TextView
+            android:id="@+id/baseTareValueTextView"
+            style="@style/Wrap.ReceiptValueStyle"
+            android:text="@string/base_tare_label"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/timeTakenValueTextView"
+            />
+
+        <TextView
+            android:id="@+id/taxLabelTextView"
+            style="@style/Wrap.ReceiptLabelStyle"
+            android:text="@string/tax_label"
+            app:layout_constraintRight_toLeftOf="@+id/taxValueTextView"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/baseTareLabelTextView"
+            />
+
+        <TextView
+            android:id="@+id/taxValueTextView"
+            style="@style/Wrap.ReceiptValueStyle"
+            android:text="@string/tax_label"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/baseTareValueTextView"
+            />
+
+        <TextView
+            android:id="@+id/discountLabelTextView"
+            style="@style/Wrap.ReceiptLabelStyle"
+            android:text="@string/discount_label"
+            app:layout_constraintRight_toLeftOf="@+id/discountValueTextView"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/taxLabelTextView"
+            />
+
+        <TextView
+            android:id="@+id/discountValueTextView"
+            style="@style/Wrap.ReceiptValueStyle"
+            android:text="@string/discount_label"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/taxValueTextView"
+            />
+
+        <View
+            android:id="@+id/detailsDividerView"
+            style="@style/Fat"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginTop="@dimen/margin_10"
+            app:layout_constraintTop_toBottomOf="@+id/discountValueTextView"
+            />
+
+        <LinearLayout
+            android:id="@+id/pickupConstrainLinearLayout"
+            style="@style/Fat"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/detailsDividerView"
+            >
+
+            <ImageView
+                android:id="@+id/pickupPointImageView"
+                style="@style/Wrap"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_marginStart="@dimen/margin_10"
+                android:layout_marginTop="@dimen/margin_10"
+                android:src="@drawable/pointer_in_screen_green" />
+
+            <TextView
+                android:id="@+id/pickupLocationAddressTextView"
+                style="@style/Fat"
+                android:layout_marginEnd="@dimen/margin_10"
+                android:layout_marginStart="@dimen/margin_10"
+                android:layout_marginTop="@dimen/margin_10"
+                android:text="@string/dummy_pickup_location" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/locationDropContainerLinearLayout"
+            style="@style/Fat"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@+id/locationDividerLineView"
+            >
+
+            <ImageView
+                android:id="@+id/dropPointImageView"
+                style="@style/Wrap"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_marginStart="@dimen/margin_10"
+                android:src="@drawable/drop_pointer_red" />
+
+            <TextView
+                android:id="@+id/dropLocationAddressTextView"
+                style="@style/Wrap"
+                android:layout_marginEnd="@dimen/margin_10"
+                android:layout_marginStart="@dimen/margin_10"
+                android:text="@string/dummy_drop_location" />
+        </LinearLayout>
+
+        <View
+            android:id="@+id/locationDividerLineView"
+            style="@style/Wrap"
+            android:layout_width="30dp"
+            android:layout_height="50dp"
+            android:layout_below="@+id/pickupConstrainLinearLayout"
+            android:layout_marginStart="-10dp"
+            android:background="@drawable/landscap_dotted_line"
+            android:layerType="software"
+            android:rotation="90"
+            app:layout_constraintTop_toBottomOf="@+id/pickupConstrainLinearLayout"
+            />
+
+        <View
+            android:id="@+id/locationDetailDividerView"
+            style="@style/Fat"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray"
+            android:layout_marginTop="@dimen/margin_10"
+            app:layout_constraintTop_toBottomOf="@+id/locationDropContainerLinearLayout"
+            />
+
+        <TextView
+            android:id="@+id/paymentMethodLabelTextView"
+            style="@style/Fat"
+            android:textColor="@color/secondary_color"
+            android:text="@string/payment_method_label"
+            android:layout_marginTop="@dimen/margin_10"
+            app:layout_constraintTop_toBottomOf="@+id/locationDetailDividerView"
+            />
+
+        <TextView
+            android:id="@+id/cashLabelTextView"
+            style="@style/Wrap"
+            android:text="@string/cash_label"
+            android:layout_marginStart="@dimen/margin_10"
+            android:layout_marginTop="@dimen/margin_10"
+            android:textColor="@color/secondary_color"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/cashValueTextView"
+            app:layout_constraintTop_toBottomOf="@+id/paymentMethodLabelTextView"/>
+
+        <TextView
+            android:id="@+id/cashValueTextView"
+            style="@style/Wrap"
+            android:text="@string/cash_label"
+            android:layout_marginTop="@dimen/margin_10"
+            android:layout_marginEnd="@dimen/margin_10"
+            android:textColor="@color/secondary_color"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/paymentMethodLabelTextView"/>
+
+        <Button
+            android:id="@+id/tripFinishedButton"
+            style="@style/Fat"
+            android:text="@string/your_trip_finished_btn_label"
+            android:textAllCaps="false"
+            android:background="@drawable/trip_finish_btn_drawable"
+            android:layout_margin="@dimen/margin_10"
+            app:layout_constraintTop_toBottomOf="@+id/cashValueTextView"
+            />
+
+        <View
+            style="@style/Wrap"
+            android:layout_height="30dp"
+            app:layout_constraintTop_toBottomOf="@+id/tripFinishedButton"
+            />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

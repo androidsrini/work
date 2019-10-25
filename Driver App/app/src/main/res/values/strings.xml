@@ -231,6 +231,30 @@
     <integer name="upload_document2_count">3</integer>
     <integer name="document_status_count">4</integer>
     <!--Edit Mobile Number-->
+    <string name="successfully_finished_txt">Successfully Finished</string>
+    <string name="successfully_finished_visit_again_txt">Current trip is successfully finished visit again</string>
+    <string name="ride_label">Your Rides</string>
+
+    <string name="dummy_sedan">Sedan</string>
+    <string name="canceled">Canceled</string>
+    <string name="dummy_month">Mon 19 Sept, 2018</string>
+    <!-- Image picker permission -->
+    <string name="dummy_time">08:12</string>
+    <string name="dummy_price">$155</string>
+    <string name="past_ride_tab">Past</string>
+    <string name="upcoming_ride_tab">Upcoming</string>
+    <string name="slide_end_trip_txt"><![CDATA[>>> Slide to End Trip >>>]]></string>
+    <string name="successful">Successful</string>
+    <string name="booking_id_place_holder">Booking Id %1$s</string>
+    <string name="distance_travelled_label">Distance Travelled</string>
+    <!--<string name="time_taken_label">Time Taken</string>
+    <string name="base_tare_label">Base Tare</string>
+    <string name="tax_label">Tax</string>
+    <string name="discount_label">Discount</string>-->
+    <string name="payment_method_label">Payment Method</string>
+    <string name="cash_label">Cash</string>
+    <string name="your_trip_finished_btn_label">Your Trip Finished</string>
+    <string name="receipt_label">Receipt</string>
     <string-array name="upload_document_item_0">
         <item>Recommended next step</item>
         <item>Driver\'s license</item>
@@ -243,7 +267,6 @@
         <item>Recommended next step</item>
         <item>Driver\'s Profile Image</item>
     </string-array>
-
     <string-array name="upload_document2_item_0">
         <item>Recommended next step</item>
         <item>Vehicle Certification of Registration</item>
@@ -256,7 +279,6 @@
         <item>Recommended next step</item>
         <item>Vehicle Permit</item>
     </string-array>
-    <!-- Image picker permission -->
     <string-array name="vehicleType">
         <item>Shift</item>
         <item>Honda</item>
@@ -277,16 +299,5 @@
         <item>Verification Pending</item>
         <item>Vehicle Commercial Insurance</item>
     </string-array>
-    <string name="successfully_finished_txt">Successfully Finished</string>
-    <string name="successfully_finished_visit_again_txt">Current trip is successfully finished visit again</string>
-    <string name="ride_label">Your Rides</string>
-    <string name="dummy_sedan">Sedan</string>
-    <string name="canceled">Canceled</string>
-    <string name="dummy_month">Mon 19 Sept, 2018</string>
-    <string name="dummy_time">08:12</string>
-    <string name="dummy_price">$155</string>
-    <string name="past_ride_tab">Past</string>
-    <string name="upcoming_ride_tab">Upcoming</string>
-    <string name="slide_end_trip_txt"><![CDATA[>>> Slide to End Trip >>>]]></string>
 </resources>
 

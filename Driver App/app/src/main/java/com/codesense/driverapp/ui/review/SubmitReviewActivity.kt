@@ -5,24 +5,24 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
+import android.view.MenuItem
 import android.view.animation.AnimationUtils
 import android.view.animation.OvershootInterpolator
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.Toast
 import com.codesense.driverapp.R
-import com.codesense.driverapp.ui.drawer.DrawerActivity
 import com.codesense.driverapp.ui.history.RideHistoryActivity
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.MapsInitializer
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.activity_submit_review.*
 
-class SubmitReviewActivity : DrawerActivity(), OnMapReadyCallback {
+class SubmitReviewActivity : AppCompatActivity(), OnMapReadyCallback {
 
     val position = LatLng(-33.920455, 18.466941)
     lateinit var handler: Handler
@@ -76,17 +76,15 @@ class SubmitReviewActivity : DrawerActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_submit_review)
         val toolbar = findViewById<Toolbar>(R.id.toolBar)
+        //toolbar.navigationIcon = ContextCompat.getDrawable(this@SubmitReviewActivity, R.drawable.left_arrow)
         setSupportActionBar(toolbar)
         val actionBar = supportActionBar
         actionBar!!.title = getString(R.string.rating_and_review_label)
-        //actionBar.setHomeAsUpIndicator(android.R.drawable.)
         actionBar.setDisplayHomeAsUpEnabled(true);
         handler = Handler()
         with(submitMapView) {
             submitMapView.onCreate(savedInstanceState)
             submitMapView.getMapAsync{
-                onCreate(null)
-                MapsInitializer.initialize(applicationContext)
                 setMapLocation(it)
             }
         }
@@ -95,6 +93,13 @@ class SubmitReviewActivity : DrawerActivity(), OnMapReadyCallback {
             showSuccessTrip()
         }, 2000)
         //
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> onBackPressed()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onResume() {

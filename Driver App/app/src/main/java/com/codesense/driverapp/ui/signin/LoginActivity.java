@@ -201,7 +201,7 @@ public class LoginActivity extends BaseActivity {
                             SelectTypeActivity.start(this);
                             //TO kill this activity class from backstack
                             finish();
-                        } else if (-1 == appSharedPreference.getIsActivate() || 0 == appSharedPreference.getOtpVerify()){
+                        } else if (1 != appSharedPreference.getIsActivate() || 0 == appSharedPreference.getOtpVerify()){
                             //To show dashboard screen.
                             OwnerTypeResponse ownerTypeResponse = new Gson().fromJson(apiResponse.data, OwnerTypeResponse.class);
                             if (null != ownerTypeResponse) {
