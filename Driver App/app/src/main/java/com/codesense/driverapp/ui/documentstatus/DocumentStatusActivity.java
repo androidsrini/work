@@ -26,6 +26,7 @@ import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.Constant;
+import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
 import com.codesense.driverapp.ui.uploaddocument.RecyclerTouchListener;
@@ -86,16 +87,15 @@ public class DocumentStatusActivity extends DrawerActivity implements View.OnCli
 
     }
 
-    private void handleApiResponse(DocumentStatusApiResponse documentStatusApiResponse) {
-        ApiResponse apiResponse = documentStatusApiResponse.getApiResponse();
-        DocumentStatusApiResponse.ServiceType serviceType = documentStatusApiResponse.getServiceType();
+    private void handleApiResponse(ApiResponse apiResponse) {
+        ServiceType serviceType = apiResponse.getServiceType();
         switch (apiResponse.status) {
             case LOADING:
                 utility.showProgressDialog(this);
                 break;
             case SUCCESS:
                 utility.dismissDialog();
-                if (DocumentStatusApiResponse.ServiceType.UPLOAD_DOCUEMNT == serviceType) {
+                if (ServiceType.UPLOAD_DOCUEMNT == serviceType) {
                     utility.showToastMsg("File are uploaded successfully");
                     clearAndUpdateDocumentListUI();
                 } else {
@@ -113,7 +113,7 @@ public class DocumentStatusActivity extends DrawerActivity implements View.OnCli
                 break;
             case SUCCESS_MULTIPLE:
                 utility.dismissDialog();
-                if (DocumentStatusApiResponse.ServiceType.UPLOAD_DOCUEMNT == serviceType) {
+                if (ServiceType.UPLOAD_DOCUEMNT == serviceType) {
                     JsonElement[] jsonElements = apiResponse.datas;
                     boolean allAreSuccess = true;
                     int count = 0;

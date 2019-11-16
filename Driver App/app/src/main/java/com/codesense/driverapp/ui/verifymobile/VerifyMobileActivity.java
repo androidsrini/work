@@ -29,6 +29,7 @@ import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.editmobilenumber.EditMobileNumberActivity;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
 import com.jakewharton.rxbinding2.widget.RxTextView;
@@ -407,13 +408,13 @@ public class VerifyMobileActivity extends BaseActivity {
     private void sendOTPRequest(String userID, String phoneNumber) {
         compositeDisposable.add(requestHandler.sentOTPRequest(ApiUtility.getInstance().getApiKeyMetaData(), userID, phoneNumber)
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(d -> apiResponseHandle(ApiResponse.loading(), ServiceType.SENT_OTP))
+                .doOnSubscribe(d -> apiResponseHandle(ApiResponse.loading(ServiceType.SEND_OTP)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                            apiResponseHandle(ApiResponse.success(result), ServiceType.SENT_OTP);
+                            apiResponseHandle(ApiResponse.success(ServiceType.SEND_OTP, result));
                         },
                         error -> {
-                            apiResponseHandle(ApiResponse.error(error), ServiceType.SENT_OTP);
+                            apiResponseHandle(ApiResponse.error(ServiceType.SEND_OTP, error));
                         }));
     }
 
@@ -426,25 +427,25 @@ public class VerifyMobileActivity extends BaseActivity {
     private void verifyOTPRequest(String userID, String phoneNumber) {
         compositeDisposable.add(requestHandler.verifyOTPRequest(ApiUtility.getInstance().getApiKeyMetaData(), userID, phoneNumber)
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(d -> apiResponseHandle(ApiResponse.loading(), ServiceType.VERIFY_OTP))
+                .doOnSubscribe(d -> apiResponseHandle(ApiResponse.loading(ServiceType.VERIFY_OTP)))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> apiResponseHandle(ApiResponse.success(result), ServiceType.VERIFY_OTP),
-                        error -> apiResponseHandle(ApiResponse.error(error), ServiceType.VERIFY_OTP)));
+                .subscribe(result -> apiResponseHandle(ApiResponse.success(ServiceType.VERIFY_OTP, result)),
+                        error -> apiResponseHandle(ApiResponse.error(ServiceType.VERIFY_OTP, error))));
     }
 
     /**
      * This method will handle verify mobile screen api responses.
      * @param apiResponse
-     * @param serviceType
      */
-    private void apiResponseHandle(ApiResponse apiResponse, ServiceType serviceType) {
+    private void apiResponseHandle(ApiResponse apiResponse) {
+        ServiceType serviceType = apiResponse.getServiceType();
         switch (apiResponse.status) {
             case LOADING:
                 utility.showProgressDialog(this);
                 break;
             case SUCCESS:
                 utility.dismissDialog();
-                if (ServiceType.SENT_OTP == serviceType) {
+                if (ServiceType.SEND_OTP == serviceType) {
                     //Start countdown timer
                     if (apiResponse.getResponseStatus() != ApiResponse.OTP_VALIDATION) {
                         startStop();
@@ -464,7 +465,7 @@ public class VerifyMobileActivity extends BaseActivity {
                 break;
             case ERROR:
                 utility.dismissDialog();
-                if (ServiceType.SENT_OTP == serviceType) {
+                if (ServiceType.SEND_OTP == serviceType) {
                     //Start countdown timer
                     startStop();
                 }
@@ -552,7 +553,7 @@ public class VerifyMobileActivity extends BaseActivity {
         STOPPED
     }
 
-    private enum ServiceType {
+    /*private enum ServiceType {
         SENT_OTP, VERIFY_OTP
-    }
+    }*/
 }

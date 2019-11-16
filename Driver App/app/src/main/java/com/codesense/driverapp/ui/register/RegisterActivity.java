@@ -34,6 +34,7 @@ import com.codesense.driverapp.localstoreage.DatabaseClient;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.request.RegisterNewUser;
 import com.codesense.driverapp.ui.verifymobile.VerifyMobileActivity;
 import com.jakewharton.rxbinding2.widget.RxTextView;
@@ -409,10 +410,10 @@ public class RegisterActivity extends BaseActivity {
     private void registerNewUserRequest() {
         compositeDisposable.add(requestHandler.registerNewOwnerRequest(ApiUtility.getInstance().getApiKeyMetaData(), createRegisterNewUserObject())
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(d -> registerApiResponse(ApiResponse.loading()))
+                .doOnSubscribe(d -> registerApiResponse(ApiResponse.loading(ServiceType.REGISTER_NEW_OWNER)))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> registerApiResponse(ApiResponse.success(result)),
-                        error -> registerApiResponse(ApiResponse.error(error))));
+                .subscribe(result -> registerApiResponse(ApiResponse.success(ServiceType.REGISTER_NEW_OWNER, result)),
+                        error -> registerApiResponse(ApiResponse.error(ServiceType.REGISTER_NEW_OWNER, error))));
     }
 
     /**
@@ -421,21 +422,24 @@ public class RegisterActivity extends BaseActivity {
      * @param apiResponse
      */
     private void registerApiResponse(ApiResponse apiResponse) {
+        ServiceType serviceType = apiResponse.getServiceType();
         switch (apiResponse.status) {
             case LOADING:
                 utility.showProgressDialog(this);
                 break;
             case SUCCESS:
                 utility.dismissDialog();
-                if ((null != apiResponse.getResponseJsonObject() && apiResponse.isValidResponse())
-                        || ApiResponse.OTP_VALIDATION == apiResponse.getResponseStatus()) {
-                    appSharedPreference.saveUserType(apiResponse.getResponseJsonObject().optString(Constant.USER_TYPE_RESPONSE));
-                    appSharedPreference.saveUserID(apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE));
-                    appSharedPreference.saveAccessToken(apiResponse.getResponseJsonObject().optString(Constant.ACCESS_TOKEN_PARAM));
-                    VerifyMobileActivity.start(this, apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE),
-                            getEtPhoneNumber());
-                } else if (null != apiResponse.getResponseJsonObject()) {
-                    utility.showToastMsg(apiResponse.getResponseMessage());
+                if (ServiceType.REGISTER_NEW_OWNER == serviceType) {
+                    if ((null != apiResponse.getResponseJsonObject() && apiResponse.isValidResponse())
+                            || ApiResponse.OTP_VALIDATION == apiResponse.getResponseStatus()) {
+                        appSharedPreference.saveUserType(apiResponse.getResponseJsonObject().optString(Constant.USER_TYPE_RESPONSE));
+                        appSharedPreference.saveUserID(apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE));
+                        appSharedPreference.saveAccessToken(apiResponse.getResponseJsonObject().optString(Constant.ACCESS_TOKEN_PARAM));
+                        VerifyMobileActivity.start(this, apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE),
+                                getEtPhoneNumber());
+                    } else if (null != apiResponse.getResponseJsonObject()) {
+                        utility.showToastMsg(apiResponse.getResponseMessage());
+                    }
                 }
                 break;
             case ERROR:

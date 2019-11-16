@@ -35,5 +35,6 @@ public class WebserviceUrls {
     public static final String GET_AVAILABLE_DRIVERS = "get_available_drivers";
     public static final String SET_VEHICLE_LIVE_STATUS = "set_vehicle_live_status";
     public static final String UPDATE_VEHICLE_LIVE_LOCATION = "update_vehicle_live_location";
+    public static final String HOME_SCREEN = "home_screen";
 
 }

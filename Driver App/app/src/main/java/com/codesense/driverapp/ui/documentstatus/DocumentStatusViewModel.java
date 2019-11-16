@@ -1,4 +1,5 @@
 package com.codesense.driverapp.ui.documentstatus;
+
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
@@ -7,6 +8,7 @@ import com.codesense.driverapp.data.VehicleDetailRequest;
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.net.ServiceType;
 import com.google.gson.JsonElement;
 
 import java.util.List;
@@ -23,7 +25,7 @@ public class DocumentStatusViewModel extends ViewModel {
     private RequestHandler requestHandler;
 
     private final CompositeDisposable disposables = new CompositeDisposable();
-    private MutableLiveData<DocumentStatusApiResponse> apiResponseMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<ApiResponse> apiResponseMutableLiveData = new MutableLiveData<>();
 
     @Inject
     public DocumentStatusViewModel(RequestHandler requestHandler) {
@@ -108,7 +110,7 @@ public class DocumentStatusViewModel extends ViewModel {
         return observable;
     }
 
-    public MutableLiveData<DocumentStatusApiResponse> getApiResponseMutableLiveData() {
+    public MutableLiveData<ApiResponse> getApiResponseMutableLiveData() {
         return apiResponseMutableLiveData;
     }
 
@@ -117,12 +119,9 @@ public class DocumentStatusViewModel extends ViewModel {
             disposables.add(requestHandler.fetchOwnerCumDriverStatusRequest(ApiUtility.getInstance().getApiKeyMetaData()).
                     subscribeOn(Schedulers.io()).
                     observeOn(AndroidSchedulers.mainThread()).
-                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(DocumentStatusApiResponse.newInstance(ApiResponse.loading(),
-                            DocumentStatusApiResponse.ServiceType.OWNER_CUM_DRIVER_STATUS))).
-                    subscribe(result -> apiResponseMutableLiveData.setValue(DocumentStatusApiResponse.newInstance(ApiResponse.success(result),
-                            DocumentStatusApiResponse.ServiceType.OWNER_CUM_DRIVER_STATUS)),
-                            error -> {apiResponseMutableLiveData.setValue(DocumentStatusApiResponse.newInstance(ApiResponse.error(error),
-                                    DocumentStatusApiResponse.ServiceType.OWNER_CUM_DRIVER_STATUS));}));
+                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.OWNER_CUM_DRIVER_STATUS))).
+                    subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.OWNER_CUM_DRIVER_STATUS, result)),
+                            error -> {apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.OWNER_CUM_DRIVER_STATUS, error));}));
         }
     }
 
@@ -131,12 +130,9 @@ public class DocumentStatusViewModel extends ViewModel {
             disposables.add(requestHandler.fetchNonDrivingPartnerStatusRequest(ApiUtility.getInstance().getApiKeyMetaData()).
                     subscribeOn(Schedulers.io()).
                     observeOn(AndroidSchedulers.mainThread()).
-                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(DocumentStatusApiResponse.newInstance(ApiResponse.loading(),
-                            DocumentStatusApiResponse.ServiceType.NON_DRIVING_PARTNER_STATUS))).
-                    subscribe(result -> apiResponseMutableLiveData.setValue(DocumentStatusApiResponse.newInstance(ApiResponse.success(result),
-                            DocumentStatusApiResponse.ServiceType.NON_DRIVING_PARTNER_STATUS)),
-                            error -> {apiResponseMutableLiveData.setValue(DocumentStatusApiResponse.newInstance(ApiResponse.error(error),
-                                    DocumentStatusApiResponse.ServiceType.NON_DRIVING_PARTNER_STATUS));}));
+                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.NON_DRIVING_PARTNER_STATUS))).
+                    subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.NON_DRIVING_PARTNER_STATUS, result)),
+                            error -> {apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.NON_DRIVING_PARTNER_STATUS, error));}));
         }
     }
 
@@ -156,13 +152,10 @@ public class DocumentStatusViewModel extends ViewModel {
             disposables.add(createObservableObject(documentsListItem, vehicleDetailRequest)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe(d -> apiResponseMutableLiveData.setValue(DocumentStatusApiResponse.newInstance(ApiResponse.loading(),
-                            DocumentStatusApiResponse.ServiceType.UPLOAD_DOCUEMNT)))
+                    .doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.UPLOAD_DOCUEMNT)))
                     .subscribe(result ->
-                                    apiResponseMutableLiveData.setValue(DocumentStatusApiResponse.newInstance(ApiResponse.successMultiple(result.docuemntListStatusResponse),
-                                            DocumentStatusApiResponse.ServiceType.UPLOAD_DOCUEMNT)),
-                            error -> apiResponseMutableLiveData.setValue(DocumentStatusApiResponse.newInstance(ApiResponse.error(error),
-                                    DocumentStatusApiResponse.ServiceType.UPLOAD_DOCUEMNT))));
+                                    apiResponseMutableLiveData.setValue(ApiResponse.successMultiple(ServiceType.UPLOAD_DOCUEMNT, result.docuemntListStatusResponse)),
+                            error -> apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.UPLOAD_DOCUEMNT, error))));
         }
     }
 
@@ -177,13 +170,10 @@ public class DocumentStatusViewModel extends ViewModel {
                     documentsListItem, vehicleDetailRequest).
                     subscribeOn(Schedulers.io()).
                     observeOn(AndroidSchedulers.mainThread()).
-                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(DocumentStatusApiResponse.newInstance(ApiResponse.loading(),
-                            DocumentStatusApiResponse.ServiceType.UPLOAD_DOCUEMNT))).
-                    subscribe(result -> apiResponseMutableLiveData.setValue(DocumentStatusApiResponse.newInstance(ApiResponse.success(result),
-                            DocumentStatusApiResponse.ServiceType.UPLOAD_DOCUEMNT)),
+                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.UPLOAD_DOCUEMNT))).
+                    subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.UPLOAD_DOCUEMNT, result)),
                             error -> {
-                                apiResponseMutableLiveData.setValue(DocumentStatusApiResponse.newInstance(ApiResponse.error(error),
-                                        DocumentStatusApiResponse.ServiceType.UPLOAD_DOCUEMNT));
+                                apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.UPLOAD_DOCUEMNT, error));
                             }));
         }
     }

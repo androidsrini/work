@@ -37,6 +37,7 @@ import com.codesense.driverapp.di.utils.PermissionManager;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.Constant;
+import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
 import com.crashlytics.android.Crashlytics;
@@ -133,11 +134,10 @@ public class UploadDocumentActivity extends DrawerActivity {
     /**
      * This method to handle api resonse
      *
-     * @param uploadDocumentApiResponse
+     * @param apiResponse
      */
-    private void handleApiResponse(UploadDocumentApiResponse uploadDocumentApiResponse) {
-        ApiResponse apiResponse = uploadDocumentApiResponse.getApiResponse();
-        UploadDocumentApiResponse.ServiceType serviceType = uploadDocumentApiResponse.getServiceType();
+    private void handleApiResponse(ApiResponse apiResponse) {
+        ServiceType serviceType = apiResponse.getServiceType();
         switch (apiResponse.status) {
             case LOADING:
                 utility.showProgressDialog(this);
@@ -145,7 +145,7 @@ public class UploadDocumentActivity extends DrawerActivity {
             case SUCCESS:
                 utility.dismissDialog();
                 if (apiResponse.isValidResponse()) {
-                    if (UploadDocumentApiResponse.ServiceType.VEHICLE_TYPES == serviceType) {
+                    if (ServiceType.VEHICLE_TYPES == serviceType) {
                         VehicleTypeResponse vehicleTypeResponse = new Gson().fromJson(apiResponse.data, VehicleTypeResponse.class);
                         vehicleTypesItems.clear();
                         if (null != vehicleTypeResponse && null != vehicleTypeResponse.getVehicleTypes()) {
@@ -156,11 +156,11 @@ public class UploadDocumentActivity extends DrawerActivity {
                         } else {
                             uploadDocumentViewModel.fetchVehicleListRequest();
                         }
-                    } else if (UploadDocumentApiResponse.ServiceType.DRIVER == serviceType) {
+                    } else if (ServiceType.DRIVER == serviceType) {
                         updateDriverDocumentListUI(apiResponse);
-                    } else if (UploadDocumentApiResponse.ServiceType.VEHICLE == serviceType) {
+                    } else if (ServiceType.VEHICLE == serviceType) {
                         updateVehicleDocumentListUI(apiResponse);
-                    } else if (UploadDocumentApiResponse.ServiceType.UPLOAD_DOCUEMNT == serviceType) {
+                    } else if (ServiceType.UPLOAD_DOCUEMNT == serviceType) {
                         utility.showToastMsg("File are uploaded successfully");
                         clearAndUpdateDocumentListUI();
                         clearAllEditTextUI();
@@ -169,9 +169,9 @@ public class UploadDocumentActivity extends DrawerActivity {
                 break;
             case SUCCESS_MULTIPLE:
                 utility.dismissDialog();
-                if (UploadDocumentApiResponse.ServiceType.ALL_DOCUMENT == serviceType) {
+                if (ServiceType.ALL_DOCUMENT == serviceType) {
                     updateDocumentListUI(apiResponse);
-                } else if (UploadDocumentApiResponse.ServiceType.UPLOAD_DOCUEMNTS == serviceType) {
+                } else if (ServiceType.UPLOAD_DOCUEMNTS == serviceType) {
                     JsonElement[] jsonElements = apiResponse.datas;
                     boolean allAreSuccess = true;
                     int count = 0;

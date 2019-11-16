@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -21,6 +19,7 @@ import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.legalagreement.LegalAgreementActivity;
 import com.google.gson.Gson;
 import com.product.annotationbuilder.ProductBindView;
@@ -32,7 +31,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -140,9 +138,9 @@ public class SelectTypeActivity extends BaseActivity {
     private void fetchOwnerTypeRequest() {
         compositeDisposable.add(requestHandler.fetchOwnerTypeRequest(ApiUtility.getInstance().getApiKeyMetaData())
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(d -> apiResponseHandle(ApiResponse.loading()))
-                .subscribe(result -> apiResponseHandle(ApiResponse.success(result)),
-                        error -> apiResponseHandle(ApiResponse.error(error))));
+                .doOnSubscribe(d -> apiResponseHandle(ApiResponse.loading(ServiceType.OWNER_TYPES)))
+                .subscribe(result -> apiResponseHandle(ApiResponse.success(ServiceType.OWNER_TYPES, result)),
+                        error -> apiResponseHandle(ApiResponse.error(ServiceType.OWNER_TYPES, error))));
     }
 
     /**
@@ -151,16 +149,19 @@ public class SelectTypeActivity extends BaseActivity {
      * @param apiResponse (loding, success, error)
      */
     private void apiResponseHandle(ApiResponse apiResponse) {
+        ServiceType serviceType = apiResponse.getServiceType();
         switch (apiResponse.status) {
             case LOADING:
                 utility.showProgressDialog(this);
                 break;
             case SUCCESS:
                 utility.dismissDialog();
-                if (apiResponse.isValidResponse()) {
-                    OwnerTypeResponse ownerTypeResponse = new Gson().fromJson(apiResponse.data, OwnerTypeResponse.class);
-                    if (null != ownerTypeResponse && null != ownerTypeResponse.getOwnerTypes()) {
-                        updateSelectTypeAdapter(ownerTypeResponse.getOwnerTypes());
+                if (ServiceType.OWNER_TYPES == serviceType) {
+                    if (apiResponse.isValidResponse()) {
+                        OwnerTypeResponse ownerTypeResponse = new Gson().fromJson(apiResponse.data, OwnerTypeResponse.class);
+                        if (null != ownerTypeResponse && null != ownerTypeResponse.getOwnerTypes()) {
+                            updateSelectTypeAdapter(ownerTypeResponse.getOwnerTypes());
+                        }
                     }
                 }
                 break;

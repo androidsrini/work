@@ -24,6 +24,7 @@ import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.online.OnlineActivity;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
@@ -164,26 +165,27 @@ public class LoginActivity extends BaseActivity {
     private void signInRequest() {
         compositeDisposable.add(requestHandler.signInRequest(ApiUtility.getInstance().getApiKeyMetaData(), getEtEmail(), getEtPassword())
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(d->loginResponse(ApiResponse.loading(), ServiceType.SIGNIN_OWNER))
+                .doOnSubscribe(d->loginResponse(ApiResponse.loading(ServiceType.SIGNIN_OWNER)))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result->loginResponse(ApiResponse.success(result), ServiceType.SIGNIN_OWNER),
-                        error->{loginResponse(ApiResponse.error(error), ServiceType.SIGNIN_OWNER);}));
+                .subscribe(result->loginResponse(ApiResponse.success(ServiceType.SIGNIN_OWNER, result)),
+                        error->{loginResponse(ApiResponse.error(ServiceType.SIGNIN_OWNER, error));}));
     }
 
     private void fetchOwnerTypeRequest() {
         compositeDisposable.add(requestHandler.fetchOwnerTypeRequest(ApiUtility.getInstance().getApiKeyMetaData())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .doOnSubscribe(d->loginResponse(ApiResponse.loading(), ServiceType.OWNER_TYPES))
-        .subscribe(result->loginResponse(ApiResponse.success(result), ServiceType.OWNER_TYPES),
-                error->loginResponse(ApiResponse.error(error), ServiceType.OWNER_TYPES)));
+        .doOnSubscribe(d->loginResponse(ApiResponse.loading(ServiceType.OWNER_TYPES)))
+        .subscribe(result->loginResponse(ApiResponse.success(ServiceType.OWNER_TYPES, result)),
+                error->loginResponse(ApiResponse.error(ServiceType.OWNER_TYPES, error))));
     }
 
     /**
      * This method to handle api response
      * @param apiResponse
      */
-    private void loginResponse(ApiResponse apiResponse, ServiceType serviceType) {
+    private void loginResponse(ApiResponse apiResponse) {
+        ServiceType serviceType = apiResponse.getServiceType();
         switch (apiResponse.status) {
             case LOADING:
                 utility.showProgressDialog(this);
@@ -263,7 +265,7 @@ public class LoginActivity extends BaseActivity {
         }
     }
 
-    private enum ServiceType {
+    /*private enum ServiceType {
         SIGNIN_OWNER, OWNER_TYPES
-    }
+    }*/
 }

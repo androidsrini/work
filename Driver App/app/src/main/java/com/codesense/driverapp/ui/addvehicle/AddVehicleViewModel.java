@@ -8,6 +8,7 @@ import com.codesense.driverapp.data.AddVehicleRequest;
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.net.ServiceType;
 import com.google.gson.JsonElement;
 
 import javax.inject.Inject;
@@ -22,14 +23,14 @@ public class AddVehicleViewModel extends ViewModel {
     private RequestHandler requestHandler;
 
     private final CompositeDisposable disposables = new CompositeDisposable();
-    private MutableLiveData<AddVehicleApiResponse> apiResponseMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<ApiResponse> apiResponseMutableLiveData = new MutableLiveData<>();
 
     @Inject
     public AddVehicleViewModel(RequestHandler requestHandler) {
         this.requestHandler = requestHandler;
     }
 
-    public MutableLiveData<AddVehicleApiResponse> getApiResponseMutableLiveData() {
+    public MutableLiveData<ApiResponse> getApiResponseMutableLiveData() {
         return apiResponseMutableLiveData;
     }
 
@@ -59,9 +60,9 @@ public class AddVehicleViewModel extends ViewModel {
         disposables.add(Observable.zip(vehicleTypesObservable, driversObservable, MergedResponse::new)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(d -> apiResponseMutableLiveData.postValue(AddVehicleApiResponse.newInstance(ApiResponse.loading(), AddVehicleApiResponse.ServiceType.VEHICLE_TYPES_AND_DRIVERS_LIST)))
-                .subscribe(result-> apiResponseMutableLiveData.postValue(AddVehicleApiResponse.newInstance(ApiResponse.successMultiple(result.jsonElementsResponse), AddVehicleApiResponse.ServiceType.VEHICLE_TYPES_AND_DRIVERS_LIST)),
-                        error -> apiResponseMutableLiveData.postValue(AddVehicleApiResponse.newInstance(ApiResponse.error(error), AddVehicleApiResponse.ServiceType.VEHICLE_TYPES_AND_DRIVERS_LIST))));
+                .doOnSubscribe(d -> apiResponseMutableLiveData.postValue(ApiResponse.loading(ServiceType.VEHICLE_TYPES_AND_DRIVERS_LIST)))
+                .subscribe(result-> apiResponseMutableLiveData.postValue(ApiResponse.successMultiple(ServiceType.VEHICLE_TYPES_AND_DRIVERS_LIST, result.jsonElementsResponse)),
+                        error -> apiResponseMutableLiveData.postValue(ApiResponse.error(ServiceType.VEHICLE_TYPES_AND_DRIVERS_LIST, error))));
     }
 
     /**
@@ -73,9 +74,9 @@ public class AddVehicleViewModel extends ViewModel {
         disposables.add(Observable.zip(countryObservable, cityObservable, MergedResponse::new)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(disposables -> apiResponseMutableLiveData.postValue(AddVehicleApiResponse.newInstance(ApiResponse.loading(), AddVehicleApiResponse.ServiceType.COUNTRY_LIST)))
-                .subscribe(result -> apiResponseMutableLiveData.postValue(AddVehicleApiResponse.newInstance(ApiResponse.successMultiple(result.jsonElementsResponse), AddVehicleApiResponse.ServiceType.COUNTRY_LIST)),
-                        error -> apiResponseMutableLiveData.postValue(AddVehicleApiResponse.newInstance(ApiResponse.error(error), AddVehicleApiResponse.ServiceType.COUNTRY_LIST))));
+                .doOnSubscribe(disposables -> apiResponseMutableLiveData.postValue(ApiResponse.loading(ServiceType.COUNTRY_LIST)))
+                .subscribe(result -> apiResponseMutableLiveData.postValue(ApiResponse.successMultiple(ServiceType.COUNTRY_LIST, result.jsonElementsResponse)),
+                        error -> apiResponseMutableLiveData.postValue(ApiResponse.error(ServiceType.COUNTRY_LIST, error))));
     }
 
     public void fetchVehicleAndLocationListRequest() {
@@ -86,27 +87,27 @@ public class AddVehicleViewModel extends ViewModel {
         disposables.add(Observable.zip(vehicleTypesObservable, driversObservable, countryObservable, cityObservable, MergedResponse::new)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(disposables -> apiResponseMutableLiveData.postValue(AddVehicleApiResponse.newInstance(ApiResponse.loading(), AddVehicleApiResponse.ServiceType.VEHICLE_TYPES_AND_DRIVERS_LIST_COUNTRY_LIST)))
-                .subscribe(result -> apiResponseMutableLiveData.postValue(AddVehicleApiResponse.newInstance(ApiResponse.successMultiple(result.jsonElementsResponse), AddVehicleApiResponse.ServiceType.VEHICLE_TYPES_AND_DRIVERS_LIST_COUNTRY_LIST)),
-                        error -> apiResponseMutableLiveData.postValue(AddVehicleApiResponse.newInstance(ApiResponse.error(error), AddVehicleApiResponse.ServiceType.VEHICLE_TYPES_AND_DRIVERS_LIST_COUNTRY_LIST))));
+                .doOnSubscribe(disposables -> apiResponseMutableLiveData.postValue(ApiResponse.loading(ServiceType.VEHICLE_TYPES_AND_DRIVERS_LIST_COUNTRY_LIST)))
+                .subscribe(result -> apiResponseMutableLiveData.postValue(ApiResponse.successMultiple(ServiceType.VEHICLE_TYPES_AND_DRIVERS_LIST_COUNTRY_LIST, result.jsonElementsResponse)),
+                        error -> apiResponseMutableLiveData.postValue(ApiResponse.error(ServiceType.VEHICLE_TYPES_AND_DRIVERS_LIST_COUNTRY_LIST, error))));
     }
 
     public void addDriverRequest(AddDriverRequest addDriverRequest) {
         disposables.add(requestHandler.addDriverToOwnerRequest(ApiUtility.getInstance().getApiKeyMetaData(), addDriverRequest)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(disposable -> apiResponseMutableLiveData.postValue(AddVehicleApiResponse.newInstance(ApiResponse.loading(), AddVehicleApiResponse.ServiceType.ADD_DRIVER)))
-                .subscribe(result -> apiResponseMutableLiveData.postValue(AddVehicleApiResponse.newInstance(ApiResponse.success(result), AddVehicleApiResponse.ServiceType.ADD_DRIVER)),
-                        error -> apiResponseMutableLiveData.postValue(AddVehicleApiResponse.newInstance(ApiResponse.error(error), AddVehicleApiResponse.ServiceType.ADD_DRIVER))));
+                .doOnSubscribe(disposable -> apiResponseMutableLiveData.postValue(ApiResponse.loading(ServiceType.ADD_DRIVER)))
+                .subscribe(result -> apiResponseMutableLiveData.postValue(ApiResponse.success(ServiceType.ADD_DRIVER, result)),
+                        error -> apiResponseMutableLiveData.postValue(ApiResponse.error(ServiceType.ADD_DRIVER, error))));
     }
 
     public void addVehicleToOwnerRequest(AddVehicleRequest addVehicleRequest) {
         disposables.add(requestHandler.addVehicleToOwnerRequest(ApiUtility.getInstance().getApiKeyMetaData(), addVehicleRequest)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(disposable -> apiResponseMutableLiveData.postValue(AddVehicleApiResponse.newInstance(ApiResponse.loading(), AddVehicleApiResponse.ServiceType.ADD_VEHICLE)))
-                .subscribe(result -> apiResponseMutableLiveData.postValue(AddVehicleApiResponse.newInstance(ApiResponse.success(result), AddVehicleApiResponse.ServiceType.ADD_VEHICLE)),
-                        error -> apiResponseMutableLiveData.postValue(AddVehicleApiResponse.newInstance(ApiResponse.error(error), AddVehicleApiResponse.ServiceType.ADD_VEHICLE))));
+                .doOnSubscribe(disposable -> apiResponseMutableLiveData.postValue(ApiResponse.loading(ServiceType.ADD_VEHICLE)))
+                .subscribe(result -> apiResponseMutableLiveData.postValue(ApiResponse.success(ServiceType.ADD_VEHICLE, result)),
+                        error -> apiResponseMutableLiveData.postValue(ApiResponse.error(ServiceType.ADD_VEHICLE, error))));
     }
 
     @Override

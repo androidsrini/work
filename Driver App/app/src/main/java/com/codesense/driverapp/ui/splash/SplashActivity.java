@@ -16,6 +16,7 @@ import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.NetworkChangeReceiver;
 import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
 import com.codesense.driverapp.ui.launchscreen.LaunchScreenActivity;
 import com.codesense.driverapp.ui.online.OnlineActivity;
@@ -64,6 +65,7 @@ public class SplashActivity extends BaseActivity {
         Handler handler = new Handler();
         handler.postDelayed(()->{
             LaunchScreenActivity.start(this);
+            finish();
         }, INTERVAL_TIME);
     }
 
@@ -74,42 +76,45 @@ public class SplashActivity extends BaseActivity {
      compositeDisposable.add(requestHandler.fetchOwnerSignupStatusRequest(ApiUtility.getInstance().getApiKeyMetaData())
              .subscribeOn(Schedulers.io())
              .observeOn(AndroidSchedulers.mainThread())
-             .doOnSubscribe(d->handelApiResonse(ApiResponse.loading()))
-             .subscribe(result->handelApiResonse(ApiResponse.success(result)),
-                     error->handelApiResonse(ApiResponse.error(error))));
+             .doOnSubscribe(d->handelApiResonse(ApiResponse.loading(ServiceType.GET_OWNER_SIGNUP_STATUS)))
+             .subscribe(result->handelApiResonse(ApiResponse.success(ServiceType.GET_OWNER_SIGNUP_STATUS, result)),
+                     error->handelApiResonse(ApiResponse.error(ServiceType.GET_OWNER_SIGNUP_STATUS, error))));
     }
 
     private void handelApiResonse(ApiResponse apiResponse) {
+        ServiceType serviceType = apiResponse.getServiceType();
         switch (apiResponse.status) {
             case LOADING:
                 utility.showProgressDialog(this);
                 break;
             case SUCCESS:
                 utility.dismissDialog();
-                if (apiResponse.isValidResponse()) {
-                    SiginUpStatusResponse siginUpStatusResponse = new Gson().fromJson(apiResponse.data, SiginUpStatusResponse.class);
-                    SignupStatus signupStatus = siginUpStatusResponse.getSignupStatus();
-                    appSharedPreference.saveIsActivate(utility.parseInt(signupStatus.getIsActivated()));
-                    if (utility.parseInt(signupStatus.getOtpVerify()) == 0) {
-                        //To show OTP screen.
-                        VerifyMobileActivity.start(this, appSharedPreference.getUserID(), appSharedPreference.getMobileNumberKey());
-                    } else if (TextUtils.isEmpty(signupStatus.getOwnerTypeId())) {
-                        //To show Owner Type select screen
-                        SelectTypeActivity.start(this);
-                    } else if (utility.parseInt(signupStatus.getAgreementAccept()) == 0) {
-                        //To show Agreement screen
-                        SelectTypeActivity.start(this);
-                    } else if (1 == utility.parseInt(signupStatus.getIsActivated())
-                            && 1 == utility.parseInt(signupStatus.getVehicleActivation())) {
-                        //To show online screen.
-                        OnlineActivity.start(this);
+                if (ServiceType.GET_OWNER_SIGNUP_STATUS == serviceType) {
+                    if (apiResponse.isValidResponse()) {
+                        SiginUpStatusResponse siginUpStatusResponse = new Gson().fromJson(apiResponse.data, SiginUpStatusResponse.class);
+                        SignupStatus signupStatus = siginUpStatusResponse.getSignupStatus();
+                        appSharedPreference.saveIsActivate(utility.parseInt(signupStatus.getIsActivated()));
+                        if (utility.parseInt(signupStatus.getOtpVerify()) == 0) {
+                            //To show OTP screen.
+                            VerifyMobileActivity.start(this, appSharedPreference.getUserID(), appSharedPreference.getMobileNumberKey());
+                        } else if (TextUtils.isEmpty(signupStatus.getOwnerTypeId())) {
+                            //To show Owner Type select screen
+                            SelectTypeActivity.start(this);
+                        } else if (utility.parseInt(signupStatus.getAgreementAccept()) == 0) {
+                            //To show Agreement screen
+                            SelectTypeActivity.start(this);
+                        } else if (1 == utility.parseInt(signupStatus.getIsActivated())
+                                && 1 == utility.parseInt(signupStatus.getVehicleActivation())) {
+                            //To show online screen.
+                            OnlineActivity.start(this);
+                        } else {
+                            UploadDocumentActivity.start(this);
+                        }
+                        finish();
                     } else {
                         UploadDocumentActivity.start(this);
+                        finish();
                     }
-                    finish();
-                } else {
-                    UploadDocumentActivity.start(this);
-                    finish();
                 }
                 break;
             case ERROR:

@@ -1,16 +1,18 @@
 package com.codesense.driverapp.ui.vehicle;
 
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.ViewModel;
+
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.net.ServiceType;
 
 import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
 
 public class VehicleListViewModel extends ViewModel {
 
@@ -33,9 +35,9 @@ public class VehicleListViewModel extends ViewModel {
             disposables.add(requestHandler.fetchAvailableVehiclesRequest(ApiUtility.getInstance().getApiKeyMetaData()).
                     subscribeOn(Schedulers.io()).
                     observeOn(AndroidSchedulers.mainThread()).
-                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading())).
-                    subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.success(result)),
-                            error -> {apiResponseMutableLiveData.setValue(ApiResponse.error(error));}));
+                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.AVAILABLE_VEHICLES))).
+                    subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.AVAILABLE_VEHICLES, result)),
+                            error -> {apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.AVAILABLE_VEHICLES, error));}));
         }
     }
 }

@@ -18,7 +18,7 @@
             android:id="@+id/imgLaunchImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/launch_image" />
+             />
 
     </LinearLayout>
 
@@ -46,7 +46,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/primary_color"
-                android:text="@string/welcome_text_sufix"
                 android:textSize="25sp" />
         </LinearLayout>
 
@@ -101,7 +100,6 @@
             android:id="@+id/tvRide"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/or_ride_with_vava"
             android:textColor="@color/primary_color"
             android:textSize="20sp" />
     </LinearLayout>

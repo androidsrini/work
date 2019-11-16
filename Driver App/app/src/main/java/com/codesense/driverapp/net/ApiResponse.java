@@ -74,8 +74,10 @@ public class ApiResponse {
      */
     @NonNull
     public final JsonElement[] datas;
+    private final ServiceType serviceType;
 
-    private ApiResponse(Status status, @Nullable JsonElement data, @Nullable Throwable error) {
+    private ApiResponse(ServiceType serviceType, Status status, @Nullable JsonElement data, @Nullable Throwable error) {
+        this.serviceType = serviceType;
         this.status = status;
         this.data = data;
         this.error = error;
@@ -83,7 +85,8 @@ public class ApiResponse {
         datas = new JsonElement[]{data};
     }
 
-    private ApiResponse(Status status, @Nullable JsonElement... data) {
+    private ApiResponse(ServiceType serviceType, Status status, @Nullable JsonElement... data) {
+        this.serviceType = serviceType;
         this.status = status;
         this.datas = data;
         this.error = null;
@@ -173,19 +176,23 @@ public class ApiResponse {
         return getResponseJsonObject(DEFAULT_INDEX_POSITION);
     }
 
-    public static ApiResponse loading() {
-        return new ApiResponse(LOADING, null, null);
+    public ServiceType getServiceType() {
+        return serviceType;
     }
 
-    public static ApiResponse success(@NonNull JsonElement data) {
-        return new ApiResponse(SUCCESS, data, null);
+    public static ApiResponse loading(ServiceType serviceType) {
+        return new ApiResponse(serviceType, LOADING, null, null);
     }
 
-    public static ApiResponse error(@NonNull Throwable error) {
-        return new ApiResponse(ERROR, null, error);
+    public static ApiResponse success(ServiceType serviceType, @NonNull JsonElement data) {
+        return new ApiResponse(serviceType, SUCCESS, data, null);
     }
 
-    public static ApiResponse successMultiple(@NonNull JsonElement... jsonElement) {
-        return new ApiResponse(SUCCESS_MULTIPLE, jsonElement);
+    public static ApiResponse error(ServiceType serviceType, @NonNull Throwable error) {
+        return new ApiResponse(serviceType, ERROR, null, error);
+    }
+
+    public static ApiResponse successMultiple(ServiceType serviceType, @NonNull JsonElement... jsonElement) {
+        return new ApiResponse(serviceType, SUCCESS_MULTIPLE, jsonElement);
     }
 }

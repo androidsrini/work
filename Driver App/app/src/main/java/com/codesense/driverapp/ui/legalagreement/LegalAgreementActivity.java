@@ -27,6 +27,7 @@ import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
 import com.product.annotationbuilder.ProductBindView;
 import com.product.process.annotation.Initialize;
@@ -173,9 +174,9 @@ public class LegalAgreementActivity extends BaseActivity {
         compositeDisposable.add(requestHandler.updateRegistationOwnerTypeRequest(ApiUtility.getInstance().getApiKeyMetaData(), getOwnerTypeId())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .doOnSubscribe(d->handleAgreementResponse(ApiResponse.loading(), ServiceType.REGISTATION_OWNER_TYPE))
-        .subscribe(result->handleAgreementResponse(ApiResponse.success(result), ServiceType.REGISTATION_OWNER_TYPE),
-                error->handleAgreementResponse(ApiResponse.error(error), ServiceType.REGISTATION_OWNER_TYPE)));
+        .doOnSubscribe(d->handleAgreementResponse(ApiResponse.loading(ServiceType.REGISTATION_OWNER_TYPE)))
+        .subscribe(result->handleAgreementResponse(ApiResponse.success(ServiceType.REGISTATION_OWNER_TYPE, result)),
+                error->handleAgreementResponse(ApiResponse.error(ServiceType.REGISTATION_OWNER_TYPE, error))));
     }
 
     /**
@@ -185,9 +186,9 @@ public class LegalAgreementActivity extends BaseActivity {
         compositeDisposable.add(requestHandler.updateAgreementAcceptRequest(ApiUtility.getInstance().getApiKeyMetaData(), "1")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(d->handleAgreementResponse(ApiResponse.loading(), ServiceType.ACCEPT_LEGAL_AGREEMENT))
-                .subscribe(result->handleAgreementResponse(ApiResponse.success(result), ServiceType.ACCEPT_LEGAL_AGREEMENT),
-                        error->handleAgreementResponse(ApiResponse.error(error), ServiceType.ACCEPT_LEGAL_AGREEMENT)));
+                .doOnSubscribe(d->handleAgreementResponse(ApiResponse.loading(ServiceType.ACCEPT_LEGAL_AGREEMENT)))
+                .subscribe(result->handleAgreementResponse(ApiResponse.success(ServiceType.ACCEPT_LEGAL_AGREEMENT, result)),
+                        error->handleAgreementResponse(ApiResponse.error(ServiceType.ACCEPT_LEGAL_AGREEMENT, error))));
     }
 
     /**
@@ -197,12 +198,13 @@ public class LegalAgreementActivity extends BaseActivity {
         compositeDisposable.add(requestHandler.getOwnerAgreementRequest(ApiUtility.getInstance().getApiKeyMetaData())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
-        .doOnSubscribe(d->handleAgreementResponse(ApiResponse.loading(), ServiceType.GET_LEGAL_AGREEMENT))
-        .subscribe(result->handleAgreementResponse(ApiResponse.success(result), ServiceType.GET_LEGAL_AGREEMENT),
-                error->handleAgreementResponse(ApiResponse.error(error), ServiceType.GET_LEGAL_AGREEMENT)));
+        .doOnSubscribe(d->handleAgreementResponse(ApiResponse.loading(ServiceType.GET_LEGAL_AGREEMENT)))
+        .subscribe(result->handleAgreementResponse(ApiResponse.success(ServiceType.GET_LEGAL_AGREEMENT, result)),
+                error->handleAgreementResponse(ApiResponse.error(ServiceType.GET_LEGAL_AGREEMENT, error))));
     }
 
-    private void handleAgreementResponse(ApiResponse apiResponse, ServiceType serviceType) {
+    private void handleAgreementResponse(ApiResponse apiResponse) {
+        ServiceType serviceType = apiResponse.getServiceType();
         switch (apiResponse.status) {
             case LOADING:
                 utility.showProgressDialog(this);
@@ -265,7 +267,7 @@ public class LegalAgreementActivity extends BaseActivity {
         }
     }
 
-    private enum ServiceType {
+    /*private enum ServiceType {
         REGISTATION_OWNER_TYPE, ACCEPT_LEGAL_AGREEMENT, GET_LEGAL_AGREEMENT
-    }
+    }*/
 }

@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModel;
 
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.net.ServiceType;
 
 import javax.inject.Inject;
 
@@ -28,9 +29,9 @@ public class OnlineViewModel extends ViewModel {
         disposables.add(requestHandler.setVehicleLiveStatusRequest(apiKey)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(d->apiResponseMutableLiveData.setValue(ApiResponse.loading()))
-                .subscribe(result->apiResponseMutableLiveData.setValue(ApiResponse.success(result)),
-                        error->apiResponseMutableLiveData.setValue(ApiResponse.error(error))));
+                .doOnSubscribe(d->apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.VEHICLE_LIVE_STATUS)))
+                .subscribe(result->apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.VEHICLE_LIVE_STATUS, result)),
+                        error->apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.VEHICLE_LIVE_STATUS, error))));
     }
 
     public void updateVehicleLiveLocationRequest(String apikey, String userType, String latitude,
@@ -39,9 +40,9 @@ public class OnlineViewModel extends ViewModel {
                 longitude, speed)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(d->apiResponseMutableLiveData.postValue(ApiResponse.loading()))
-                .subscribe(result->apiResponseMutableLiveData.postValue(ApiResponse.success(result)),
-                        error->apiResponseMutableLiveData.postValue(ApiResponse.error(error))));
+                .doOnSubscribe(d->apiResponseMutableLiveData.postValue(ApiResponse.loading(ServiceType.UPDATE_VEHICLE_LIVE_LOCATION)))
+                .subscribe(result->apiResponseMutableLiveData.postValue(ApiResponse.success(ServiceType.UPDATE_VEHICLE_LIVE_LOCATION, result)),
+                        error->apiResponseMutableLiveData.postValue(ApiResponse.error(ServiceType.UPDATE_VEHICLE_LIVE_LOCATION, error))));
     }
 
     @Override

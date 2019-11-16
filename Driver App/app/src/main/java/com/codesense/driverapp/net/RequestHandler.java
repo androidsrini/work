@@ -304,4 +304,8 @@ public class RequestHandler {
         return apiCallInterface.updateVehicleLiveLocationRequest(apiKey, appSharedPreference.getAccessTokenKey(),
                 getUpdateVehicleLocationParam(userType, latitude, longitude, speed));
     }
+
+    public Observable<JsonElement> fetchHomeDetailRequest(String apiKey) {
+        return apiCallInterface.fetchHomeDetailRequest(apiKey);
+    }
 }

@@ -3,29 +3,34 @@ package com.codesense.driverapp.ui.launchscreen;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.base.BaseActivity;
 import com.codesense.driverapp.data.CitiesItem;
 import com.codesense.driverapp.data.CitiesListResponse;
 import com.codesense.driverapp.data.CountriesItem;
 import com.codesense.driverapp.data.CountriesListResponse;
+import com.codesense.driverapp.data.HomeDetailsResponse;
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.localstoreage.DatabaseClient;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.register.RegisterActivity;
 import com.codesense.driverapp.ui.signin.LoginActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
-import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.product.annotationbuilder.ProductBindView;
 import com.product.process.annotation.Initialize;
@@ -68,6 +73,8 @@ public class LaunchScreenActivity extends BaseActivity {
     protected View view;
     @Initialize(R.id.tvAppName)
     protected TextView tvAppName;
+    @Initialize(R.id.imgLaunchImage)
+    protected ImageView imgLaunchImage;
     @Inject
     protected LaunchScreenViewModel launchScreenViewModel;
     @Inject
@@ -91,9 +98,9 @@ public class LaunchScreenActivity extends BaseActivity {
     private void fetchCountryListRequest() {
         compositeDisposable.add(requestHandler.fetchCountryListRequest(ApiUtility.getInstance().getApiKeyMetaData())
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(d -> profileApiResponse(ApiResponse.loading(), ServiceType.COUNTRY_LIST))
-                .subscribe(result -> profileApiResponse(ApiResponse.success(result), ServiceType.COUNTRY_LIST),
-                        error -> profileApiResponse(ApiResponse.error(error), ServiceType.COUNTRY_LIST)));
+                .doOnSubscribe(d -> profileApiResponse(ApiResponse.loading(ServiceType.COUNTRY_LIST)))
+                .subscribe(result -> profileApiResponse(ApiResponse.success(ServiceType.COUNTRY_LIST, result)),
+                        error -> profileApiResponse(ApiResponse.error(ServiceType.COUNTRY_LIST, error))));
     }
 
     /**
@@ -102,9 +109,9 @@ public class LaunchScreenActivity extends BaseActivity {
     private void fetchCityListRequest() {
         compositeDisposable.add(requestHandler.fetchCityListRequest(ApiUtility.getInstance().getApiKeyMetaData())
                 .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(d -> profileApiResponse(ApiResponse.loading(), ServiceType.CITIES))
-                .subscribe(result -> profileApiResponse(ApiResponse.success(result), ServiceType.CITIES),
-                        error -> profileApiResponse(ApiResponse.error(error), ServiceType.CITIES)));
+                .doOnSubscribe(d -> profileApiResponse(ApiResponse.loading(ServiceType.CITIES)))
+                .subscribe(result -> profileApiResponse(ApiResponse.success(ServiceType.CITIES, result)),
+                        error -> profileApiResponse(ApiResponse.error(ServiceType.CITIES, error))));
     }
 
     /**
@@ -256,16 +263,25 @@ public class LaunchScreenActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ProductBindView.bind(this);
-        launchScreenViewModel.getApiResponseMutableLiveData().observe(this, (apiResponse) -> {
-            if (null != apiResponse)
-                profileApiResponse(apiResponse, ServiceType.API_INFO);
-        });
-        launchScreenViewModel.loadArticleDetails();
+        launchScreenViewModel.getApiResponseMutableLiveData().observe(this, this::profileApiResponse);
+        launchScreenViewModel.fetchHomeDetailRequest();
         Log.d(TAG, " Request handler object value: " + requestHandler);
         setDynamicValue();
     }
 
-    private void profileApiResponse(ApiResponse apiResponse, ServiceType serviceType) {
+    private void updateUI(HomeDetailsResponse homeDetailsResponse) {
+        Glide.with(this)
+                .load(homeDetailsResponse.getHomeScreenImage())
+                .placeholder(R.drawable.launch_image)
+                .error(R.drawable.launch_image).into(imgLaunchImage);
+        tvAppName.setText(homeDetailsResponse.getAppName());
+        tvRide.setMovementMethod(LinkMovementMethod.getInstance());
+        String text = "<a href='"+homeDetailsResponse.getBottomTextLink()+"'> "+homeDetailsResponse.getBottomText()+" </a>";
+        tvRide.setText(Html.fromHtml(text));
+    }
+
+    private void profileApiResponse(ApiResponse apiResponse) {
+        ServiceType serviceType = apiResponse.getServiceType();
         switch (apiResponse.status) {
             case LOADING:
                 utility.showProgressDialog(this);
@@ -275,7 +291,13 @@ public class LaunchScreenActivity extends BaseActivity {
                 if (apiResponse.isValidResponse()) {
                     Log.d(TAG, "Success data: " + apiResponse.data);
                 }
-                if (ServiceType.API_INFO == serviceType) {
+                if (ServiceType.HOME_DETAIL == serviceType) {
+                    HomeDetailsResponse homeDetailsResponse = new Gson().fromJson(apiResponse.data, HomeDetailsResponse.class);
+                    if (null != homeDetailsResponse) {
+                        updateUI(homeDetailsResponse);
+                    }
+                    launchScreenViewModel.loadArticleDetails();
+                } else if (ServiceType.API_INFO == serviceType) {
                     /**
                      * Fetch country list request api call.
                      */
@@ -353,7 +375,7 @@ public class LaunchScreenActivity extends BaseActivity {
         compositeDisposable.clear();
     }
 
-    private enum ServiceType {
-        API_INFO, COUNTRY_LIST, CITIES
-    }
+    /*private enum ServiceType {
+        API_INFO, COUNTRY_LIST, CITIES, HOME_DETAIL
+    }*/
 }

@@ -10,6 +10,7 @@ import com.codesense.driverapp.data.VehicleDetailRequest;
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.net.ServiceType;
 import com.google.gson.JsonElement;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class UploadDocumentViewModel extends ViewModel {
     private static final String TAG = "Driver";
     private final CompositeDisposable disposables = new CompositeDisposable();
     private RequestHandler requestHandler;
-    private MutableLiveData<UploadDocumentApiResponse> apiResponseMutableLiveData = new MutableLiveData<>();
+    private MutableLiveData<ApiResponse> apiResponseMutableLiveData = new MutableLiveData<>();
 
     @Inject
     public UploadDocumentViewModel(RequestHandler requestHandler) {
@@ -129,7 +130,7 @@ public class UploadDocumentViewModel extends ViewModel {
         return observable;
     }
 
-    public MutableLiveData<UploadDocumentApiResponse> getApiResponseMutableLiveData() {
+    public MutableLiveData<ApiResponse> getApiResponseMutableLiveData() {
         return apiResponseMutableLiveData;
     }
 
@@ -138,13 +139,10 @@ public class UploadDocumentViewModel extends ViewModel {
             disposables.add(requestHandler.fetchVehicleTypesRequest(ApiUtility.getInstance().getApiKeyMetaData()).
                     subscribeOn(Schedulers.io()).
                     observeOn(AndroidSchedulers.mainThread()).
-                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.loading(),
-                            UploadDocumentApiResponse.ServiceType.VEHICLE_TYPES))).
-                    subscribe(result -> apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.success(result),
-                            UploadDocumentApiResponse.ServiceType.VEHICLE_TYPES)),
+                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.VEHICLE_TYPES))).
+                    subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.VEHICLE_TYPES, result)),
                             error -> {
-                                apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.error(error),
-                                        UploadDocumentApiResponse.ServiceType.VEHICLE_TYPES));
+                                apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.VEHICLE_TYPES, error));
                             }));
         }
     }
@@ -157,13 +155,10 @@ public class UploadDocumentViewModel extends ViewModel {
             disposables.add(requestHandler.fetchDriverDocumentListRequest(ApiUtility.getInstance().getApiKeyMetaData()).
                     subscribeOn(Schedulers.io()).
                     observeOn(AndroidSchedulers.mainThread()).
-                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.loading(),
-                            UploadDocumentApiResponse.ServiceType.DRIVER))).
-                    subscribe(result -> apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.success(result),
-                            UploadDocumentApiResponse.ServiceType.DRIVER)),
+                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.DRIVER))).
+                    subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.DRIVER, result)),
                             error -> {
-                                apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.error(error),
-                                        UploadDocumentApiResponse.ServiceType.DRIVER));
+                                apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.DRIVER, error));
                             }));
         }
     }
@@ -176,13 +171,10 @@ public class UploadDocumentViewModel extends ViewModel {
             disposables.add(requestHandler.fetchVehicleListRequest(ApiUtility.getInstance().getApiKeyMetaData()).
                     subscribeOn(Schedulers.io()).
                     observeOn(AndroidSchedulers.mainThread()).
-                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.loading(),
-                            UploadDocumentApiResponse.ServiceType.VEHICLE))).
-                    subscribe(result -> apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.success(result),
-                            UploadDocumentApiResponse.ServiceType.VEHICLE)),
+                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.VEHICLE))).
+                    subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.VEHICLE, result)),
                             error -> {
-                                apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.error(error),
-                                        UploadDocumentApiResponse.ServiceType.VEHICLE));
+                                apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.VEHICLE, error));
                             }));
         }
     }
@@ -198,18 +190,15 @@ public class UploadDocumentViewModel extends ViewModel {
                     requestHandler.fetchVehicleListRequest(ApiUtility.getInstance().getApiKeyMetaData()), MergedResponse::new)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe(d -> apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.loading(),
-                            UploadDocumentApiResponse.ServiceType.ALL_DOCUMENT)))
+                    .doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.ALL_DOCUMENT)))
                     .subscribe(result -> {
                                 Log.d(TAG, "The fetch all request response: " + result);
-                                apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.successMultiple(result.docuemntListStatusResponse),
-                                        UploadDocumentApiResponse.ServiceType.ALL_DOCUMENT));
+                                apiResponseMutableLiveData.setValue(ApiResponse.successMultiple(ServiceType.ALL_DOCUMENT, result.docuemntListStatusResponse));
                         /*apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.success(result.vehicleListStatusResponse),
                                         UploadDocumentApiResponse.ServiceType.VEHICLE));*/
                             },
                             error -> {
-                                apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.error(error),
-                                        UploadDocumentApiResponse.ServiceType.ALL_DOCUMENT));
+                                apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.ALL_DOCUMENT, error));
                             }));
         }
     }
@@ -225,13 +214,10 @@ public class UploadDocumentViewModel extends ViewModel {
             disposables.add(requestHandler.uploadDocumentsRequest(ApiUtility.getInstance().getApiKeyMetaData(), documentsListItem, vehicleDetailRequest).
                     subscribeOn(Schedulers.io()).
                     observeOn(AndroidSchedulers.mainThread()).
-                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.loading(),
-                            UploadDocumentApiResponse.ServiceType.UPLOAD_DOCUEMNT))).
-                    subscribe(result -> apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.success(result),
-                            UploadDocumentApiResponse.ServiceType.UPLOAD_DOCUEMNT)),
+                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.UPLOAD_DOCUEMNT))).
+                    subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.UPLOAD_DOCUEMNT, result)),
                             error -> {
-                                apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.error(error),
-                                        UploadDocumentApiResponse.ServiceType.UPLOAD_DOCUEMNT));
+                                apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.UPLOAD_DOCUEMNT, error));
                             }));
         }
     }
@@ -253,13 +239,10 @@ public class UploadDocumentViewModel extends ViewModel {
             disposables.add(createObservableObject(documentsListItem, vehicleDetailRequest)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe(d -> apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.loading(),
-                            UploadDocumentApiResponse.ServiceType.UPLOAD_DOCUEMNTS)))
+                    .doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.UPLOAD_DOCUEMNTS)))
                     .subscribe(result ->
-                                    apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.successMultiple(result.docuemntListStatusResponse),
-                                            UploadDocumentApiResponse.ServiceType.UPLOAD_DOCUEMNTS)),
-                            error -> apiResponseMutableLiveData.setValue(UploadDocumentApiResponse.newInstance(ApiResponse.error(error),
-                                    UploadDocumentApiResponse.ServiceType.UPLOAD_DOCUEMNTS))));
+                                    apiResponseMutableLiveData.setValue(ApiResponse.successMultiple(ServiceType.UPLOAD_DOCUEMNTS, result.docuemntListStatusResponse)),
+                            error -> apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.UPLOAD_DOCUEMNTS, error))));
         }
     }
 

@@ -35,6 +35,7 @@ import com.codesense.driverapp.localstoreage.DatabaseClient;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
 import com.google.gson.Gson;
@@ -121,32 +122,31 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
         functionality();
     }
 
-    private void handleApiResponse(AddVehicleApiResponse addVehicleApiResponse) {
-        ApiResponse apiResponse = addVehicleApiResponse.getApiResponse();
-        AddVehicleApiResponse.ServiceType serviceType = addVehicleApiResponse.getServiceType();
+    private void handleApiResponse(ApiResponse apiResponse) {
+        ServiceType serviceType = apiResponse.getServiceType();
         switch (apiResponse.status) {
             case LOADING:
                 utility.showProgressDialog(this);
                 break;
             case SUCCESS:
                 utility.dismissDialog();
-                if (AddVehicleApiResponse.ServiceType.ADD_DRIVER == serviceType) {
+                if (ServiceType.ADD_DRIVER == serviceType) {
                     if (null != apiResponse.getResponseJsonObject() && apiResponse.isValidResponse()) {
                         int driverId = apiResponse.getResponseJsonObject().optInt(Constant.DRIVER_ID, 0);
                         addVehicleViewModel.addVehicleToOwnerRequest(createAddVehicleRequest(String.valueOf(driverId)));
                     }
-                } else if (AddVehicleApiResponse.ServiceType.VEHICLE_TYPES == serviceType) {
+                } else if (ServiceType.VEHICLE_TYPES == serviceType) {
                     VehicleTypeResponse vehicleTypeResponse = new Gson().fromJson(apiResponse.data, VehicleTypeResponse.class);
                     if (null != vehicleTypeResponse && null != vehicleTypeResponse.getVehicleTypes()) {
                         vehicleTypeSpinnerUI(vehicleTypeResponse.getVehicleTypes());
                     }
-                } else if (AddVehicleApiResponse.ServiceType.ADD_VEHICLE == serviceType) {
+                } else if (ServiceType.ADD_VEHICLE == serviceType) {
                     clear();
                 }
                 break;
             case SUCCESS_MULTIPLE:
                 utility.dismissDialog();
-                if (AddVehicleApiResponse.ServiceType.VEHICLE_TYPES_AND_DRIVERS_LIST == serviceType) {
+                if (ServiceType.VEHICLE_TYPES_AND_DRIVERS_LIST == serviceType) {
                     JsonElement[] jsonElement = apiResponse.datas;
                     final int VEHICLE_TYPE = 0;
                     final int AVAILABLE_DRIVERS = 1;
@@ -167,7 +167,7 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
                             updateAvailableDriversUI(availableDriversResponse.getAvailableDrivers());
                         }
                     }
-                } else if (AddVehicleApiResponse.ServiceType.VEHICLE_TYPES_AND_DRIVERS_LIST_COUNTRY_LIST == serviceType) {
+                } else if (ServiceType.VEHICLE_TYPES_AND_DRIVERS_LIST_COUNTRY_LIST == serviceType) {
                     doesCountryListApiFatched = true;
                     JsonElement[] jsonElement = apiResponse.datas;
                     final int VEHICLE_TYPE = 0;

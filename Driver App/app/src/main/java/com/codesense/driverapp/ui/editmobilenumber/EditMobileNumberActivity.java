@@ -20,6 +20,7 @@ import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.verifymobile.VerifyMobileActivity;
 import com.hbb20.CountryCodePicker;
 import com.product.annotationbuilder.ProductBindView;
@@ -167,23 +168,26 @@ public class EditMobileNumberActivity extends BaseActivity {
     private void changeMobileNumberRequest(String userID, String phoneNumber) {
         compositeDisposable.add(requestHandler.updateMobileNumber(ApiUtility.getInstance().getApiKeyMetaData(), userID, phoneNumber)
                 .subscribeOn(Schedulers.io())
-                .doOnSubscribe(d -> apiResponseHandle(ApiResponse.loading()))
+                .doOnSubscribe(d -> apiResponseHandle(ApiResponse.loading(ServiceType.CHANGE_MOBILE_NUMBER)))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> apiResponseHandle(ApiResponse.success(result)),
-                        error -> apiResponseHandle(ApiResponse.error(error))));
+                .subscribe(result -> apiResponseHandle(ApiResponse.success(ServiceType.CHANGE_MOBILE_NUMBER, result)),
+                        error -> apiResponseHandle(ApiResponse.error(ServiceType.CHANGE_MOBILE_NUMBER, error))));
     }
 
 
     private void apiResponseHandle(ApiResponse apiResponse) {
+        ServiceType serviceType = apiResponse.getServiceType();
         switch (apiResponse.status) {
             case LOADING:
                 utility.showProgressDialog(this);
                 break;
             case SUCCESS:
                 utility.dismissDialog();
-                VerifyMobileActivity.start(this, userID,
-                        checkPhoneNumber());
-                finish();
+                if (ServiceType.CHANGE_MOBILE_NUMBER == serviceType) {
+                    VerifyMobileActivity.start(this, userID,
+                            checkPhoneNumber());
+                    finish();
+                }
                 break;
             case ERROR:
                 utility.dismissDialog();

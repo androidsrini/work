@@ -94,9 +94,9 @@ class AcceptActivity : DrawerActivity(), OnMapReadyCallback, View.OnTouchListene
                 setMapLocation(it)
             }
         }
-        /*endTripImageView.setOnTouchListener(this)
+        endTripImageView.setOnTouchListener(this)
         leftSideLinearLayout.setOnDragListener(this)
-        rightSideLinearLayout.setOnDragListener(this)*/
+        rightSideLinearLayout.setOnDragListener(this)
         endTripConstrainRelativeLayout.setOnClickListener({
             PaymentSummaryActivity.start(this@AcceptActivity)
         })

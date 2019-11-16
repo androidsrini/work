@@ -206,4 +206,7 @@ public interface ApiCallInterface {
     Observable<JsonElement> updateVehicleLiveLocationRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
                                                     @FieldMap HashMap<String, String> param);
 
+    @GET(WebserviceUrls.HOME_SCREEN)
+    Observable<JsonElement> fetchHomeDetailRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey);
+
 }
