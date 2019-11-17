@@ -96,10 +96,20 @@ class FilePickerBuilder {
         return this
     }
 
+    fun addFileSupport(extensions: Array<String>): FilePickerBuilder {
+        PickerManager.addFileType(extensions)
+        return this
+    }
+
     fun hasSupportOnlyPDFFiles() : FilePickerBuilder {
         PickerManager.hasOnlyPdfFile = true
         //PickerManager.addDocTypes()
         return  this
+    }
+
+    fun fileSize(fileSize: Double): FilePickerBuilder {
+        PickerManager.fileSize = fileSize
+        return this
     }
 
     fun sortDocumentsBy(type: SortingTypes): FilePickerBuilder {

@@ -39,14 +39,14 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/secondary_color"
                 android:text="@string/welcome_text_prefix"
-                android:textSize="30sp" />
+                android:textSize="@dimen/launch_text_size" />
 
             <TextView
                 android:id="@+id/tvAppName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/primary_color"
-                android:textSize="25sp" />
+                android:textSize="@dimen/launch_app_name_text_size" />
         </LinearLayout>
 
 
@@ -55,7 +55,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/secondary_color"
-            android:textSize="30sp"
+            android:textSize="@dimen/launch_text_size"
             android:text="@string/driver_text" />
 
         <LinearLayout

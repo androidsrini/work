@@ -134,6 +134,7 @@ public interface ApiCallInterface {
                                                    @Part MultipartBody.Part fileBody,
                                                    @Part(Constant.USER_ID_PARAM) RequestBody userId,
                                                    @Part(Constant.VEHICLE_TYPE_ID_PARAM) RequestBody vehicleTypeId,
+                                                   @Part(Constant.VEHICLE_ID) RequestBody vehicleId,
                                                    @Part(Constant.VEHICLE_NUMBER_PARAM) RequestBody vehicleNumber,
                                                    @Part(Constant.VEHICLE_NAME_PARAM) RequestBody vehicleName);
 
@@ -208,5 +209,10 @@ public interface ApiCallInterface {
 
     @GET(WebserviceUrls.HOME_SCREEN)
     Observable<JsonElement> fetchHomeDetailRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey);
+
+
+    @POST(WebserviceUrls.GET_DOCUMENTS_STATUS)
+    @FormUrlEncoded
+    Observable<JsonElement> fetchDocumentStatusRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String, String> param);
 
 }

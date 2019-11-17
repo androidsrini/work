@@ -15,4 +15,6 @@
     <dimen name="radius_list_icon_size">15dp</dimen>
     <dimen name="ride_price_txt_size">20sp</dimen>
     <dimen name="receipt_map_size">150dp</dimen>
+    <dimen name="launch_text_size">25sp</dimen>
+    <dimen name="launch_app_name_text_size">20sp</dimen>
 </resources>

@@ -94,9 +94,11 @@ public class SplashActivity extends BaseActivity {
                         SiginUpStatusResponse siginUpStatusResponse = new Gson().fromJson(apiResponse.data, SiginUpStatusResponse.class);
                         SignupStatus signupStatus = siginUpStatusResponse.getSignupStatus();
                         appSharedPreference.saveIsActivate(utility.parseInt(signupStatus.getIsActivated()));
-                        if (utility.parseInt(signupStatus.getOtpVerify()) == 0) {
+                        if (utility.parseInt(signupStatus.getOtpVerify()) == 0 || ApiResponse.OTP_VALIDATION == apiResponse.getResponseStatus()) {
                             //To show OTP screen.
-                            VerifyMobileActivity.start(this, appSharedPreference.getUserID(), appSharedPreference.getMobileNumberKey());
+                            VerifyMobileActivity.start(this, appSharedPreference.getUserID(),
+                                    appSharedPreference.getMobileNumberKey(),
+                                    ApiResponse.OTP_VALIDATION != apiResponse.getResponseStatus() || utility.parseInt(signupStatus.getOtpVerify()) == 0);
                         } else if (TextUtils.isEmpty(signupStatus.getOwnerTypeId())) {
                             //To show Owner Type select screen
                             SelectTypeActivity.start(this);

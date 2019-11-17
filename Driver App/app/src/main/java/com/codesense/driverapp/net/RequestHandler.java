@@ -1,7 +1,10 @@
 package com.codesense.driverapp.net;
 
+import android.text.TextUtils;
+
 import com.codesense.driverapp.data.AddDriverRequest;
 import com.codesense.driverapp.data.AddVehicleRequest;
+import com.codesense.driverapp.data.DocumentsItem;
 import com.codesense.driverapp.data.DocumentsListItem;
 import com.codesense.driverapp.data.VehicleDetailRequest;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
@@ -159,6 +162,12 @@ public class RequestHandler {
         return param;
     }
 
+    private MultipartBody.Part getUploadDocumentFileRequest(DocumentsItem documentsListItem) {
+        File file = new File(documentsListItem.getFilePath());
+        RequestBody requestFile = RequestBody.create(MediaType.parse(Constant.MULTIPART_FORM_DATA), file);
+        return MultipartBody.Part.createFormData(documentsListItem.getName(), file.getName(), requestFile);
+    }
+
     private MultipartBody.Part getUploadDocumentFileRequest(DocumentsListItem documentsListItem) {
         File file = new File(documentsListItem.getFilePath());
         RequestBody requestFile = RequestBody.create(MediaType.parse(Constant.MULTIPART_FORM_DATA), file);
@@ -175,6 +184,14 @@ public class RequestHandler {
 
     private RequestBody getVehicleTypeId(VehicleDetailRequest vehicleDetailRequest) {
         return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), vehicleDetailRequest.getVehicleTypeId());
+    }
+
+    private RequestBody getVehicleId(VehicleDetailRequest vehicleDetailRequest) {
+        if (!TextUtils.isEmpty(vehicleDetailRequest.getVehicleId())) {
+            return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), vehicleDetailRequest.getVehicleId());
+        } else {
+            return null;
+        }
     }
 
     private RequestBody getVehicleNumber(VehicleDetailRequest vehicleDetailRequest) {
@@ -259,15 +276,25 @@ public class RequestHandler {
         return apiCallInterface.fetchVehicleListRequest(apikey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
     }
 
-    public Observable<JsonElement> uploadDocumentsRequest(String api, DocumentsListItem documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
+    public Observable<JsonElement> uploadDocumentsRequest(String api, DocumentsItem documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
         return apiCallInterface.uploadDocumentsRequest(api, appSharedPreference.getAccessTokenKey(),
                 getUploadDocumentFileRequest(documentsListItem), getUploadDocumentUserID(),
                 getVehicleTypeId(vehicleDetailRequest),
+                getVehicleId(vehicleDetailRequest),
                 getVehicleNumber(vehicleDetailRequest),
                 getVehicleName(vehicleDetailRequest));
     }
 
-    public Observable<JsonElement> uploadDocumentsWithoutVehicleRequest(String api, DocumentsListItem documentsListItem) {
+    public Observable<JsonElement> uploadDocumentsRequest(String api, DocumentsListItem documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
+        return apiCallInterface.uploadDocumentsRequest(api, appSharedPreference.getAccessTokenKey(),
+                getUploadDocumentFileRequest(documentsListItem), getUploadDocumentUserID(),
+                getVehicleTypeId(vehicleDetailRequest),
+                getVehicleId(vehicleDetailRequest),
+                getVehicleNumber(vehicleDetailRequest),
+                getVehicleName(vehicleDetailRequest));
+    }
+
+    public Observable<JsonElement> uploadDocumentsWithoutVehicleRequest(String api, DocumentsItem documentsListItem) {
         return apiCallInterface.uploadDocumentsWithoutVehicleRequest(api, appSharedPreference.getAccessTokenKey(),
                 getUploadDocumentFileRequest(documentsListItem), getUploadDocumentUserID());
     }
@@ -307,5 +334,9 @@ public class RequestHandler {
 
     public Observable<JsonElement> fetchHomeDetailRequest(String apiKey) {
         return apiCallInterface.fetchHomeDetailRequest(apiKey);
+    }
+
+    public Observable<JsonElement> fetchDocumentStatusRequest(String apiKey) {
+        return apiCallInterface.fetchDocumentStatusRequest(apiKey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
     }
 }

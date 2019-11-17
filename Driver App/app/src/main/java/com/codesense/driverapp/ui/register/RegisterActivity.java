@@ -7,20 +7,20 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.widget.Toolbar;
 import android.text.SpannableStringBuilder;
 import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codesense.driverapp.R;
@@ -44,6 +44,7 @@ import com.product.process.annotation.Onclick;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -85,12 +86,14 @@ public class RegisterActivity extends BaseActivity {
     FloatingActionButton fbNext;
     @Initialize(R.id.tvTitle)
     TextView tvTitle;
-    @Initialize(R.id.toolbarClose)
-    ImageView toolbarClose;
+    /*@Initialize(R.id.toolbarClose)
+    ImageView toolbarClose;*/
     @Initialize(R.id.etCountry)
     AutoCompleteTextView etCountry;
     @Initialize(R.id.etConfirmPassword)
     EditText etConfirmPassword;
+    @Initialize(R.id.toolbar)
+    Toolbar toolbar;
     private CountriesItem countriesItem;
     private CitiesItem citiesItem;
 
@@ -111,6 +114,7 @@ public class RegisterActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ProductBindView.bind(this);
+        setSupportActionBar(toolbar);
         functionality();
         setDynamicValue();
     }
@@ -118,7 +122,12 @@ public class RegisterActivity extends BaseActivity {
 
     private void functionality() {
         tvTitle.setText(getResources().getText(R.string.register_button));
-        toolbarClose.setBackgroundResource(R.drawable.icon_close);
+        if (null != getSupportActionBar()) {
+            getSupportActionBar().setTitle(null);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_close);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        //toolbarClose.setBackgroundResource(R.drawable.icon_close);
         singleTextView(tvPrivacyPolicy, getResources().getString(R.string.register_policy_text_first_prefix1), getResources().getString(R.string.register_policy_text_prefix2), getResources().getString(R.string.register_policy_text_first_sufix1), getResources().getString(R.string.register_policy_text_first_sufix2), getResources().getColor(R.color.primary_color), getResources().getString(R.string.register_policy_app_name));
         fetchAndUpdateCountryListFromDataBase();
         fetchAndUpdateCitiesListFromDataBase();
@@ -186,10 +195,10 @@ public class RegisterActivity extends BaseActivity {
         int imgIconWidth = (int) (screenWidth * 0.075);
         int imgIconHeight = (int) (screenWidth * 0.075);
 
-        RelativeLayout.LayoutParams imgLayParams = (RelativeLayout.LayoutParams) toolbarClose.getLayoutParams();
+        /*RelativeLayout.LayoutParams imgLayParams = (RelativeLayout.LayoutParams) toolbarClose.getLayoutParams();
         imgLayParams.width = imgIconWidth;
         imgLayParams.height = imgIconHeight;
-        toolbarClose.setLayoutParams(imgLayParams);
+        toolbarClose.setLayoutParams(imgLayParams);*/
 
         int topBottomSpace = (int) (screenHeight * 0.0089);
 
@@ -436,7 +445,7 @@ public class RegisterActivity extends BaseActivity {
                         appSharedPreference.saveUserID(apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE));
                         appSharedPreference.saveAccessToken(apiResponse.getResponseJsonObject().optString(Constant.ACCESS_TOKEN_PARAM));
                         VerifyMobileActivity.start(this, apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE),
-                                getEtPhoneNumber());
+                                getEtPhoneNumber(), VerifyMobileActivity.NEED_TO_CALL_SEND_OTP);
                     } else if (null != apiResponse.getResponseJsonObject()) {
                         utility.showToastMsg(apiResponse.getResponseMessage());
                     }
@@ -588,8 +597,18 @@ public class RegisterActivity extends BaseActivity {
         }
     }
 
-    @Onclick(R.id.toolbarClose)
+    /*@Onclick(R.id.toolbarClose)
     public void toolbarClose(View v) {
         finish();
+    }*/
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

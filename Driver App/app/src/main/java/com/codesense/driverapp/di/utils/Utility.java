@@ -225,4 +225,12 @@ public class Utility {
         NetworkInfo netInfo = cm.getActiveNetworkInfo();
         return (netInfo != null && netInfo.isAvailable());
     }
+
+    public double parseDouble(String s) {
+        try {
+            return Double.parseDouble(s);
+        } catch (Exception e) {
+            return 0.0;
+        }
+    }
 }

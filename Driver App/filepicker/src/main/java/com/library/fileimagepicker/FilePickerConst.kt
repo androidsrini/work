@@ -40,6 +40,9 @@ object FilePickerConst {
     const val DOC = "DOC"
     const val XLS = "XLS"
     const val TXT = "TXT"
+    const val PNG = "PNG"
+    const val JPG = "JPG"
+    const val JPEG = "JPEG"
 
     enum class FILE_TYPE {
         PDF, WORD, EXCEL, PPT, TXT, UNKNOWN

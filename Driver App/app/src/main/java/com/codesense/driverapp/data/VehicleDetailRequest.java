@@ -2,6 +2,15 @@ package com.codesense.driverapp.data;
 
 public class VehicleDetailRequest {
 
+    public String getVehicleId() {
+        return vehicleId;
+    }
+
+    public void setVehicleId(String vehicleId) {
+        this.vehicleId = vehicleId;
+    }
+
+    private String vehicleId;
     private String vehicleTypeId;
     private String vehicleNumber;
 

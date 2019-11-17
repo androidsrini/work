@@ -53,6 +53,8 @@ public class VerifyMobileActivity extends BaseActivity {
     private static final String TAG = "Driver";
     private static final String USER_ID_ARG = "UserID";
     private static final String PHONE_NUMBER_ARG = "PhoneNumber";
+    private static final String IS_NEED_TO_CALL_SEND_OTP_ARG = "IsNeedToCallSendOtp";
+    public static final boolean NEED_TO_CALL_SEND_OTP = true;
 
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
     @Inject
@@ -99,12 +101,21 @@ public class VerifyMobileActivity extends BaseActivity {
     private CountDownTimer countDownTimer;
     private boolean isValiedAllFields;
     private ClipboardManager clipboardManager;
+    private  boolean isNeedToCallSendOtp;
 
-    public static void start(Context context, String userID, String phoneNumber) {
+    public static void start(Context context, String userID, String phoneNumber, boolean isNeedToCallSendOtp) {
         Intent starter = new Intent(context, VerifyMobileActivity.class);
         starter.putExtra(USER_ID_ARG, userID);
         starter.putExtra(PHONE_NUMBER_ARG, phoneNumber);
+        starter.putExtra(IS_NEED_TO_CALL_SEND_OTP_ARG, isNeedToCallSendOtp);
         context.startActivity(starter);
+    }
+
+    private boolean isNeedToCallSendOtp() {
+        if (null != getIntent()) {
+            isNeedToCallSendOtp = getIntent().getBooleanExtra(IS_NEED_TO_CALL_SEND_OTP_ARG, false);
+        }
+        return isNeedToCallSendOtp;
     }
 
     @Override
@@ -122,8 +133,10 @@ public class VerifyMobileActivity extends BaseActivity {
         functionality();
         updateUI();
         setEditTextObserver();
-        if (!TextUtils.isEmpty(getUserId())) {
+        if (!TextUtils.isEmpty(getUserId()) && isNeedToCallSendOtp()) {
             sendOTPRequest(getUserId(), getPhoneNumber());
+        } else {
+            startStop();
         }
     }
 

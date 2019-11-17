@@ -39,6 +39,10 @@ object PickerManager {
     get() = field
     set(value) {field = value}
 
+    var fileSize = 0.0
+    get() = field
+    set(value) {field = value}
+
     /**
      * The preferred screen orientation this activity would like to run in.
      * From the {@link android.R.attr#screenOrientation} attribute, one of
@@ -150,6 +154,36 @@ object PickerManager {
 
     fun addFileType(fileType: FileType) {
         fileTypes.add(fileType)
+    }
+
+    fun addFileType(extensions: Array<String>) {
+        for (type in extensions) {
+            if (type.compareTo("pdf") == 0) {
+                val pdf = arrayOf("pdf")
+                fileTypes.add(FileType(FilePickerConst.PDF, pdf, R.drawable.icon_file_pdf))
+            } else if (type.compareTo("doc") == 0 || type.compareTo("docx") == 0 || type.compareTo("dot") == 0 || type.compareTo("dotx") == 0) {
+                val docs = arrayOf("doc", "docx", "dot", "dotx")
+                fileTypes.add(FileType(FilePickerConst.PDF, docs, R.drawable.icon_file_pdf))
+            } else if (type.compareTo("ppt") ==0 || type.compareTo("pptx") == 0) {
+                val ppts = arrayOf("ppt", "pptx")
+                fileTypes.add(FileType(FilePickerConst.PPT, ppts, R.drawable.icon_file_ppt))
+            } else if (type.compareTo("xls") == 0 || type.compareTo("xlsx") == 0) {
+                val xlss = arrayOf("xls", "xlsx")
+                fileTypes.add(FileType(FilePickerConst.XLS, xlss, R.drawable.icon_file_xls))
+            } else if (type.compareTo("txt") == 0) {
+                val txts = arrayOf("txt")
+                fileTypes.add(FileType(FilePickerConst.TXT, txts, R.drawable.icon_file_unknown))
+            } else if (type.compareTo("png") == 0) {
+                val png = arrayOf("png")
+                fileTypes.add(FileType(FilePickerConst.PNG, png, R.drawable.icon_file_unknown))
+            } else if (type.compareTo("jpg") == 0) {
+                val jpg = arrayOf("jpg")
+                fileTypes.add(FileType(FilePickerConst.JPG, jpg, R.drawable.icon_file_unknown))
+            } else if (type.compareTo("jpeg") == 0) {
+                val jpeg = arrayOf("jpeg")
+                fileTypes.add(FileType(FilePickerConst.JPEG, jpeg, R.drawable.icon_file_unknown))
+            }
+        }
     }
 
     fun addDocTypes() {

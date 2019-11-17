@@ -28,15 +28,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codesense.driverapp.R;
-import com.codesense.driverapp.data.DocumentsListItem;
-import com.codesense.driverapp.data.DocumentsListStatusResponse;
+import com.codesense.driverapp.data.AvailableVehiclesItem;
+import com.codesense.driverapp.data.DocumentStatus;
+import com.codesense.driverapp.data.DocumentStatusResponse;
+import com.codesense.driverapp.data.DocumentsItem;
 import com.codesense.driverapp.data.VehicleDetailRequest;
 import com.codesense.driverapp.data.VehicleTypeResponse;
 import com.codesense.driverapp.data.VehicleTypesItem;
 import com.codesense.driverapp.di.utils.PermissionManager;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.net.ApiResponse;
-import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
@@ -45,6 +46,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.library.fileimagepicker.filepicker.FilePickerBuilder;
 import com.library.fileimagepicker.filepicker.FilePickerConst;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +61,7 @@ public class UploadDocumentActivity extends DrawerActivity {
     public static final int UPLOAD_DOCUMENT_NAME_INDEX = 1;
     private static final String TAG = "Driver";
     private static final int IMAGE_PICKER = 0x0001;
+    private static final int FILE_PICKER = 0x0002;
     private static final int UPLOAD_DOCUMENT_ICON_NAME_INDEX = 2;
     private static final int RC_PHOTO_PICKER_PERM = 0x00012;
     /**
@@ -81,17 +86,22 @@ public class UploadDocumentActivity extends DrawerActivity {
     View view;
     View view1;
     View view2;
+    View selectVehicleDivider;
     RecyclerView recyclerView;
     Button uploadContentButton;
+    RelativeLayout selectVehicleRelativeLayout;
+    TextView selectVehicleTextView;
+    ImageView selectVehicleArrowImageView;
     //DriverAppUI driverAppUI1;
     UploadDocumentAdapter adapter;
-    int mSelectedItemType;
-    boolean typeSelFirstTime;
+    int mSelectedItemType, mSelectedVehicle = -1;
+    boolean typeSelFirstTime, vehicleSelectionFirstTime;
     String typeValue;
     private List<VehicleTypesItem> vehicleTypesItems;
-    private List<DocumentsListItem> uploadDocumentActionInfos;
-    private DocumentsListItem selectedDocumetnsListItem;
+    private List<DocumentsItem> uploadDocumentActionInfos;
+    private DocumentsItem selectedDocumetnsListItem;
     private int selectedDocumentsListPosition;
+    private List<AvailableVehiclesItem> availableVehiclesItems;
     /**
      * This method to start UploadDocumentActivity class
      *
@@ -114,9 +124,10 @@ public class UploadDocumentActivity extends DrawerActivity {
         //ProductBindView.bind(this);
         uploadDocumentActionInfos = new ArrayList<>();
         vehicleTypesItems = new ArrayList<>();
+        availableVehiclesItems = new ArrayList<>();
         titleTextView.setText(getResources().getString(R.string.upload_doc_text));
         uploadDocumentViewModel.getApiResponseMutableLiveData().observe(this, this::handleApiResponse);
-        uploadDocumentViewModel.fetchVehicleTypesRequest();
+        uploadDocumentViewModel.fetchDocumentStatusRequest();
         updateCrashDetails();
         initially();
         setDynamicValue();
@@ -145,21 +156,25 @@ public class UploadDocumentActivity extends DrawerActivity {
             case SUCCESS:
                 utility.dismissDialog();
                 if (apiResponse.isValidResponse()) {
+                    if (ServiceType.GET_DOCUMENTS_STATUS == serviceType) {
+                        updateDocumentListUI(apiResponse);
+                        uploadDocumentViewModel.fetchVehicleTypesRequest();
+                    }
                     if (ServiceType.VEHICLE_TYPES == serviceType) {
                         VehicleTypeResponse vehicleTypeResponse = new Gson().fromJson(apiResponse.data, VehicleTypeResponse.class);
                         vehicleTypesItems.clear();
                         if (null != vehicleTypeResponse && null != vehicleTypeResponse.getVehicleTypes()) {
                             vehicleTypesItems.addAll(vehicleTypeResponse.getVehicleTypes());
                         }
-                        if (appSharedPreference.getOwnerTypeId() == Constant.OWNER_CUM_DRIVER_TYPE) {
+                        /*if (appSharedPreference.getOwnerTypeId() == Constant.OWNER_CUM_DRIVER_TYPE) {
                             uploadDocumentViewModel.fetchDocumentListRequest();
                         } else {
                             uploadDocumentViewModel.fetchVehicleListRequest();
-                        }
+                        }*/
                     } else if (ServiceType.DRIVER == serviceType) {
                         updateDriverDocumentListUI(apiResponse);
                     } else if (ServiceType.VEHICLE == serviceType) {
-                        updateVehicleDocumentListUI(apiResponse);
+                        //updateVehicleDocumentListUI(apiResponse);
                     } else if (ServiceType.UPLOAD_DOCUEMNT == serviceType) {
                         utility.showToastMsg("File are uploaded successfully");
                         clearAndUpdateDocumentListUI();
@@ -207,10 +222,18 @@ public class UploadDocumentActivity extends DrawerActivity {
     @Deprecated
     private void updateDriverDocumentListUI(ApiResponse apiResponse) {
         if (apiResponse.isValidResponse()) {
-            DocumentsListStatusResponse documentsListStatusResponse = new Gson().fromJson(apiResponse.data, DocumentsListStatusResponse.class);
-            uploadDocumentActionInfos.clear();
-            if (null != documentsListStatusResponse && null != documentsListStatusResponse.getDocumentsList()) {
-                uploadDocumentActionInfos.addAll(documentsListStatusResponse.getDocumentsList());
+            try {
+                JSONObject jsonObject = new JSONObject(apiResponse.data.toString());
+                DocumentStatusResponse documentsListStatusResponse = new Gson().fromJson(apiResponse.data, DocumentStatusResponse.class);
+                uploadDocumentActionInfos.clear();
+                if (null != documentsListStatusResponse && null != documentsListStatusResponse.getDocuments()) {
+                    for (DocumentsItem documentsItem: documentsListStatusResponse.getDocuments()) {
+                        documentsItem.parseDocumentStatus(jsonObject);
+                    }
+                    uploadDocumentActionInfos.addAll(documentsListStatusResponse.getDocuments());
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -220,7 +243,7 @@ public class UploadDocumentActivity extends DrawerActivity {
      *
      * @param apiResponse
      */
-    @Deprecated
+    /*@Deprecated
     private void updateVehicleDocumentListUI(ApiResponse apiResponse) {
         if (apiResponse.isValidResponse()) {
             DocumentsListStatusResponse documentsListStatusResponse = new Gson().fromJson(apiResponse.data, DocumentsListStatusResponse.class);
@@ -229,9 +252,9 @@ public class UploadDocumentActivity extends DrawerActivity {
             }
         }
         adapter.notifyDataSetChanged();
-    }
+    }*/
 
-    private void updateDocumentListUI(ApiResponse apiResponse) {
+    /*private void updateDocumentListUI(ApiResponse apiResponse) {
         JsonElement[] response = apiResponse.datas;
         int count = 0;
         uploadDocumentActionInfos.clear();
@@ -241,6 +264,33 @@ public class UploadDocumentActivity extends DrawerActivity {
                 uploadDocumentActionInfos.addAll(documentsListStatusResponse.getDocumentsList());
             }
         } while (++ count < response.length);
+        adapter.notifyDataSetChanged();
+    }*/
+
+    private void updateDocumentListUI(ApiResponse apiResponse) {
+        int count = 0;
+        uploadDocumentActionInfos.clear();
+        availableVehiclesItems.clear();
+        if (apiResponse.isValidResponse()) {
+            try {
+                JSONObject jsonObject = new JSONObject(apiResponse.data.toString());
+                DocumentStatusResponse documentStatusResponse = new Gson().fromJson(apiResponse.data, DocumentStatusResponse.class);
+                if (null != documentStatusResponse) {
+                    for (DocumentsItem documentsItem: documentStatusResponse.getDocuments()) {
+                        documentsItem.parseDocumentStatus(jsonObject);
+                    }
+                }
+                if (null != documentStatusResponse && null != documentStatusResponse.getAvailableVehicles()) {
+                    availableVehiclesItems.addAll(documentStatusResponse.getAvailableVehicles());
+                } else {
+                    selectVehicleRelativeLayout.setVisibility(View.GONE);
+                    selectVehicleDivider.setVisibility(View.GONE);
+                }
+                uploadDocumentActionInfos.addAll(documentStatusResponse.getDocuments());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -265,6 +315,10 @@ public class UploadDocumentActivity extends DrawerActivity {
         vehicleDetailRequest.setVehicleTypeId(getVehicleTypeId());
         vehicleDetailRequest.setVehicleName(getEtVehicleName());
         vehicleDetailRequest.setVehicleNumber(getEtVehicleNumber());
+        if (mSelectedVehicle >= 0) {
+            AvailableVehiclesItem availableVehiclesItem = availableVehiclesItems.get(mSelectedVehicle);
+            vehicleDetailRequest.setVehicleId(availableVehiclesItem.getVehicleId());
+        }
         return vehicleDetailRequest;
     }
 
@@ -274,11 +328,11 @@ public class UploadDocumentActivity extends DrawerActivity {
     private void functionality() {
         uploadContentButton.setOnClickListener(((view) -> {
             if (isValidAllFields()) {
-                if (isAnyItemDocumentSelected()) {
+                if (isValiedAllSelected()) {
                     uploadDocumentViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
-                } else {
+                } /*else {
                     utility.showToastMsg("Please select document");
-                }
+                }*/
             }
         }));
         adapter = new UploadDocumentAdapter(this, uploadDocumentActionInfos, screenWidth, screenHeight);
@@ -288,17 +342,23 @@ public class UploadDocumentActivity extends DrawerActivity {
             @Override
             public void onClick(View view, int position) {
                 selectedDocumentsListPosition = position;
-                selectedDocumetnsListItem = uploadDocumentActionInfos.get(position);
-                String filePath = uploadDocumentActionInfos.get(position).getFilePath();
-                if (!TextUtils.isEmpty(filePath)) {
-                    utility.showConformationDialog(UploadDocumentActivity.this,
-                            "Are you sure you want to delete this file", (DialogInterface.OnClickListener) (dialog, which) -> {
-                                uploadDocumentActionInfos.get(position).setFilePath(null);
-                                adapter.notifyDataSetChanged();
-                                updateUploadContentButtonUI();
-                            });
+                DocumentStatus documentStatus =uploadDocumentActionInfos.get(position).getDocumentStatus();
+                if (documentStatus.getAllowUpdate() != 0) {
+                    selectedDocumetnsListItem = uploadDocumentActionInfos.get(position);
+                    String filePath = uploadDocumentActionInfos.get(position).getFilePath();
+                    if (!TextUtils.isEmpty(filePath)) {
+                        utility.showConformationDialog(UploadDocumentActivity.this,
+                                "Are you sure you want to delete this file", (DialogInterface.OnClickListener) (dialog, which) -> {
+                                    uploadDocumentActionInfos.get(position).setFilePath(null);
+                                    adapter.notifyDataSetChanged();
+                                    updateUploadContentButtonUI();
+                                });
+                    } else {
+                        String[] supportFormat = selectedDocumetnsListItem.getSuportedFormats().toArray(new String[0]);
+                        showImageFromGalary(supportFormat, utility.parseDouble(selectedDocumetnsListItem.getMaxSize()));
+                    }
                 } else {
-                    showImageFromGalary();
+                    utility.showToastMsg("Not allowed to update this");
                 }
             }
 
@@ -310,6 +370,8 @@ public class UploadDocumentActivity extends DrawerActivity {
         vehicleTypeRelativeLayout.setOnClickListener(v -> {
             showListPopupScreen(vehicleTypeRelativeLayout, vehicleTypeTextView, vehicleTypesItems);
         });
+
+        selectVehicleRelativeLayout.setOnClickListener(this::showAvailableVehiclePopupScreen);
     }
 
     /**
@@ -343,11 +405,11 @@ public class UploadDocumentActivity extends DrawerActivity {
      * This method to find selected document file list.
      * @return List DocumentsListItem.
      */
-    private List<DocumentsListItem> findSelectedDocumentList() {
-        List<DocumentsListItem> documentsListItems = new ArrayList<>();
+    private List<DocumentsItem> findSelectedDocumentList() {
+        List<DocumentsItem> documentsListItems = new ArrayList<>();
         int count = 0;
         do {
-            DocumentsListItem documentsListItem = uploadDocumentActionInfos.get(count);
+            DocumentsItem documentsListItem = uploadDocumentActionInfos.get(count);
             if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
                 documentsListItems.add(documentsListItem);
             }
@@ -360,7 +422,7 @@ public class UploadDocumentActivity extends DrawerActivity {
      * @return boolean
      */
     private boolean isAnyItemDocumentSelected() {
-        for (DocumentsListItem documentsListItem: uploadDocumentActionInfos) {
+        for (DocumentsItem documentsListItem: uploadDocumentActionInfos) {
             if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
                 return true;
             }
@@ -368,29 +430,62 @@ public class UploadDocumentActivity extends DrawerActivity {
         return false;
     }
 
+    private boolean isValiedAllSelected() {
+        boolean isValied = false;
+        for (DocumentsItem documentsListItem: uploadDocumentActionInfos) {
+            if (documentsListItem.getIsMandatory() == 1 && documentsListItem.getDocumentStatus().getAllowUpdate() == 1) {
+                if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+                    isValied = true;
+                } else {
+                    utility.showToastMsg("Select " + documentsListItem.getName());
+                    isValied = false;
+                    return false;
+                }
+            }
+        }
+        return isValied;
+    }
+
     /**
      * This method to show Image Galary from external storage.
      */
-    private void showImageFromGalary() {
+    private void showImageFromGalary(String[] supportedFileType, double fileSize) {
         String [] storage = permissionManager.getStorageReadAndWrightPermission();
         //int totalPermission = storage.length;
         if (permissionManager.initPermissionDialog(this, storage)) {
-            showImagePickerScreen();
+            showImagePickerScreen(supportedFileType, fileSize);
         }
     }
 
-    private void showImagePickerScreen() {
-        FilePickerBuilder.getInstance()
-                .setActivityTitle("Please select image")
-                .enableVideoPicker(false)
-                .enableCameraSupport(true)
-                .showGifs(false)
-                .showFolderView(true)
-                .enableSelectAll(false)
-                .enableImagePicker(true)
-                .setMaxCount(1)
-                .withOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-                .pickPhoto(this, IMAGE_PICKER);
+    private void showImagePickerScreen(String[] supportedFileType, double fileSize) {
+        if (0 == supportedFileType.length) {
+            FilePickerBuilder.getInstance()
+                    .setActivityTitle("Please select image")
+                    .enableVideoPicker(false)
+                    .enableCameraSupport(true)
+                    .showGifs(false)
+                    .showFolderView(true)
+                    .enableSelectAll(false)
+                    .enableImagePicker(true)
+                    .setMaxCount(1)
+                    .withOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                    .pickPhoto(this, IMAGE_PICKER);
+        } else {
+            FilePickerBuilder.getInstance()
+                    .setActivityTitle("Please select file")
+                    .enableVideoPicker(false)
+                    .enableCameraSupport(true)
+                    .showGifs(false)
+                    .showFolderView(true)
+                    .enableSelectAll(false)
+                    .enableImagePicker(false)
+                    .setMaxCount(1)
+                    .enableDocSupport(false)
+                    .fileSize(fileSize)
+                    .addFileSupport(supportedFileType)
+                    .withOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                    .pickFile(this, FILE_PICKER);
+        }
     }
 
     /**
@@ -490,6 +585,69 @@ public class UploadDocumentActivity extends DrawerActivity {
         popupWindow.showAsDropDown(view);
     }
 
+    private void updateSelectedVehicleUI(AvailableVehiclesItem availableVehiclesItem) {
+        String vehicleTypeId = availableVehiclesItem.getVehicleTypeId();
+        if (!TextUtils.isEmpty(vehicleTypeId)) {
+            for (int index=0; index<vehicleTypesItems.size(); index++) {
+                VehicleTypesItem vehicleTypesItem = vehicleTypesItems.get(index);
+                if (vehicleTypesItem.getVehicleTypeId().compareTo(vehicleTypeId) == 0) {
+                    vehicleTypeTextView.setText(vehicleTypesItem.getVehicleType());
+                    mSelectedItemType = index;
+                    break;
+                }
+            }
+        }
+        etVehicleName.setText(availableVehiclesItem.getVehicleName());
+        etVehicleNumber.setText(availableVehiclesItem.getVehicleNumber());
+    }
+
+    /**
+     * This method to show available vehicle list popup
+     * @param view
+     */
+    private void showAvailableVehiclePopupScreen(View view) {
+        View customView = LayoutInflater.from(this).inflate(R.layout.spinner_pop_up_screen, null);
+        int leftRightSpace = (int) (screenWidth * 0.0153);
+        final PopupWindow popupWindow = new PopupWindow(customView, leftRightSpace * 58, ViewGroup.LayoutParams.WRAP_CONTENT);
+        final ListView listView = customView.findViewById(R.id.listItemListView);
+        ArrayAdapter<AvailableVehiclesItem> dataAdapter = new ArrayAdapter<AvailableVehiclesItem>(this, R.layout.spinner_dropdown_textview, availableVehiclesItems) {
+            @NonNull
+            @Override
+            public View getView(int position, View convertView,@NonNull ViewGroup parent) {
+                View v = null;
+                v = super.getView(position, null, parent);
+                TextView tv = (TextView) v;
+                if (position == mSelectedVehicle) {
+                    v.setBackgroundColor(getResources().getColor(R.color.primary_color));
+                    tv.setTextColor(getResources().getColor(R.color.secondary_color));
+                } else {
+                    v.setBackgroundColor(getResources().getColor(R.color.background_color));
+                    tv.setTextColor(getResources().getColor(R.color.secondary_color));
+                }
+                if (vehicleSelectionFirstTime) {
+                    v.setBackgroundColor(getResources().getColor(R.color.background_color));
+                    tv.setTextColor(getResources().getColor(R.color.secondary_color));
+                }
+                tv.setText(getItem(position).getVehicleName());
+                return v;
+            }
+        };
+        listView.setAdapter(dataAdapter);
+        listView.setSelection(mSelectedVehicle);
+        listView.setOnItemClickListener((parent, view3, position, id) -> {
+            popupWindow.dismiss();
+            AvailableVehiclesItem selectedState = availableVehiclesItems.get(position);
+            selectVehicleTextView.setText(selectedState.getVehicleName());
+            selectVehicleTextView.setTextColor(getResources().getColor(R.color.secondary_color));
+            mSelectedVehicle = position;
+            vehicleSelectionFirstTime = false;
+            updateSelectedVehicleUI(selectedState);
+        });
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        popupWindow.setOutsideTouchable(true);
+        popupWindow.showAsDropDown(view);
+    }
+
     /**
      * This method to create object for views.
      */
@@ -505,6 +663,10 @@ public class UploadDocumentActivity extends DrawerActivity {
         recyclerView = findViewById(R.id.recyclerView);
         vehicleTypeTextView = findViewById(R.id.vehicleTypeTextView);
         uploadContentButton = findViewById(R.id.uploadContentButton);
+        selectVehicleRelativeLayout = findViewById(R.id.selectVehicleRelativeLayout);
+        selectVehicleTextView = findViewById(R.id.selectVehicleTextView);
+        selectVehicleArrowImageView = findViewById(R.id.selectVehicleArrowImageView);
+        selectVehicleDivider = findViewById(R.id.selectVehicleDivider);
     }
 
     /**
@@ -528,6 +690,24 @@ public class UploadDocumentActivity extends DrawerActivity {
         RelativeLayout.LayoutParams vehicleTypeRelativeLayoutLayoutParams = (RelativeLayout.LayoutParams) vehicleTypeRelativeLayout.getLayoutParams();
         vehicleTypeRelativeLayoutLayoutParams.setMargins(topBottomSpace * 5, topBottomSpace * 3, topBottomSpace * 5, 0);
         vehicleTypeRelativeLayout.setLayoutParams(vehicleTypeRelativeLayoutLayoutParams);
+
+        RelativeLayout.LayoutParams selectVehicleArrowImageViewParams = (RelativeLayout.LayoutParams) selectVehicleArrowImageView.getLayoutParams();
+        selectVehicleArrowImageViewParams.width = imgIconArrowWidth;
+        selectVehicleArrowImageViewParams.height = imgIconArrowHeight;
+        selectVehicleArrowImageView.setLayoutParams(selectVehicleArrowImageViewParams);
+
+        RelativeLayout.LayoutParams selectVehicleDividerParams = (RelativeLayout.LayoutParams) selectVehicleDivider.getLayoutParams();
+        selectVehicleDividerParams.setMargins(topBottomSpace * 5, 0, topBottomSpace * 5, 0);
+        selectVehicleDivider.setLayoutParams(selectVehicleDividerParams);
+
+        /*RelativeLayout.LayoutParams selectVehicleTextViewParams = (RelativeLayout.LayoutParams) selectVehicleTextView.getLayoutParams();
+        selectVehicleTextViewParams.setMargins(topBottomSpace * 3, topBottomSpace * 3, 0, 0);
+        selectVehicleTextView.setLayoutParams(selectVehicleTextViewParams);
+        selectVehicleTextView.setPadding(0, 0, topBottomSpace * 2, 0);*/
+
+        RelativeLayout.LayoutParams selectVehicleRelativeLayoutParams = (RelativeLayout.LayoutParams) selectVehicleRelativeLayout.getLayoutParams();
+        selectVehicleRelativeLayoutParams.setMargins(topBottomSpace * 5, topBottomSpace * 3, topBottomSpace * 5, 0);
+        selectVehicleRelativeLayout.setLayoutParams(selectVehicleRelativeLayoutParams);
 
         RelativeLayout.LayoutParams etVehicleNameLayoutParams = (RelativeLayout.LayoutParams) etVehicleName.getLayoutParams();
         etVehicleNameLayoutParams.setMargins(topBottomSpace * 5, topBottomSpace * 3, topBottomSpace * 5, 0);
@@ -558,7 +738,7 @@ public class UploadDocumentActivity extends DrawerActivity {
      * This method to remove all selected files and update DocumentList UI.
      */
     private void clearAndUpdateDocumentListUI() {
-        for (DocumentsListItem documentsListItem: uploadDocumentActionInfos)
+        for (DocumentsItem documentsListItem: uploadDocumentActionInfos)
             documentsListItem.setFilePath(null);
         adapter.notifyDataSetChanged();
     }
@@ -575,8 +755,9 @@ public class UploadDocumentActivity extends DrawerActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == IMAGE_PICKER && resultCode == Activity.RESULT_OK) {
-            List<String> filePath = data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_MEDIA);
+        if (requestCode == IMAGE_PICKER || requestCode == FILE_PICKER && resultCode == Activity.RESULT_OK) {
+            List<String> filePath = data.getStringArrayListExtra(requestCode == IMAGE_PICKER ?
+                    FilePickerConst.KEY_SELECTED_MEDIA : FilePickerConst.KEY_SELECTED_DOCS);
             //Bitmap selectedImage = BitmapFactory.decodeFile(filePath);
             //.addAll(data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_MEDIA));
             if (null != filePath && !filePath.isEmpty()) {
@@ -596,7 +777,8 @@ public class UploadDocumentActivity extends DrawerActivity {
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // permission was granted, yay! Do the
                 // contacts-related task you need to do.
-                showImagePickerScreen();
+                String[] supportFile = selectedDocumetnsListItem.getSuportedFormats().toArray(new String[0]);
+                showImagePickerScreen(supportFile, utility.parseDouble(selectedDocumetnsListItem.getMaxSize()));
             } else {
                 // permission denied, boo! Disable the
                 // functionality that depends on this permission.

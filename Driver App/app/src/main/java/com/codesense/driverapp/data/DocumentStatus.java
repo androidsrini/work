@@ -2,48 +2,70 @@ package com.codesense.driverapp.data;
 
 import com.google.gson.annotations.SerializedName;
 
-public class DocumentStatus{
+public class DocumentStatus {
 
-	@SerializedName("status_message")
-	private String statusMessage;
+    @SerializedName("status_message")
+    private String statusMessage;
 
-	@SerializedName("file")
-	private String file;
+    @SerializedName("file")
+    private String file;
 
-	@SerializedName("status_code")
-	private int statusCode;
+    @SerializedName("status_code")
+    private int statusCode;
 
-	public void setStatusMessage(String statusMessage){
-		this.statusMessage = statusMessage;
-	}
+    @SerializedName("allow_update")
+    private int allowUpdate;
 
-	public String getStatusMessage(){
-		return statusMessage;
-	}
+    @SerializedName("status")
+    private String status;
 
-	public void setFile(String file){
-		this.file = file;
-	}
+    public int getAllowUpdate() {
+        return allowUpdate;
+    }
 
-	public String getFile(){
-		return file;
-	}
+    public void setAllowUpdate(int allowUpdate) {
+        this.allowUpdate = allowUpdate;
+    }
 
-	public void setStatusCode(int statusCode){
-		this.statusCode = statusCode;
-	}
+    public String getStatus() {
+        return status;
+    }
 
-	public int getStatusCode(){
-		return statusCode;
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	@Override
- 	public String toString(){
-		return 
-			"DocumentStatus{" + 
-			"status_message = '" + statusMessage + '\'' + 
-			",file = '" + file + '\'' + 
-			",status_code = '" + statusCode + '\'' + 
-			"}";
-		}
+    public String getStatusMessage() {
+        return statusMessage;
+    }
+
+    public void setStatusMessage(String statusMessage) {
+        this.statusMessage = statusMessage;
+    }
+
+    public String getFile() {
+        return file;
+    }
+
+    public void setFile(String file) {
+        this.file = file;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    @Override
+    public String toString() {
+        return
+                "DocumentStatus{" +
+                        "status_message = '" + statusMessage + '\'' +
+                        ",file = '" + file + '\'' +
+                        ",status_code = '" + statusCode + '\'' +
+                        "}";
+    }
 }

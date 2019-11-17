@@ -60,6 +60,7 @@
 
     <string name="upload_remaining_text">Remaining Steps</string>
     <string name="vehicle_type">Vehicle Type</string>
+    <string name="select_vehicle">Select Vehicle</string>
 
     <string name="vehicle_name">Vehicle Name</string>
     <string name="vehicle_number">Vehicle Number</string>

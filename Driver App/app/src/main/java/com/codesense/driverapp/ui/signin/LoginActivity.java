@@ -5,13 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codesense.driverapp.R;
@@ -36,6 +37,7 @@ import com.product.process.annotation.Onclick;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -67,8 +69,10 @@ public class LoginActivity extends BaseActivity {
     Button btnLogin;
     @Initialize(R.id.tvTitle)
     TextView tvTitle;
-    @Initialize(R.id.toolbarClose)
-    ImageView toolbarClose;
+    @Initialize(R.id.toolbar)
+    Toolbar toolbar;
+    /*@Initialize(R.id.toolbarClose)
+    ImageView toolbarClose;*/
     /**
      * To add the asyncrones subscribe process RXJava
      */
@@ -87,6 +91,7 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ProductBindView.bind(this);
+        setSupportActionBar(toolbar);
         functionality();
         setDynamicValue();
     }
@@ -96,10 +101,10 @@ public class LoginActivity extends BaseActivity {
         int imgIconWidth = (int) (screenWidth * 0.075);
         int imgIconHeight = (int) (screenWidth * 0.075);
 
-        RelativeLayout.LayoutParams imgLayParams = (RelativeLayout.LayoutParams) toolbarClose.getLayoutParams();
+        /*RelativeLayout.LayoutParams imgLayParams = (RelativeLayout.LayoutParams) toolbarClose.getLayoutParams();
         imgLayParams.width = imgIconWidth;
         imgLayParams.height = imgIconHeight;
-        toolbarClose.setLayoutParams(imgLayParams);
+        toolbarClose.setLayoutParams(imgLayParams);*/
 
         int topBottomSpace = (int) (screenHeight * 0.0089);
 
@@ -118,7 +123,13 @@ public class LoginActivity extends BaseActivity {
 
     private void functionality() {
         tvTitle.setText(getResources().getText(R.string.login_title));
-        toolbarClose.setBackgroundResource(R.drawable.icon_close);
+        if (null != getSupportActionBar()) {
+            getSupportActionBar().setTitle(null);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_close);
+        }
+        //toolbarClose.setBackground(null);
+        //toolbarClose.setBackgroundResource(R.drawable.icon_close);
     }
 
     /**
@@ -192,13 +203,14 @@ public class LoginActivity extends BaseActivity {
                 break;
             case SUCCESS:
                 utility.dismissDialog();
-                if (null != apiResponse.getResponseJsonObject() && apiResponse.isValidResponse()) {
+                if (null != apiResponse.getResponseJsonObject() && apiResponse.getResponseStatus() != 0) {
                     if (ServiceType.SIGNIN_OWNER == serviceType) {
                         updatePreferenceValues(apiResponse);
                         fetchOwnerTypeRequest();
-                    } else if (ServiceType.OWNER_TYPES == serviceType) {
-                        if (-1 == appSharedPreference.getOtpVerify() || 0 == appSharedPreference.getOtpVerify()) {
-                            VerifyMobileActivity.start(this, appSharedPreference.getUserID(), appSharedPreference.getMobileNumberKey());
+                    } else if (ServiceType.OWNER_TYPES == serviceType && apiResponse.getResponseStatus() != 0) {
+                        if (ApiResponse.OTP_VALIDATION == apiResponse.getResponseStatus() || -1 == appSharedPreference.getOtpVerify() || 0 == appSharedPreference.getOtpVerify()) {
+                            VerifyMobileActivity.start(this, appSharedPreference.getUserID(), appSharedPreference.getMobileNumberKey(),
+                                    ApiResponse.OTP_VALIDATION != apiResponse.getResponseStatus());
                         } else if (-1 == appSharedPreference.getOwnerTypeId() || 0 == appSharedPreference.getOwnerTypeId()) {
                             SelectTypeActivity.start(this);
                             //TO kill this activity class from backstack
@@ -253,16 +265,26 @@ public class LoginActivity extends BaseActivity {
         compositeDisposable.clear();
     }
 
-    @Onclick(R.id.toolbarClose)
+    /*@Onclick(R.id.toolbarClose)
     public void toolbarClose(View v) {
         finish();
-    }
+    }*/
 
     @Onclick(R.id.btnLogin)
     protected void siginInClick(View v) {
         if (isValidAllFields()) {
             signInRequest();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /*private enum ServiceType {

@@ -86,7 +86,8 @@ class DocScannerTask(val contentResolver: ContentResolver, private val fileTypes
 
                     document.size = data.getString(data.getColumnIndexOrThrow(MediaStore.Files.FileColumns.SIZE))
 
-                    if (!documents.contains(document)) documents.add(document)
+                    //Implemented file size.
+                    if (!documents.contains(document) && (PickerManager.fileSize == 0.0 || PickerManager.fileSize > document.size.toDouble())) documents.add(document)
                 }
             }
         }

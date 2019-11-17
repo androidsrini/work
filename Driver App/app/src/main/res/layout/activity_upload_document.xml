@@ -18,10 +18,46 @@
 
 
     <RelativeLayout
-        android:id="@+id/vehicleTypeRelativeLayout"
+        android:id="@+id/selectVehicleRelativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tvRemaining"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@+id/tvRemaining">
+
+        <TextView
+            android:id="@+id/selectVehicleTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/secondary_color"
+            android:hint="@string/select_vehicle"
+            android:textColorHint="@color/dark_grey" />
+
+        <ImageView
+            android:id="@+id/selectVehicleArrowImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/shipping_address_spinner_arrow"
+            android:layout_alignParentEnd="true"
+            tools:ignore="ContentDescription" />
+
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/selectVehicleDivider"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/primary_color"
+        android:layout_below="@+id/selectVehicleRelativeLayout"
+        app:layout_constraintTop_toBottomOf="@+id/vehicleTypeRelativeLayout" />
+
+    <RelativeLayout
+        android:id="@+id/vehicleTypeRelativeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/selectVehicleDivider"
         app:layout_constraintTop_toBottomOf="@+id/tvRemaining">
 
         <TextView

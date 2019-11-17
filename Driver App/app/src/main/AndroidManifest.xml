@@ -56,7 +56,9 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.signin.LoginActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppThemeWithoutSideDrawer"
+            />
         <activity
             android:name=".ui.uploaddocument.UploadDocumentActivity"
             android:launchMode="singleTask"

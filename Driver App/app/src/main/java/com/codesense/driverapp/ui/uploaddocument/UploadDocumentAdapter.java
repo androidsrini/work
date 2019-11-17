@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codesense.driverapp.R;
-import com.codesense.driverapp.data.DocumentsListItem;
+import com.codesense.driverapp.data.DocumentsItem;
 
 import java.io.File;
 import java.util.List;
@@ -20,12 +20,12 @@ import java.util.List;
 public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAdapter.ViewHolder> {
 
 
-    private List<DocumentsListItem> uploadDocumentModelList;
+    private List<DocumentsItem> uploadDocumentModelList;
     private Activity activity;
     private int width;
     private int height;
 
-    public UploadDocumentAdapter(Activity activity, List<DocumentsListItem> uploadDocumentModelList,
+    public UploadDocumentAdapter(Activity activity, List<DocumentsItem> uploadDocumentModelList,
                                  int w, int h) {
         this.activity = activity;
         this.width = w;
@@ -50,12 +50,12 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
 
-        DocumentsListItem uploadDocumentModel = uploadDocumentModelList.get(position);
+        DocumentsItem uploadDocumentModel = uploadDocumentModelList.get(position);
         boolean isFileSelected = !TextUtils.isEmpty(uploadDocumentModel.getFilePath());
         String status = isFileSelected ? activity.getString(R.string.document_status_completed)
                 :  (null != uploadDocumentModel.getDocumentStatus()) ?
-                uploadDocumentModel.getDocumentStatus().getStatusMessage() : activity.getString(R.string.recommended_next_step);
-        String title = uploadDocumentModel.getDisplayName();
+                uploadDocumentModel.getDocumentStatus().getStatus() : activity.getString(R.string.recommended_next_step);
+        String title = uploadDocumentModel.getName();
         viewHolder.tvDriverText.setText(status);
         viewHolder.tvDriverdesc.setText(title);
         if (!isFileSelected) {
@@ -81,7 +81,7 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
      */
     public int getSelectedFilesCount() {
         int  count = 0;
-        for (DocumentsListItem documentsListItem: uploadDocumentModelList) {
+        for (DocumentsItem documentsListItem: uploadDocumentModelList) {
             if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
                 count ++;
             }

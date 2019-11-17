@@ -54,6 +54,7 @@ public final class Constant {
     public static final String LATITUDE = "latitude" ;
     public static final String LONGITUDE = "longitude" ;
     public static final String SPEED_PER_MINUTE = "speed_per_minute" ;
+    public static final String VEHICLE_ID = "vehicle_id" ;
     public static final int OWNER_CUM_DRIVER_TYPE = 1;
     public static final int NON_DRIVING_PARTNER_TYPE = 2;
 }
