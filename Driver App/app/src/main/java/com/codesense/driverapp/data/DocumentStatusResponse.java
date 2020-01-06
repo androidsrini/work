@@ -16,7 +16,7 @@ public class DocumentStatusResponse{
 	private int status;
 
 	@SerializedName("vehicle_details")
-	private VehicleDetails vehicleDetails;
+	private List<VehicleDetails> vehicleDetails;
 
 	public void setDocuments(List<DocumentsItem> documents){
 		this.documents = documents;
@@ -42,11 +42,11 @@ public class DocumentStatusResponse{
 		return status;
 	}
 
-	public void setVehicleDetails(VehicleDetails vehicleDetails){
+	public void setVehicleDetails(List<VehicleDetails> vehicleDetails){
 		this.vehicleDetails = vehicleDetails;
 	}
 
-	public VehicleDetails getVehicleDetails(){
+	public List<VehicleDetails> getVehicleDetails(){
 		return vehicleDetails;
 	}
 
