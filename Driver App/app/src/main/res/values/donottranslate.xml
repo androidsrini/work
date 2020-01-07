@@ -4,8 +4,8 @@
     <string name="welcome_text_prefix">Welcome to the </string>
     <string name="welcome_text_sufix">" "VAVA</string>
     <string name="driver_text">Driver app</string>
-    <string name="sign_in_button">SIGN IN</string>
-    <string name="register_button">REGISTER</string>
+    <string name="sign_in_button">Sign In</string>
+    <string name="register_button">Register</string>
     <string name="or_ride_with_vava">Or Ride with VAVA</string>
     <string name="register_des_text">Let\'s start with creating \n your account </string>
     <string name="first_name_text">First Name</string>

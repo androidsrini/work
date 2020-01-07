@@ -31,6 +31,7 @@
     </android.support.v7.widget.Toolbar>
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -47,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
-                android:textSize="30sp"
+                android:textSize="21sp"
                 android:textColor="@color/secondary_color"
                 android:text="@string/register_des_text" />
 
@@ -70,7 +71,7 @@
                     android:hint="@string/first_name_text"
                     android:singleLine="true"
                     android:imeOptions="actionNext"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textColor="@color/secondary_color" />
 
                 <EditText
@@ -78,7 +79,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:singleLine="true"
                     android:layout_marginStart="5dp"
                     android:hint="@string/last_name_text"
@@ -92,7 +93,7 @@
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:singleLine="true"
                 android:hint="@string/email_text"
                 android:inputType="textEmailAddress"
@@ -106,7 +107,7 @@
                 android:id="@+id/etPhoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:inputType="phone"
                 android:hint="@string/phone_text"
                 android:maxLength="@integer/max_length_phone_number"
@@ -130,7 +131,7 @@
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:hint="@string/password_text"
                 android:inputType="textPassword"
                 android:imeOptions="actionNext"
@@ -154,7 +155,7 @@
                     android:id="@+id/etConfirmPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:hint="@string/confirm_password_text"
                     android:inputType="textPassword"
                     android:imeOptions="actionNext"
@@ -177,7 +178,7 @@
                     android:id="@+id/etCountry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:hint="@string/country_text"
                     android:singleLine="true"
                     android:imeOptions="actionDone"
@@ -203,7 +204,7 @@
                     android:id="@+id/etCity"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:hint="@string/city_text"
                     android:backgroundTint="@color/primary_color"
                     android:textColorHint="@color/secondary_color"
@@ -229,7 +230,7 @@
                 android:id="@+id/etInviteCode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:singleLine="true"
                 android:imeOptions="actionDone"
                 app:layout_constraintTop_toBottomOf="@+id/addressContainerLinearLayout"

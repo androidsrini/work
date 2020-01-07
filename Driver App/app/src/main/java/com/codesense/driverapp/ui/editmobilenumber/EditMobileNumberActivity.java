@@ -185,7 +185,7 @@ public class EditMobileNumberActivity extends BaseActivity {
                 utility.dismissDialog();
                 if (ServiceType.CHANGE_MOBILE_NUMBER == serviceType) {
                     VerifyMobileActivity.start(this, userID,
-                            checkPhoneNumber(), VerifyMobileActivity.NEED_TO_CALL_SEND_OTP);
+                            etMobileNumber.getText().toString().trim(),"edit", VerifyMobileActivity.NEED_TO_CALL_SEND_OTP);
                     finish();
                 }
                 break;

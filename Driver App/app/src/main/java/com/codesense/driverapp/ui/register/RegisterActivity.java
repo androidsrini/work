@@ -21,6 +21,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.codesense.driverapp.R;
@@ -64,6 +65,8 @@ public class RegisterActivity extends BaseActivity {
     TextView tvRegisterDes;
     @Initialize(R.id.ll_name)
     LinearLayout ll_name;
+    @Initialize(R.id.scrollView)
+    ScrollView scrollView;
     @Initialize(R.id.etFirstName)
     EditText etFirstName;
     @Initialize(R.id.etLastName)

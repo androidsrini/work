@@ -42,6 +42,7 @@ public class SplashActivity extends BaseActivity {
     @Inject
     AppSharedPreference appSharedPreference;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    NetworkChangeReceiver networkChangeReceiver;
 
     @Override
     protected int layoutRes() {
@@ -51,7 +52,8 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        registerReceiver(new NetworkChangeReceiver(), new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        networkChangeReceiver = new NetworkChangeReceiver();
+        registerReceiver(networkChangeReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
         //adding user identity to crash report
         if (!TextUtils.isEmpty(appSharedPreference.getAccessTokenKey())
                 && !TextUtils.isEmpty(appSharedPreference.getUserID())) {
@@ -124,5 +126,11 @@ public class SplashActivity extends BaseActivity {
                 CrashlyticsHelper.d("Failed response: " + apiResponse.error);
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(networkChangeReceiver);
     }
 }

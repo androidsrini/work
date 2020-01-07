@@ -101,13 +101,23 @@ public class VerifyMobileActivity extends BaseActivity {
     private CountDownTimer countDownTimer;
     private boolean isValiedAllFields;
     private ClipboardManager clipboardManager;
-    private  boolean isNeedToCallSendOtp;
+    private boolean isNeedToCallSendOtp;
 
     public static void start(Context context, String userID, String phoneNumber, boolean isNeedToCallSendOtp) {
         Intent starter = new Intent(context, VerifyMobileActivity.class);
         starter.putExtra(USER_ID_ARG, userID);
         starter.putExtra(PHONE_NUMBER_ARG, phoneNumber);
         starter.putExtra(IS_NEED_TO_CALL_SEND_OTP_ARG, isNeedToCallSendOtp);
+        context.startActivity(starter);
+    }
+
+    public static void start(Context context, String userID, String phoneNumber, String from, boolean isNeedToCallSendOtp) {
+        Intent starter = new Intent(context, VerifyMobileActivity.class);
+        starter.putExtra(USER_ID_ARG, userID);
+        starter.putExtra(PHONE_NUMBER_ARG, phoneNumber);
+        starter.putExtra("from", from);
+        starter.putExtra(IS_NEED_TO_CALL_SEND_OTP_ARG, isNeedToCallSendOtp);
+        starter.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         context.startActivity(starter);
     }
 
@@ -128,16 +138,24 @@ public class VerifyMobileActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         ProductBindView.bind(this);
         Object clipboardService = this.getSystemService(CLIPBOARD_SERVICE);
-        clipboardManager = (ClipboardManager)clipboardService;
+        clipboardManager = (ClipboardManager) clipboardService;
         setDynamicValue();
         functionality();
         updateUI();
-        setEditTextObserver();
-        if (!TextUtils.isEmpty(getUserId()) && isNeedToCallSendOtp()) {
+        /*if (!TextUtils.isEmpty(getUserId()) && isNeedToCallSendOtp()) {
             sendOTPRequest(getUserId(), getPhoneNumber());
-        } else {
+        } else {*/
+        Intent intent = getIntent();
+        if (intent != null && intent.getStringExtra("from")!=null && !TextUtils.isEmpty(intent.getStringExtra("from"))) {
+            if (intent.getStringExtra("from").equalsIgnoreCase("Edit")) {
+                sendOTPRequest(getUserId(), getPhoneNumber());
+            } else {
+                startStop();
+            }
+        }else{
             startStop();
         }
+        /* }*/
     }
 
     /**
@@ -225,7 +243,7 @@ public class VerifyMobileActivity extends BaseActivity {
     private boolean handleClipBoardPaste(View v) {
         ClipData clipData = clipboardManager.getPrimaryClip();
         int itemCount = clipData.getItemCount();
-        if(itemCount > 0) {
+        if (itemCount > 0) {
             ClipData.Item item = clipData.getItemAt(0);
             String text = item.getText().toString();
             if (text.length() == 4) {
@@ -316,7 +334,7 @@ public class VerifyMobileActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(charSequence -> {
                             boolean isField = null != charSequence && !charSequence.toString().equals("");
-                            boolean nextViewIsEmpty =  TextUtils.isEmpty(optNumber2.getText());
+                            boolean nextViewIsEmpty = TextUtils.isEmpty(optNumber2.getText());
                             if (isField) {
                                 optNumber1.setSelection(charSequence.length());
                                 if (nextViewIsEmpty) {
@@ -330,8 +348,8 @@ public class VerifyMobileActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(charSequence -> {
                     boolean isField = null != charSequence && !charSequence.toString().equals("");
-                    boolean nextViewIsEmpty =  TextUtils.isEmpty(optNumber3.getText());
-                    boolean previousViewIsEmpty =  TextUtils.isEmpty(optNumber1.getText());
+                    boolean nextViewIsEmpty = TextUtils.isEmpty(optNumber3.getText());
+                    boolean previousViewIsEmpty = TextUtils.isEmpty(optNumber1.getText());
                     if (isField) {
                         optNumber2.setSelection(charSequence.length());
                         if (nextViewIsEmpty) {
@@ -348,8 +366,8 @@ public class VerifyMobileActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(charSequence -> {
                     boolean isField = null != charSequence && !charSequence.toString().equals("");
-                    boolean nextViewIsEmpty =  TextUtils.isEmpty(optNumber4.getText());
-                    boolean previousViewIsEmpty =  TextUtils.isEmpty(optNumber2.getText());
+                    boolean nextViewIsEmpty = TextUtils.isEmpty(optNumber4.getText());
+                    boolean previousViewIsEmpty = TextUtils.isEmpty(optNumber2.getText());
                     if (isField) {
                         optNumber3.setSelection(charSequence.length());
                         if (nextViewIsEmpty) {
@@ -366,9 +384,9 @@ public class VerifyMobileActivity extends BaseActivity {
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(charSequence -> {
                     //hideKeyboard();
-                    boolean isFieldNotEmpty =  charSequence != null && !charSequence.toString().equals("");
-                    boolean previousViewIsEmpty =  TextUtils.isEmpty(optNumber3.getText());
-                    if (!isFieldNotEmpty)  {
+                    boolean isFieldNotEmpty = charSequence != null && !charSequence.toString().equals("");
+                    boolean previousViewIsEmpty = TextUtils.isEmpty(optNumber3.getText());
+                    if (!isFieldNotEmpty) {
                         if (!previousViewIsEmpty) {
                             optNumber3.requestFocus();
                         }
@@ -391,6 +409,7 @@ public class VerifyMobileActivity extends BaseActivity {
 
     /**
      * This method will return user enter otp value
+     *
      * @return string.
      */
     private String getVerifyOtp() {
@@ -448,6 +467,7 @@ public class VerifyMobileActivity extends BaseActivity {
 
     /**
      * This method will handle verify mobile screen api responses.
+     *
      * @param apiResponse
      */
     private void apiResponseHandle(ApiResponse apiResponse) {
@@ -460,12 +480,14 @@ public class VerifyMobileActivity extends BaseActivity {
                 utility.dismissDialog();
                 if (ServiceType.SEND_OTP == serviceType) {
                     //Start countdown timer
-                    if (apiResponse.getResponseStatus() != ApiResponse.OTP_VALIDATION) {
+                    /*if (apiResponse.getResponseStatus() != ApiResponse.OTP_VALIDATION) {
                         startStop();
                     } else {
                         //Disabled resend button because of 'OTP_VALIDATION'
                         btnResend.setEnabled(false);
-                    }
+                    }*/
+                    startStop();
+
                 } else if (ServiceType.VERIFY_OTP == serviceType) {
                     if (apiResponse.isValidResponse()) {
                         SelectTypeActivity.start(this);
@@ -549,7 +571,7 @@ public class VerifyMobileActivity extends BaseActivity {
     protected void btnEditNumber(View v) {
         //Show number edit dialog.
         Intent intent = new Intent(this, EditMobileNumberActivity.class);
-        intent.putExtra(USER_ID_ARG, userID);
+        intent.putExtra(USER_ID_ARG, getUserId());
         intent.putExtra(PHONE_NUMBER_ARG, phoneNumber);
         startActivity(intent);
 
