@@ -158,10 +158,10 @@ public class LegalAgreementActivity extends BaseActivity {
         checkbox.setLayoutParams(checkboxLayoutParams);
         checkbox.setPadding(topBottomSpace * 2, 0, topBottomSpace * 2, 0);
 
-        LinearLayout.LayoutParams viewLayoutParams = (LinearLayout.LayoutParams) view.getLayoutParams();
+        /*LinearLayout.LayoutParams viewLayoutParams = (LinearLayout.LayoutParams) view.getLayoutParams();
         viewLayoutParams.setMargins(topBottomSpace * 2, topBottomSpace * 3, topBottomSpace * 2, 0);
         view.setLayoutParams(viewLayoutParams);
-
+*/
         RelativeLayout.LayoutParams btnAcceptContinueLayoutParams = (RelativeLayout.LayoutParams) btnAcceptContinue.getLayoutParams();
         btnAcceptContinueLayoutParams.setMargins(topBottomSpace * 2, 0, topBottomSpace * 2, topBottomSpace * 2);
         btnAcceptContinue.setLayoutParams(btnAcceptContinueLayoutParams);
@@ -222,8 +222,7 @@ public class LegalAgreementActivity extends BaseActivity {
                         }
                     } else if (ServiceType.REGISTATION_OWNER_TYPE == serviceType) {
                         updateAgreementAcceptRequest();
-                    } else {
-                        if (apiResponse.isValidResponse()) {
+                    } else if (ServiceType.ACCEPT_LEGAL_AGREEMENT== serviceType){
                             //To show dashboard screen.
                             if (null != apiResponse.getResponseJsonObject()) {
                                 appSharedPreference.saveOwnerTypeId(apiResponse.getResponseJsonObject().optInt(Constant.OWNER_TYPE_ID_RESPONSE));
@@ -232,7 +231,7 @@ public class LegalAgreementActivity extends BaseActivity {
                             UploadDocumentActivity.start(this);
                             //To clear all Activity class from backstack
                             ActivityCompat.finishAffinity(this);
-                        }
+
                     }
                 } else {
                     utility.showToastMsg(apiResponse.getResponseMessage());
@@ -263,7 +262,7 @@ public class LegalAgreementActivity extends BaseActivity {
     @Onclick(R.id.btnAcceptContinue)
     public void btnAcceptContinue(View v) {
         if (checkbox.isChecked()) {
-            updateRegistationOwnerTypeRequest();
+            updateAgreementAcceptRequest();
         }
     }
 

@@ -21,6 +21,7 @@ import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.legalagreement.LegalAgreementActivity;
+import com.codesense.driverapp.ui.signin.LoginActivity;
 import com.google.gson.Gson;
 import com.product.annotationbuilder.ProductBindView;
 import com.product.process.annotation.Initialize;
@@ -31,6 +32,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 
@@ -56,6 +58,8 @@ public class SelectTypeActivity extends BaseActivity {
     RecyclerView driverTypeRecyclerView;
     private List<OwnerTypesItem> ownerTypesItems;
     private SelectTypeAdapter selectTypeAdapter;
+
+    OwnerTypesItem ownerTypesItem;
     /**
      * To created compositeDisposable object
      */
@@ -126,13 +130,23 @@ public class SelectTypeActivity extends BaseActivity {
     }
 
     private void handleOnSelectedTypeSelection(OwnerTypesItem ownerTypesItem) {
-        LegalAgreementActivity.start(this, ownerTypesItem);
+        this.ownerTypesItem = ownerTypesItem;
+        updateRegistationOwnerTypeRequest(ownerTypesItem.getOwnerTypeId());
         /*compositeDisposable.add(requestHandler.getOwnerAgreementRequest(ApiUtility.getInstance().getApiKeyMetaData())
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .doOnSubscribe(d->apiResponseHandle(ApiResponse.loading()))
         .subscribe(result->apiResponseHandle(ApiResponse.success(result)),
                 error->{apiResponseHandle(ApiResponse.error(error));}));*/
+    }
+
+    private void updateRegistationOwnerTypeRequest(String ownerId) {
+        compositeDisposable.add(requestHandler.updateRegistationOwnerTypeRequest(ApiUtility.getInstance().getApiKeyMetaData(), ownerId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(d->apiResponseHandle(ApiResponse.loading(ServiceType.SUBMIT_OWNER_TYPE)))
+                .subscribe(result->apiResponseHandle(ApiResponse.success(ServiceType.SUBMIT_OWNER_TYPE, result)),
+                        error->apiResponseHandle(ApiResponse.error(ServiceType.SUBMIT_OWNER_TYPE, error))));
     }
 
     /**
@@ -166,6 +180,8 @@ public class SelectTypeActivity extends BaseActivity {
                             updateSelectTypeAdapter(ownerTypeResponse.getOwnerTypes());
                         }
                     }
+                }else if (ServiceType.SUBMIT_OWNER_TYPE == serviceType){
+                    LegalAgreementActivity.start(this, ownerTypesItem);
                 }
                 break;
             case ERROR:
@@ -182,6 +198,6 @@ public class SelectTypeActivity extends BaseActivity {
 
     @Onclick(R.id.toolbarClose)
     public void toolbarClose(View v) {
-        finish();
+        LoginActivity.start(this);
     }
 }

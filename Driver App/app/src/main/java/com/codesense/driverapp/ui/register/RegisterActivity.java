@@ -24,6 +24,8 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.base.BaseActivity;
 import com.codesense.driverapp.data.CitiesItem;
@@ -45,7 +47,6 @@ import com.product.process.annotation.Onclick;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -446,6 +447,7 @@ public class RegisterActivity extends BaseActivity {
                             || ApiResponse.OTP_VALIDATION == apiResponse.getResponseStatus()) {
                         appSharedPreference.saveUserType(apiResponse.getResponseJsonObject().optString(Constant.USER_TYPE_RESPONSE));
                         appSharedPreference.saveUserID(apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE));
+                        appSharedPreference.savePhoneNum(apiResponse.getResponseJsonObject().optString(Constant.MOBILE_NUMBER_PARAM));
                         appSharedPreference.saveAccessToken(apiResponse.getResponseJsonObject().optString(Constant.ACCESS_TOKEN_PARAM));
                         VerifyMobileActivity.start(this, apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE),
                                 getEtPhoneNumber(), VerifyMobileActivity.NEED_TO_CALL_SEND_OTP);

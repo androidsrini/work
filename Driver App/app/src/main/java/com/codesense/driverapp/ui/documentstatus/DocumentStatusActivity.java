@@ -40,7 +40,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-public class DocumentStatusActivity extends DrawerActivity implements View.OnClickListener {
+public class  DocumentStatusActivity extends DrawerActivity implements View.OnClickListener {
 
     private static final int IMAGE_PICKER = 0x0001;
     //Button btnUpdate;

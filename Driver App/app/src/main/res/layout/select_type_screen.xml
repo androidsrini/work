@@ -26,7 +26,6 @@
         android:text="@string/select_type_driver_desc"
         android:textColor="@color/secondary_color"
         android:textSize="18sp"
-        android:textStyle="bold"
         app:layout_constraintLeft_toLeftOf="parent" />
 
 </RelativeLayout>

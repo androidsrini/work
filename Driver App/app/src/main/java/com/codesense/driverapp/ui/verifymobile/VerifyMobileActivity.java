@@ -11,7 +11,9 @@ import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,6 +29,7 @@ import com.codesense.driverapp.R;
 import com.codesense.driverapp.base.BaseActivity;
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.di.utils.Utility;
+import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
@@ -95,6 +98,9 @@ public class VerifyMobileActivity extends BaseActivity {
     FloatingActionButton nextFloatingActionButton;
     private String userID, phoneNumber;
 
+    @Inject
+    protected AppSharedPreference appSharedPreference;
+
     private long timeCountInMilliSeconds = 60000;
     private int timeCountProgressSeconds = 1;
     private TimerStatus timerStatus = TimerStatus.STOPPED;
@@ -102,6 +108,7 @@ public class VerifyMobileActivity extends BaseActivity {
     private boolean isValiedAllFields;
     private ClipboardManager clipboardManager;
     private boolean isNeedToCallSendOtp;
+    private  boolean ispasteValue;
 
     public static void start(Context context, String userID, String phoneNumber, boolean isNeedToCallSendOtp) {
         Intent starter = new Intent(context, VerifyMobileActivity.class);
@@ -142,6 +149,7 @@ public class VerifyMobileActivity extends BaseActivity {
         setDynamicValue();
         functionality();
         updateUI();
+        setEditTextObserver();
         /*if (!TextUtils.isEmpty(getUserId()) && isNeedToCallSendOtp()) {
             sendOTPRequest(getUserId(), getPhoneNumber());
         } else {*/
@@ -176,10 +184,29 @@ public class VerifyMobileActivity extends BaseActivity {
 
     @UiThread
     private void functionality() {
-        optNumber1.setOnLongClickListener(this::handleClipBoardPaste);
+       /* optNumber1.setOnLongClickListener(this::handleClipBoardPaste);
         optNumber2.setOnLongClickListener(this::handleClipBoardPaste);
         optNumber3.setOnLongClickListener(this::handleClipBoardPaste);
-        optNumber4.setOnLongClickListener(this::handleClipBoardPaste);
+        optNumber4.setOnLongClickListener(this::handleClipBoardPaste);*/
+
+       optNumber1.addTextChangedListener(new TextWatcher() {
+           @Override
+           public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+           }
+
+           @Override
+           public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+           }
+
+           @Override
+           public void afterTextChanged(Editable editable) {
+               if (!ispasteValue) {
+                   ispasteValue = true;
+                   handleClipBoardPaste();
+               }
+           }
+       });
         optNumber1.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View arg0, MotionEvent arg1) {
                 view.setBackgroundResource(R.drawable.view_for_edittext_primary);
@@ -238,9 +265,47 @@ public class VerifyMobileActivity extends BaseActivity {
                 view3.setBackgroundResource(R.drawable.view_for_edittext_primary);
             }
         });
+
+/*
+        if (android.os.Build.VERSION.SDK_INT < 11) {
+            optNumber1.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+
+                @Override
+                public void onCreateContextMenu(ContextMenu menu, View v,
+                                                ContextMenu.ContextMenuInfo menuInfo) {
+                    // TODO Auto-generated method stub
+                    menu.clear();
+                }
+            });
+        } else {
+            optNumber1.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+
+                public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                    // TODO Auto-generated method stub
+                    return false;
+                }
+
+                public void onDestroyActionMode(ActionMode mode) {
+                    // TODO Auto-generated method stub
+
+                }
+
+                public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                    // TODO Auto-generated method stub
+                    return false;
+                }
+
+                public boolean onActionItemClicked(ActionMode mode,
+                                                   MenuItem item) {
+                    // TODO Auto-generated method stub
+                    handleClipBoardPaste();
+                    return false;
+                }
+            });
+        }*/
     }
 
-    private boolean handleClipBoardPaste(View v) {
+    private boolean handleClipBoardPaste() {
         ClipData clipData = clipboardManager.getPrimaryClip();
         int itemCount = clipData.getItemCount();
         if (itemCount > 0) {
@@ -251,6 +316,11 @@ public class VerifyMobileActivity extends BaseActivity {
                 optNumber2.setText(text.substring(1, 2));
                 optNumber3.setText(text.substring(2, 3));
                 optNumber4.setText(text.substring(3, 4));
+                view1.setBackgroundResource(R.drawable.view_for_edittext_primary);
+                view2.setBackgroundResource(R.drawable.view_for_edittext_primary);
+                view3.setBackgroundResource(R.drawable.view_for_edittext_primary);
+                view.setBackgroundResource(R.drawable.view_for_edittext_primary);
+
             }
             //destTextView.setText(text);
             Log.d(TAG, " Clip board message: " + text);
@@ -427,6 +497,8 @@ public class VerifyMobileActivity extends BaseActivity {
     private String getPhoneNumber() {
         if (null != getIntent() && TextUtils.isEmpty(phoneNumber)) {
             phoneNumber = getIntent().getStringExtra(PHONE_NUMBER_ARG);
+        }else{
+            phoneNumber = appSharedPreference.getPhoneNum();
         }
         return phoneNumber;
     }

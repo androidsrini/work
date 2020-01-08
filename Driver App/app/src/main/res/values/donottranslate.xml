@@ -51,7 +51,7 @@
     <string name="legal_checkbox_text">By clicking "I accept" or signing below (as such may be required by applicable law), Driver expressly acknowledges that he or she(i) has read and understood this Addendum;(ii) has had the opportunity to consult with other(including an attorney)regarding this Addendum;(iii)agree to be bound by term and condition this Addendum:and(iv)is legally competent to enter into this Addendum</string>
     <!--Upload Documents-->
 
-    <string name="legal_button">I ACCEPT/CONTINUE</string>
+    <string name="legal_button">I Accept/Continue</string>
     <string name="drawer_signout">Sign out</string>
 
     <string name="drawermenuitem_count">10</string>

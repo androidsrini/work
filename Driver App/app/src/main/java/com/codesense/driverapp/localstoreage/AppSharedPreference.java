@@ -58,8 +58,18 @@ public class AppSharedPreference {
         editor.apply();
     }
 
+    public void savePhoneNum(String mobileNum) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(MOBILE_NUMBER_KEY, mobileNum);
+        editor.apply();
+    }
+
+
     public String getUserID() {
         return sharedPreferences.getString(USER_ID_KEY, DEFAULT_VALUE);
+    }
+  public String getPhoneNum() {
+        return sharedPreferences.getString(MOBILE_NUMBER_KEY, DEFAULT_VALUE);
     }
 
     public String getUserType() {
