@@ -253,9 +253,11 @@ public class LegalAgreementActivity extends BaseActivity {
         if (checkbox.isChecked()) {
             btnAcceptContinue.setBackgroundColor(getResources().getColor(R.color.primary_color));
             btnAcceptContinue.setTextColor(getResources().getColor(R.color.secondary_color));
+            toolbarClose.setVisibility(View.GONE);
         } else {
             btnAcceptContinue.setBackgroundColor(getResources().getColor(R.color.low_contrast));
             btnAcceptContinue.setTextColor(getResources().getColor(R.color.background_color));
+            toolbarClose.setVisibility(View.VISIBLE);
         }
     }
 

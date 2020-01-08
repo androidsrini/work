@@ -199,5 +199,6 @@ public class SelectTypeActivity extends BaseActivity {
     @Onclick(R.id.toolbarClose)
     public void toolbarClose(View v) {
         LoginActivity.start(this);
+        finishAffinity();
     }
 }

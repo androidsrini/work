@@ -35,6 +35,7 @@ import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.editmobilenumber.EditMobileNumberActivity;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
+import com.codesense.driverapp.ui.signin.LoginActivity;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 import com.product.annotationbuilder.ProductBindView;
 import com.product.process.annotation.Initialize;
@@ -188,7 +189,7 @@ public class VerifyMobileActivity extends BaseActivity {
         optNumber2.setOnLongClickListener(this::handleClipBoardPaste);
         optNumber3.setOnLongClickListener(this::handleClipBoardPaste);
         optNumber4.setOnLongClickListener(this::handleClipBoardPaste);*/
-
+        toolbarClose.setImageResource(R.drawable.ic_close);
        optNumber1.addTextChangedListener(new TextWatcher() {
            @Override
            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -582,7 +583,8 @@ public class VerifyMobileActivity extends BaseActivity {
 
     @Onclick(R.id.toolbarClose)
     public void toolbarClose(View v) {
-        finish();
+        LoginActivity.start(this);
+        finishAffinity();
     }
 
     @Onclick(R.id.nextFloatingActionButton)
