@@ -280,7 +280,8 @@ public class UploadDocumentActivity extends DrawerActivity {
                         documentsItem.parseDocumentStatus(jsonObject);
                     }
                 }
-                if (null != documentStatusResponse && null != documentStatusResponse.getAvailableVehicles()) {
+                if (null != documentStatusResponse && null != documentStatusResponse.getAvailableVehicles()
+                && !documentStatusResponse.getAvailableVehicles().isEmpty()) {
                     availableVehiclesItems.addAll(documentStatusResponse.getAvailableVehicles());
                 } else {
                     selectVehicleRelativeLayout.setVisibility(View.GONE);
