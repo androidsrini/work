@@ -28,7 +28,7 @@
             >
         </activity>
         <activity
-            android:name=".ui.splash.SplashActivity"
+            android:name=".ui.selecttype.SelectTypeActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -47,9 +47,9 @@
         <activity
             android:name=".ui.verifymobile.VerifyMobileActivity"
             android:screenOrientation="portrait" />
-        <activity
+        <!--<activity
             android:name=".ui.selecttype.SelectTypeActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait" />-->
         <activity
             android:name=".ui.legalagreement.LegalAgreementActivity"
             android:screenOrientation="portrait" />

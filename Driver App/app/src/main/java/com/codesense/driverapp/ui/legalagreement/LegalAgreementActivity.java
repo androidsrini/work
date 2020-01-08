@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.view.View;
@@ -14,6 +13,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -153,12 +153,12 @@ public class LegalAgreementActivity extends BaseActivity {
         tvLegalText.setLayoutParams(tvLegalTextLayoutParams);
         tvLegalText.setPadding(0, 0, topBottomSpace * 2, 0);*/
 
-        ConstraintLayout.LayoutParams checkboxLayoutParams = (ConstraintLayout.LayoutParams) checkbox.getLayoutParams();
+        LinearLayout.LayoutParams checkboxLayoutParams = (LinearLayout.LayoutParams) checkbox.getLayoutParams();
         checkboxLayoutParams.setMargins(topBottomSpace * 2, topBottomSpace * 3, 0, 0);
         checkbox.setLayoutParams(checkboxLayoutParams);
         checkbox.setPadding(topBottomSpace * 2, 0, topBottomSpace * 2, 0);
 
-        ConstraintLayout.LayoutParams viewLayoutParams = (ConstraintLayout.LayoutParams) view.getLayoutParams();
+        LinearLayout.LayoutParams viewLayoutParams = (LinearLayout.LayoutParams) view.getLayoutParams();
         viewLayoutParams.setMargins(topBottomSpace * 2, topBottomSpace * 3, topBottomSpace * 2, 0);
         view.setLayoutParams(viewLayoutParams);
 

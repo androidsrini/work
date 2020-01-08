@@ -108,6 +108,9 @@ public class SelectTypeActivity extends BaseActivity {
         LinearLayout.LayoutParams driverTypeRecyclerViewLayoutParams = (LinearLayout.LayoutParams) driverTypeRecyclerView.getLayoutParams();
         driverTypeRecyclerViewLayoutParams.setMargins(topBottomSpace * 3, topBottomSpace * 5, topBottomSpace * 3, 0);
         driverTypeRecyclerView.setLayoutParams(driverTypeRecyclerViewLayoutParams);
+
+        //toolbarClose.setImageResource(null);
+        toolbarClose.setImageResource(R.drawable.ic_close);
     }
 
         /**
