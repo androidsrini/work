@@ -224,11 +224,11 @@ public class LegalAgreementActivity extends BaseActivity {
                         updateAgreementAcceptRequest();
                     } else if (ServiceType.ACCEPT_LEGAL_AGREEMENT== serviceType){
                             //To show dashboard screen.
-                            if (null != apiResponse.getResponseJsonObject()) {
+                        UploadDocumentActivity.start(this);
+                        if (null != apiResponse.getResponseJsonObject()) {
                                 appSharedPreference.saveOwnerTypeId(apiResponse.getResponseJsonObject().optInt(Constant.OWNER_TYPE_ID_RESPONSE));
                                 appSharedPreference.saveOwnerType(ownerType.getOwnerType());
                             }
-                            UploadDocumentActivity.start(this);
                             //To clear all Activity class from backstack
                             ActivityCompat.finishAffinity(this);
 

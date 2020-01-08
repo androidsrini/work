@@ -308,23 +308,36 @@ public class VerifyMobileActivity extends BaseActivity {
 
     private boolean handleClipBoardPaste() {
         ClipData clipData = clipboardManager.getPrimaryClip();
-        int itemCount = clipData.getItemCount();
-        if (itemCount > 0) {
-            ClipData.Item item = clipData.getItemAt(0);
-            String text = item.getText().toString();
-            if (text.length() == 4) {
-                optNumber1.setText(text.substring(0, 1));
-                optNumber2.setText(text.substring(1, 2));
-                optNumber3.setText(text.substring(2, 3));
-                optNumber4.setText(text.substring(3, 4));
-                view1.setBackgroundResource(R.drawable.view_for_edittext_primary);
-                view2.setBackgroundResource(R.drawable.view_for_edittext_primary);
-                view3.setBackgroundResource(R.drawable.view_for_edittext_primary);
-                view.setBackgroundResource(R.drawable.view_for_edittext_primary);
+        if (clipData!=null) {
+            int itemCount = clipData.getItemCount();
+            if (itemCount > 0) {
+                ClipData.Item item = clipData.getItemAt(0);
+                String text = item.getText().toString();
+                if (text.length() == 4) {
+                    optNumber1.setText(text.substring(0, 1));
+                    optNumber2.setText(text.substring(1, 2));
+                    optNumber3.setText(text.substring(2, 3));
+                    optNumber4.setText(text.substring(3, 4));
+                    view1.setBackgroundResource(R.drawable.view_for_edittext_primary);
+                    view2.setBackgroundResource(R.drawable.view_for_edittext_primary);
+                    view3.setBackgroundResource(R.drawable.view_for_edittext_primary);
+                    view.setBackgroundResource(R.drawable.view_for_edittext_primary);
 
+                    clipData = null;
+                }
+                //destTextView.setText(text);
+                Log.d(TAG, " Clip board message: " + text);
+            } else {
+                view.setBackgroundResource(R.drawable.view_for_edittext_primary);
+                view1.setBackgroundResource(R.drawable.view_for_edittext_lowconstract);
+                view2.setBackgroundResource(R.drawable.view_for_edittext_lowconstract);
+                view3.setBackgroundResource(R.drawable.view_for_edittext_lowconstract);
             }
-            //destTextView.setText(text);
-            Log.d(TAG, " Clip board message: " + text);
+        }else{
+            view.setBackgroundResource(R.drawable.view_for_edittext_primary);
+            view1.setBackgroundResource(R.drawable.view_for_edittext_lowconstract);
+            view2.setBackgroundResource(R.drawable.view_for_edittext_lowconstract);
+            view3.setBackgroundResource(R.drawable.view_for_edittext_lowconstract);
         }
         return true;
     }
