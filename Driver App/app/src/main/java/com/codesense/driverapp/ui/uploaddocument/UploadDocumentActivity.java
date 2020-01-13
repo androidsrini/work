@@ -38,6 +38,7 @@ import com.codesense.driverapp.data.VehicleTypesItem;
 import com.codesense.driverapp.di.utils.PermissionManager;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.net.ApiResponse;
+import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
@@ -132,6 +133,7 @@ public class UploadDocumentActivity extends DrawerActivity {
         initially();
         setDynamicValue();
         functionality();
+        //Log.d(TAG, " User type: " + appSharedPreference.getUserType());
     }
 
     /**
@@ -328,7 +330,7 @@ public class UploadDocumentActivity extends DrawerActivity {
      */
     private void functionality() {
         uploadContentButton.setOnClickListener(((view) -> {
-            if (isValidAllFields()) {
+            if (Constant.OWNER_TYPE.equalsIgnoreCase(appSharedPreference.getUserType()) && isValidAllFields()) {
                 if (isValiedAllSelected()) {
                     uploadDocumentViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
                 } /*else {
