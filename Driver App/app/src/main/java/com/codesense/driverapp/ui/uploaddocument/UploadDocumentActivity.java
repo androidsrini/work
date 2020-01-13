@@ -330,12 +330,18 @@ public class UploadDocumentActivity extends DrawerActivity {
      */
     private void functionality() {
         uploadContentButton.setOnClickListener(((view) -> {
-            if (Constant.OWNER_TYPE.equalsIgnoreCase(appSharedPreference.getUserType()) && isValidAllFields()) {
-                if (isValiedAllSelected()) {
-                    uploadDocumentViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
-                } /*else {
+            if (Constant.OWNER_TYPE.equalsIgnoreCase(appSharedPreference.getUserType())) {
+                if (isValidAllFields()) {
+                    if (isValiedAllSelected()) {
+                        uploadDocumentViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
+                    }
+                }/*else {
                     utility.showToastMsg("Please select document");
                 }*/
+            } else {
+                if (isValiedAllSelected()) {
+                    uploadDocumentViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
+                }
             }
         }));
         adapter = new UploadDocumentAdapter(this, uploadDocumentActionInfos, screenWidth, screenHeight);
