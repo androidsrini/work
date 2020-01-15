@@ -110,6 +110,15 @@ public class AddVehicleViewModel extends ViewModel {
                         error -> apiResponseMutableLiveData.postValue(ApiResponse.error(ServiceType.ADD_VEHICLE, error))));
     }
 
+    public void fetchDocumentStatusVehicleRequest() {
+        disposables.add(requestHandler.fetchDocumentStatusVehicleRequest(ApiUtility.getInstance().getApiKeyMetaData())
+                .subscribeOn(Schedulers.io())
+                .doOnSubscribe(d->apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.GET_DOCUMENTS_STATUS_VEHICLE)))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result->apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.GET_DOCUMENTS_STATUS_VEHICLE, result)),
+                        error->apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.GET_DOCUMENTS_STATUS_VEHICLE, error))));
+    }
+
     @Override
     protected void onCleared() {
         super.onCleared();

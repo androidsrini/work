@@ -38,6 +38,7 @@ import com.codesense.driverapp.R;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.Constant;
+import com.codesense.driverapp.ui.adddriver.AddDriverActivity;
 import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
 import com.codesense.driverapp.ui.documentstatus.DocumentStatusActivity;
 import com.codesense.driverapp.ui.referalprogram.ReferalProgramActivity;
@@ -56,6 +57,7 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
     private static final String SIGN_IN_DEFAULT = "signin_default";
     private static final String SIGN_IN= "SignedIn";
     private static final String ADD_VEHICLE = "add_vehicle";
+    private static final String ADD_DRIVER = "add_driver";
     public static boolean isSignedIn;
     protected static int currentPosition = -1;
     public TextView titleTextView;
@@ -380,6 +382,8 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
                 startActivity(intent);
             } else if (menuLabel.equals(ADD_VEHICLE)) {
                 AddVehicleActivity.start(this);
+            } else if (ADD_DRIVER.equals(menuLabel)) {
+                AddDriverActivity.start(this);
             }
         }
     }

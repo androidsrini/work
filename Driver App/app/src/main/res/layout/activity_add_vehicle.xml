@@ -5,12 +5,13 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <ScrollView
+    <!--<ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content">-->
 
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/vehicle_constrainLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
@@ -47,7 +48,11 @@
                 android:id="@+id/vehicleTypeAppCompatSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"/>
+                android:layout_marginTop="5dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                />
 
             <!--android:background="@android:color/transparent"-->
             <!--app:backgroundTint="@color/primary_color"-->
@@ -137,249 +142,6 @@
                 />
 
             </android.support.design.widget.TextInputLayout>
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/addDriverDetailsParentConstrainLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="visible"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/driverNumberTextInputLayout">
-
-            <View
-                android:id="@+id/firstDottedVerticalImageView"
-                app:layout_constraintEnd_toStartOf="@+id/addDriverDetailsLabelTextView"
-                style="@style/vehicleTopDottedStyle" />
-
-            <TextView
-                android:id="@+id/addDriverDetailsLabelTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/add_driver_details"
-                android:gravity="center"
-                android:layout_marginTop="10dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toRightOf="parent"
-                />
-
-            <View
-                android:id="@+id/secondDottedVerticalImageView"
-                style="@style/vehicleTopDottedStyle"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/addDriverDetailsLabelTextView" />
-
-            <ImageView
-                android:id="@+id/leftDottedLineImageView"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:background="@drawable/dotted_vertical_drawable"
-                android:layout_marginTop="10dp"
-                app:layout_constraintVertical_bias="0.0"
-                app:layout_constraintTop_toTopOf="@+id/firstDottedVerticalImageView"
-                app:layout_constraintBottom_toBottomOf="@+id/addDriverDetailsConstrainLayout"
-                />
-
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/addDriverDetailsConstrainLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                app:layout_constraintTop_toBottomOf="@+id/addDriverDetailsLabelTextView"
-                tools:layout_editor_absoluteX="26dp">
-
-                <!--<ImageView
-                    android:id="@+id/rightDottedLineImageView"
-                    android:layout_width="50dp"
-                    android:layout_height="0dp"
-                    android:src="@drawable/dotted_vertical_drawable"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintVertical_bias="0.0"
-                    app:layout_constraintTop_toTopOf="@+id/firstDottedVerticalImageView"
-                    app:layout_constraintBottom_toBottomOf="@+id/bottomDottedLinesImageView"
-                     />-->
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/driverFirstNameTextInputLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintHorizontal_weight="1"
-                    app:layout_constraintRight_toLeftOf="@+id/driverLastNameTextInputLayout"
-                    app:hintEnabled="false"
-                    >
-
-                    <EditText
-                        android:id="@+id/etDriverFirstName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="18sp"
-                        android:singleLine="true"
-                        android:hint="@string/first_name_text"
-                        android:imeOptions="actionNext"
-                        android:inputType="textAutoCorrect"
-                        />
-                </android.support.design.widget.TextInputLayout>
-
-                <android.support.design.widget.TextInputLayout
-                    android:id="@+id/driverLastNameTextInputLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintHorizontal_weight="1"
-                    app:layout_constraintLeft_toRightOf="@+id/driverFirstNameTextInputLayout"
-                    app:hintEnabled="false"
-                    >
-
-                    <EditText
-                        android:id="@+id/etDriverLastName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:textSize="18sp"
-                        android:singleLine="true"
-                        android:hint="@string/last_name_text"
-                        android:imeOptions="actionNext"
-                        android:inputType="textAutoCorrect"
-                        />
-                </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/driverContNumTextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintTop_toBottomOf="@+id/driverLastNameTextInputLayout"
-                app:hintEnabled="false"
-                >
-
-            <EditText
-                android:id="@+id/etDriverContNum"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:singleLine="true"
-                android:hint="@string/add_vehicle_driver_contact"
-                android:imeOptions="actionNext"
-                android:inputType="phone"
-                 />
-            </android.support.design.widget.TextInputLayout>
-
-            <!--<View
-                android:id="@+id/view4"
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:layout_marginTop="3dp"
-                android:background="@color/primary_color"
-                android:layout_below="@+id/etVehicleNumber"
-                app:layout_constraintTop_toBottomOf="@+id/etDriverContNum" />-->
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/driverEmailTextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/driverContNumTextInputLayout"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:hintEnabled="false"
-                >
-
-            <EditText
-                android:id="@+id/etDriverEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:singleLine="true"
-                android:hint="@string/add_vehicle_driver_email"
-                android:imeOptions="actionNext"
-                 />
-            </android.support.design.widget.TextInputLayout>
-
-            <!--<View
-                android:id="@+id/view5"
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:layout_marginTop="3dp"
-                android:background="@color/primary_color"
-                android:layout_below="@+id/etVehicleNumber"
-                app:layout_constraintTop_toBottomOf="@+id/etDriverEmail" />-->
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/driverPasswordTextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@+id/driverEmailTextInputLayout"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:passwordToggleEnabled="true"
-                app:hintEnabled="false"
-                >
-
-            <EditText
-                android:id="@+id/etDriverPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:singleLine="true"
-                android:hint="@string/add_vehicle_password"
-                android:inputType="textPassword"
-                android:imeOptions="actionNext"
-                 />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <!--<View
-                android:id="@+id/view6"
-                android:layout_width="match_parent"
-                android:layout_height="3dp"
-                android:layout_marginTop="3dp"
-                android:background="@color/primary_color"
-                android:layout_below="@+id/etVehicleNumber"
-                app:layout_constraintTop_toBottomOf="@+id/etDriverPassword" />-->
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/driverConTextInputLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:layout_constraintTop_toBottomOf="@+id/driverPasswordTextInputLayout"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:hintEnabled="false"
-                app:passwordToggleEnabled="true"
-                >
-
-            <EditText
-                android:id="@+id/etDriverConPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:singleLine="true"
-                android:hint="@string/add_vehicle_confirm_password"
-                android:imeOptions="actionNext"
-                android:inputType="textPassword"
-                 />
-            </android.support.design.widget.TextInputLayout>
-
-                <android.support.v7.widget.AppCompatAutoCompleteTextView
-                    android:id="@+id/addVehicleCountryAutoCompleteTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/country_text"
-                    app:layout_constraintTop_toBottomOf="@+id/driverConTextInputLayout"/>
-
-                <View
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/margin_5"
-                    app:layout_constraintTop_toBottomOf="@+id/addVehicleCountryAutoCompleteTextView"/>
-
-                <!--<ImageView
-                    android:id="@+id/bottomDottedLinesImageView"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:src="@drawable/dotted_horizontal_drawable"
-                    app:layout_constraintTop_toBottomOf="@+id/driverConTextInputLayout" />-->
-            </android.support.constraint.ConstraintLayout>
-            </android.support.constraint.ConstraintLayout>
             <!--<View
                 android:id="@+id/view7"
                 android:layout_width="match_parent"
@@ -389,9 +151,16 @@
                 android:layout_below="@+id/etVehicleNumber"
                 app:layout_constraintTop_toBottomOf="@+id/etDriverConPassword" />-->
 
-
         </android.support.constraint.ConstraintLayout>
-    </ScrollView>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@+id/vehicle_constrainLayout"
+        android:layout_above="@+id/btnAddVehicle"
+        />
+    <!--</ScrollView>-->
 
     <Button
         android:id="@+id/btnAddVehicle"

@@ -2,6 +2,7 @@ package com.codesense.driverapp.di.module;
 
 
 import com.codesense.driverapp.ui.accept.AcceptActivity;
+import com.codesense.driverapp.ui.adddriver.AddDriverActivity;
 import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
 import com.codesense.driverapp.ui.documentstatus.DocumentStatusActivity;
 import com.codesense.driverapp.ui.editmobilenumber.EditMobileNumberActivity;
@@ -99,4 +100,10 @@ public abstract class ActivityBindingModule {
 
     @ContributesAndroidInjector
     abstract SubmitReviewActivity bindSubmitReviewActivity();
+
+    @ContributesAndroidInjector
+    abstract AddDriverActivity bindAddDriverActivity();
+
+    /*@ContributesAndroidInjector
+    abstract AddDriverActivity.AddDriverFragment bindAddDriverFragment();*/
 }

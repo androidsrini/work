@@ -339,4 +339,12 @@ public class RequestHandler {
     public Observable<JsonElement> fetchDocumentStatusRequest(String apiKey) {
         return apiCallInterface.fetchDocumentStatusRequest(apiKey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
     }
+
+    public Observable<JsonElement> fetchVehiclesListRequest(String apiKey) {
+        return apiCallInterface.fetchVehiclesListRequest(apiKey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
+    }
+
+    public Observable<JsonElement> fetchDocumentStatusVehicleRequest(String apiKey) {
+        return apiCallInterface.fetchDocumentStatusVehicleRequest(apiKey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
+    }
 }

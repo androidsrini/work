@@ -210,6 +210,27 @@
         <!-- Login non login configuration-->
         <!-- Olo Menu icon -->
     </array>
+    <array name="drawermenuitem_11">
+        <item></item>
+        <!-- Section Title -->
+        <item>Add Driver</item>
+        <!-- Menu Label -->
+        <item>add_driver</item>
+        <!-- Enums - This field not editable -->
+        <item></item>
+        <!-- URL -->
+        <item></item>
+        <!-- Internal / External browser -->
+        <item></item>
+        <!-- video url / website url -->
+        <item></item>
+        <!-- Screen Page Title Label -->
+        <item></item>
+        <!-- sso configuration -->
+        <item>signin_default</item>
+        <!-- Login non login configuration-->
+        <!-- Olo Menu icon -->
+    </array>
     <color name="background_color">#ffffff</color>
     <color name="secondary_color">#000000</color>
     <color name="low_contrast">#cccccc</color>

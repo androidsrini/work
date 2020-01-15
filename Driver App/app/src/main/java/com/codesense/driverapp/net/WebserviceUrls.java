@@ -23,6 +23,7 @@ public class WebserviceUrls {
     public static final String ADD_DRIVER_TO_OWNER = "add_driver_to_owner";
     public static final String EDIT_VEHICLE_DRIVER = "edit_vehicle_driver";
     public static final String GET_OWNER_VEHICLES = "get_owner_vehicles";
+    public static final String OWNER_VEHICLES = "owner_vehicles";
     public static final String GET_ALL_DRIVERS_LIST = "get_all_drivers_list";
     public static final String DRIVER = "get_documents_list/driver";
     public static final String VEHICLE = "get_documents_list/vehicle";
@@ -37,5 +38,6 @@ public class WebserviceUrls {
     public static final String UPDATE_VEHICLE_LIVE_LOCATION = "update_vehicle_live_location";
     public static final String HOME_SCREEN = "home_screen";
     public static final String GET_DOCUMENTS_STATUS = "owner_registation/get_documents_status";
+    public static final String GET_DOCUMENTS_STATUS_VEHICLE = "get_documents_status/vehicle";
 
 }

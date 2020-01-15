@@ -54,7 +54,7 @@
     <string name="legal_button">I Accept/Continue</string>
     <string name="drawer_signout">Sign out</string>
 
-    <string name="drawermenuitem_count">10</string>
+    <string name="drawermenuitem_count">11</string>
     <string name="upload_doc_text">Upload Documents</string>
 
 
@@ -99,6 +99,7 @@
     <string name="add_vehicle_password">Password</string>
     <string name="add_vehicle_confirm_password">Confirm Password</string>
     <string name="online_text">Online</string>
+    <string name="add_driver_text">Add Driver</string>
     <string name="rating_and_review_label">Rating &#38; Review</string>
 
 
