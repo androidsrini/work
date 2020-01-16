@@ -5,11 +5,15 @@ import android.arch.lifecycle.ViewModel;
 
 import com.codesense.driverapp.data.AddDriverRequest;
 import com.codesense.driverapp.data.AddVehicleRequest;
+import com.codesense.driverapp.data.DocumentsItem;
+import com.codesense.driverapp.data.VehicleDetailRequest;
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
 import com.google.gson.JsonElement;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -30,8 +34,109 @@ public class AddVehicleViewModel extends ViewModel {
         this.requestHandler = requestHandler;
     }
 
+    private Observable<MergedResponse> createObservableObject(List<DocumentsItem> documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
+        if (documentsListItem.size() > 10) {
+            throw new IllegalArgumentException("uploadDocumentRequest api support 9 items only");
+        }
+        int size = documentsListItem.size();
+        Observable<JsonElement> observable1 = null;
+        Observable<JsonElement> observable2 = null;
+        Observable<JsonElement> observable3 = null;
+        Observable<JsonElement> observable4 = null;
+        Observable<JsonElement> observable5 = null;
+        Observable<JsonElement> observable6 = null;
+        Observable<JsonElement> observable7 = null;
+        Observable<JsonElement> observable8 = null;
+        Observable<JsonElement> observable9 = null;
+        int count = 0;
+        do {
+            Observable<JsonElement> observable = requestHandler.uploadOwnerVehicleRequest(ApiUtility.getInstance().getApiKeyMetaData(),
+                    documentsListItem.get(count), vehicleDetailRequest);
+            switch (count) {
+                case 0:
+                    observable1 = observable;
+                    break;
+                case 1:
+                    observable2 = observable;
+                    break;
+                case 2:
+                    observable3 = observable;
+                    break;
+                case 3:
+                    observable4 = observable;
+                    break;
+                case 4:
+                    observable5 = observable;
+                    break;
+                case 5:
+                    observable6 = observable;
+                    break;
+                case 6:
+                    observable7 = observable;
+                    break;
+                case 7:
+                    observable8 = observable;
+                    break;
+                case 8:
+                    observable9 = observable;
+                    break;
+            }
+        } while (++count < documentsListItem.size());
+        Observable<MergedResponse> observable = null;
+        switch (size) {
+            /*case 1:
+                observable = requestHandler.uploadDocumentsRequest(ApiUtility.getInstance().getApiKeyMetaData(),
+                        documentsListItem.get(count), vehicleDetailRequest);
+                break;*/
+            case 2:
+                observable = Observable.zip(observable1, observable2, MergedResponse::new);
+                break;
+            case 3:
+                observable = Observable.zip(observable1, observable2, observable3, MergedResponse::new);
+                break;
+            case 4:
+                observable = Observable.zip(observable1, observable2, observable3, observable4, MergedResponse::new);
+                break;
+            case 5:
+                observable = Observable.zip(observable1, observable2, observable3, observable4, observable5, MergedResponse::new);
+                break;
+            case 6:
+                observable = Observable.zip(observable1, observable2, observable3, observable4, observable5, observable6, MergedResponse::new);
+                break;
+            case 7:
+                observable = Observable.zip(observable1, observable2, observable3, observable4, observable5, observable6, observable7, MergedResponse::new);
+                break;
+            case 8:
+                observable = Observable.zip(observable1, observable2, observable3, observable4, observable5, observable6, observable7, observable8, MergedResponse::new);
+                break;
+            case 9:
+                observable = Observable.zip(observable1, observable2, observable3, observable4, observable5, observable6, observable7, observable8, observable9, MergedResponse::new);
+                break;
+            /*default:
+                observable = requestHandler.uploadDocumentsRequest(ApiUtility.getInstance().getApiKeyMetaData(),
+                        documentsListItem.get(count), vehicleDetailRequest);
+                break;*/
+        }
+        return observable;
+    }
+
     public MutableLiveData<ApiResponse> getApiResponseMutableLiveData() {
         return apiResponseMutableLiveData;
+    }
+
+    public void fetchVehicleTypesAndDocumentStatusVehicleRequestRequest() {
+        if (null != requestHandler) {
+            Observable<JsonElement> documentStatus = requestHandler.fetchDocumentStatusVehicleRequest(ApiUtility.getInstance().getApiKeyMetaData());
+            Observable<JsonElement> vehicleType = requestHandler.fetchVehicleTypesRequest(ApiUtility.getInstance().getApiKeyMetaData());
+            disposables.add(Observable.zip(documentStatus, vehicleType, MergedResponse::new).
+                    subscribeOn(Schedulers.io()).
+                    observeOn(AndroidSchedulers.mainThread()).
+                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.GET_DOCUMENTS_STATUS_VEHICLE_AND_VEHICLE_TYPES))).
+                    subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.successMultiple(ServiceType.GET_DOCUMENTS_STATUS_VEHICLE_AND_VEHICLE_TYPES, result.jsonElementsResponse)),
+                            error -> {
+                                apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.GET_DOCUMENTS_STATUS_VEHICLE_AND_VEHICLE_TYPES, error));
+                            }));
+        }
     }
 
     /*public void fetchVehicleTypesRequest(){
@@ -117,6 +222,49 @@ public class AddVehicleViewModel extends ViewModel {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result->apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.GET_DOCUMENTS_STATUS_VEHICLE, result)),
                         error->apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.GET_DOCUMENTS_STATUS_VEHICLE, error))));
+    }
+
+    /**
+     * This method to upload document to server.
+     *
+     * @param documentsListItem
+     * @param vehicleDetailRequest
+     */
+    public void uploadDocumentRequest(DocumentsItem documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
+        if (null != requestHandler) {
+            disposables.add(requestHandler.uploadDocumentsRequest(ApiUtility.getInstance().getApiKeyMetaData(), documentsListItem, vehicleDetailRequest).
+                    subscribeOn(Schedulers.io()).
+                    observeOn(AndroidSchedulers.mainThread()).
+                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.UPLOAD_OWNER_VEHICLE))).
+                    subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.UPLOAD_OWNER_VEHICLE, result)),
+                            error -> {
+                                apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.UPLOAD_OWNER_VEHICLE, error));
+                            }));
+        }
+    }
+
+    /**
+     * This method to upload multiple files to server.
+     * This method support 9 Observable.
+     * This method will throw IllegalArgumentException based on file size.
+     *
+     * @param documentsListItem
+     * @param vehicleDetailRequest
+     */
+    public void uploadDocumentRequest(List<DocumentsItem> documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
+        if (null != requestHandler && null != documentsListItem) {
+            if (1 == documentsListItem.size()) {
+                uploadDocumentRequest(documentsListItem.get(0), vehicleDetailRequest);
+                return;
+            }
+            disposables.add(createObservableObject(documentsListItem, vehicleDetailRequest)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.UPLOAD_OWNER_VEHICLE)))
+                    .subscribe(result ->
+                                    apiResponseMutableLiveData.setValue(ApiResponse.successMultiple(ServiceType.UPLOAD_OWNER_VEHICLE, result.jsonElementsResponse)),
+                            error -> apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.UPLOAD_OWNER_VEHICLE, error))));
+        }
     }
 
     @Override

@@ -243,9 +243,11 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
                             if ((isActivated && typedArray.getString(k).equals(SIGN_IN))
                             || typedArray.getString(k).equals(SIGN_IN_DEFAULT)) {
                                 if (!TextUtils.isEmpty(type)) {
-                                    if (type.equals(ADD_VEHICLE) && Constant.OWNER_CUM_DRIVER.equals(appSharedPreference.getOwnerType())) {
-                                        navDrawerItems.add(new NavDrawerItem(MenuItem, menuIconName));
-                                        selectedMenuList.add(strItem);
+                                    if (ADD_VEHICLE.equals(type) && Constant.OWNER_CUM_DRIVER.equals(appSharedPreference.getOwnerType())) {
+                                        if (!Constant.OWNER_TYPE.equals(appSharedPreference.getUserType())) {
+                                            navDrawerItems.add(new NavDrawerItem(MenuItem, menuIconName));
+                                            selectedMenuList.add(strItem);
+                                        }
                                     } else {
                                         navDrawerItems.add(new NavDrawerItem(MenuItem, menuIconName));
                                         selectedMenuList.add(strItem);
@@ -380,7 +382,7 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
             } else if (menuLabel.equals("referearn")) {
                 intent = new Intent(this, ReferalProgramActivity.class);
                 startActivity(intent);
-            } else if (menuLabel.equals(ADD_VEHICLE)) {
+            } else if (ADD_VEHICLE.equals(menuLabel)) {
                 AddVehicleActivity.start(this);
             } else if (ADD_DRIVER.equals(menuLabel)) {
                 AddDriverActivity.start(this);

@@ -347,4 +347,17 @@ public class RequestHandler {
     public Observable<JsonElement> fetchDocumentStatusVehicleRequest(String apiKey) {
         return apiCallInterface.fetchDocumentStatusVehicleRequest(apiKey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
     }
+
+    public Observable<JsonElement> uploadOwnerVehicleRequest(String api, DocumentsItem documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
+        return apiCallInterface.uploadOwnerVehicleRequest(api, appSharedPreference.getAccessTokenKey(),
+                getUploadDocumentFileRequest(documentsListItem), getUploadDocumentUserID(),
+                getVehicleTypeId(vehicleDetailRequest),
+                getVehicleId(vehicleDetailRequest),
+                getVehicleNumber(vehicleDetailRequest),
+                getVehicleName(vehicleDetailRequest));
+    }
+
+    public Observable<JsonElement> fetchDocumentStatusDriverRequest(String apiKey) {
+        return apiCallInterface.fetchDocumentStatusDriverRequest(apiKey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
+    }
 }

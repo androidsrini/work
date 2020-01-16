@@ -13,6 +13,7 @@ import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
 import com.google.gson.JsonElement;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -45,9 +46,6 @@ public class UploadDocumentViewModel extends ViewModel {
     }
 
     private Observable<MergedResponse> createObservableObject(List<DocumentsItem> documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
-        if (documentsListItem.size() > 10) {
-            throw new IllegalArgumentException("uploadDocumentRequest api support 9 items only");
-        }
         int size = documentsListItem.size();
         Observable<JsonElement> observable1 = null;
         Observable<JsonElement> observable2 = null;
@@ -235,14 +233,54 @@ public class UploadDocumentViewModel extends ViewModel {
             if (1 == documentsListItem.size()) {
                 uploadDocumentRequest(documentsListItem.get(0), vehicleDetailRequest);
                 return;
+            } else if (documentsListItem.size() > 10) {
+                List<DocumentsItem> documents1 = new ArrayList<>();
+                List<DocumentsItem> documents2 = new ArrayList<>();
+                for (int i=0; i<documentsListItem.size(); i++) {
+                    if (i < 9) {
+                        documents1.add(documentsListItem.get(i));
+                    } else {
+                        documents2.add(documentsListItem.get(i));
+                    }
+                }
+                Observable<MergedResponse> observable1 = createObservableObject(documents1, vehicleDetailRequest);
+                Observable<MergedResponse> observable2 = null;
+                if (documents2.size() == 1) {
+                    uploadDocumentRequest(documents2.get(0), vehicleDetailRequest);
+                } else {
+                    observable2 = createObservableObject(documents1, vehicleDetailRequest);
+                } if (null != observable2) {
+                    disposables.add(Observable.zip(observable1, observable2, MergedResponse::new)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.UPLOAD_DOCUEMNTS)))
+                            .subscribe(result -> {
+                                       MergedResponse mergedResponse = result.mergedResponse;
+                                       MergedResponse mergedResponse1 = result.mergedResponse1;
+                                        apiResponseMutableLiveData.setValue(ApiResponse.successMultiple(ServiceType.UPLOAD_DOCUEMNTS, mergedResponse.docuemntListStatusResponse));
+                                        apiResponseMutableLiveData.setValue(ApiResponse.successMultiple(ServiceType.UPLOAD_DOCUEMNTS, mergedResponse1.docuemntListStatusResponse));
+                                    },
+                                    error -> apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.UPLOAD_DOCUEMNTS, error))));
+                } else {
+                    disposables.add(observable1
+                            .subscribeOn(Schedulers.computation())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.UPLOAD_DOCUEMNTS)))
+                            .subscribe(result -> {
+                                        apiResponseMutableLiveData.setValue(ApiResponse.successMultiple(ServiceType.UPLOAD_DOCUEMNTS, result.docuemntListStatusResponse));
+                                    },
+                                    error -> apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.UPLOAD_DOCUEMNTS, error))));
+                }
+                //throw new IllegalArgumentException("uploadDocumentRequest api support 9 items only");
+            } else {
+                disposables.add(createObservableObject(documentsListItem, vehicleDetailRequest)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.UPLOAD_DOCUEMNTS)))
+                        .subscribe(result ->
+                                        apiResponseMutableLiveData.setValue(ApiResponse.successMultiple(ServiceType.UPLOAD_DOCUEMNTS, result.docuemntListStatusResponse)),
+                                error -> apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.UPLOAD_DOCUEMNTS, error))));
             }
-            disposables.add(createObservableObject(documentsListItem, vehicleDetailRequest)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.UPLOAD_DOCUEMNTS)))
-                    .subscribe(result ->
-                                    apiResponseMutableLiveData.setValue(ApiResponse.successMultiple(ServiceType.UPLOAD_DOCUEMNTS, result.docuemntListStatusResponse)),
-                            error -> apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.UPLOAD_DOCUEMNTS, error))));
         }
     }
 
@@ -259,9 +297,16 @@ public class UploadDocumentViewModel extends ViewModel {
     private class MergedResponse {
         // this is just a POJO to store all the responses in one object
         private JsonElement[] docuemntListStatusResponse;
+        private MergedResponse mergedResponse;
+        private MergedResponse mergedResponse1;
 
         private MergedResponse(JsonElement... documentsListStatusResponse) {
             this.docuemntListStatusResponse = documentsListStatusResponse;
+        }
+
+        public MergedResponse(MergedResponse mergedResponse, MergedResponse mergedResponse1) {
+            this.mergedResponse = mergedResponse;
+            this.mergedResponse1 = mergedResponse1;
         }
     }
 

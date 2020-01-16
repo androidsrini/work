@@ -278,6 +278,7 @@ public class UploadDocumentActivity extends DrawerActivity {
                 JSONObject jsonObject = new JSONObject(apiResponse.data.toString());
                 DocumentStatusResponse documentStatusResponse = new Gson().fromJson(apiResponse.data, DocumentStatusResponse.class);
                 if (null != documentStatusResponse) {
+                    documentStatusResponse.parseDocumentStatus(jsonObject);
                     for (DocumentsItem documentsItem: documentStatusResponse.getDocuments()) {
                         documentsItem.parseDocumentStatus(jsonObject);
                     }

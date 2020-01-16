@@ -18,9 +18,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codesense.driverapp.R;
-import com.codesense.driverapp.data.AvailableVehiclesItem;
+import com.codesense.driverapp.data.VehiclesListsItem;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,7 +36,7 @@ public class AppSpinnerViewGroup<T> extends FrameLayout {
     private int screenHeight;
     private int mSelectedVehicle;
     private boolean vehicleSelectionFirstTime = true;
-    private ArrayList<T> arrayList;
+    private List<T> arrayList;
 
     public AppSpinnerViewGroup(@NonNull @android.support.annotation.NonNull Context context) {
         super(context);
@@ -121,8 +122,8 @@ public class AppSpinnerViewGroup<T> extends FrameLayout {
                     v.setBackgroundColor(getResources().getColor(R.color.background_color));
                     tv.setTextColor(getResources().getColor(R.color.secondary_color));
                 }
-                if (getItem(position) instanceof AvailableVehiclesItem) {
-                    AvailableVehiclesItem availableVehiclesItem = (AvailableVehiclesItem) getItem(position);
+                if (getItem(position) instanceof VehiclesListsItem) {
+                    VehiclesListsItem availableVehiclesItem = (VehiclesListsItem) getItem(position);
                     tv.setText(availableVehiclesItem.getVehicleName());
                 }
                 return v;
@@ -133,8 +134,8 @@ public class AppSpinnerViewGroup<T> extends FrameLayout {
         listView.setOnItemClickListener((parent, view3, position, id) -> {
             popupWindow.dismiss();
             Object o = arrayList.get(position);
-            if (o instanceof AvailableVehiclesItem) {
-                AvailableVehiclesItem selectedState = (AvailableVehiclesItem) o;
+            if (o instanceof VehiclesListsItem) {
+                VehiclesListsItem selectedState = (VehiclesListsItem) o;
                 selectVehicleTextView.setText(selectedState.getVehicleName());
                 selectVehicleTextView.setTextColor(getResources().getColor(R.color.secondary_color));
                 mSelectedVehicle = position;
@@ -147,7 +148,7 @@ public class AppSpinnerViewGroup<T> extends FrameLayout {
         popupWindow.showAsDropDown(view);
     }
 
-    public void updateItem(ArrayList<T> objectArrayList) {
+    public void updateItem(List<T> objectArrayList) {
         arrayList.clear();
         arrayList.addAll(objectArrayList);
     }

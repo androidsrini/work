@@ -26,29 +26,22 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import com.codesense.driverapp.R;
-import com.codesense.driverapp.data.AddVehicleRequest;
 import com.codesense.driverapp.data.AvailableDriversItem;
 import com.codesense.driverapp.data.AvailableDriversResponse;
-import com.codesense.driverapp.data.CitiesItem;
-import com.codesense.driverapp.data.CitiesListResponse;
 import com.codesense.driverapp.data.CountriesItem;
-import com.codesense.driverapp.data.CountriesListResponse;
 import com.codesense.driverapp.data.DocumentStatus;
 import com.codesense.driverapp.data.DocumentStatusResponse;
 import com.codesense.driverapp.data.DocumentsItem;
+import com.codesense.driverapp.data.VehicleDetailRequest;
 import com.codesense.driverapp.data.VehicleTypeResponse;
 import com.codesense.driverapp.data.VehicleTypesItem;
 import com.codesense.driverapp.di.utils.PermissionManager;
 import com.codesense.driverapp.di.utils.Utility;
-import com.codesense.driverapp.localstoreage.DatabaseClient;
 import com.codesense.driverapp.net.ApiResponse;
-import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
-import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
 import com.codesense.driverapp.ui.uploaddocument.RecyclerTouchListener;
-import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentAdapter;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -63,12 +56,7 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import io.reactivex.Completable;
-import io.reactivex.CompletableObserver;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class AddVehicleActivity extends DrawerActivity implements View.OnClickListener {
 
@@ -143,6 +131,7 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
         addVehicleViewModel.getApiResponseMutableLiveData().observe(this, this::handleApiResponse);
         compositeDisposable = new CompositeDisposable();
         initially();
+        initializeListener();
         setDynamicValue();
         functionality();
     }
@@ -157,8 +146,8 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
                 utility.dismissDialog();
                 if (ServiceType.ADD_DRIVER == serviceType) {
                     if (null != apiResponse.getResponseJsonObject() && apiResponse.isValidResponse()) {
-                        int driverId = apiResponse.getResponseJsonObject().optInt(Constant.DRIVER_ID, 0);
-                        addVehicleViewModel.addVehicleToOwnerRequest(createAddVehicleRequest(String.valueOf(driverId)));
+                        /*int driverId = apiResponse.getResponseJsonObject().optInt(Constant.DRIVER_ID, 0);
+                        addVehicleViewModel.addVehicleToOwnerRequest(createAddVehicleRequest(String.valueOf(driverId)));*/
                     }
                 } else if (ServiceType.VEHICLE_TYPES == serviceType) {
                     VehicleTypeResponse vehicleTypeResponse = new Gson().fromJson(apiResponse.data, VehicleTypeResponse.class);
@@ -169,6 +158,14 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
                     clear();
                 } else if (ServiceType.GET_DOCUMENTS_STATUS_VEHICLE == serviceType) {
                     updateDocumentListUI(apiResponse);
+                } else if (ServiceType.UPLOAD_OWNER_VEHICLE == serviceType) {
+                    if (apiResponse.isValidResponse()) {
+                        utility.showToastMsg("All file are uploaded successfully");
+                        clearAndUpdateDocumentListUI();
+                        clear();
+                    } else {
+                        utility.showToastMsg(apiResponse.getResponseMessage());
+                    }
                 }
                 break;
             case SUCCESS_MULTIPLE:
@@ -219,7 +216,7 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
                         }
                     }
                     //JsonElement[] jsonElement = apiResponse.datas;
-                    JsonElement countryListJsonElement = jsonElement[COUNTRY_LIST];
+                    /*JsonElement countryListJsonElement = jsonElement[COUNTRY_LIST];
                     if (null != countryListJsonElement) {
                         deleteAllCountriesFromDataBase(countryListJsonElement);
                     }
@@ -227,22 +224,45 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
                     if (null != cityListJsonElement) {
                         //Update available drivers UI.
                         deleteAllCitiesFromDataBase(cityListJsonElement);
+                    }*/
+                } else if (ServiceType.GET_DOCUMENTS_STATUS_VEHICLE_AND_VEHICLE_TYPES == serviceType) {
+                    //Update status ui and vahile type UI
+                    JsonElement[] jsonElement = apiResponse.datas;
+                    final int GET_DOCUMENT_STATUS = 0;
+                    final int VEHICLE_TYPE = 1;
+                    JsonElement documentStatus = jsonElement[GET_DOCUMENT_STATUS];
+                    if (null != documentStatus) {
+                        updateDocumentListUI(documentStatus);
                     }
+                    JsonElement vehicleTypeJsonElement = jsonElement[VEHICLE_TYPE];
+                    if (null != vehicleTypeJsonElement) {
+                        VehicleTypeResponse vehicleTypeResponse = new Gson().fromJson(vehicleTypeJsonElement, VehicleTypeResponse.class);
+                        if (null != vehicleTypeResponse && null != vehicleTypeResponse.getVehicleTypes()) {
+                            vehicleTypeSpinnerUI(vehicleTypeResponse.getVehicleTypes());
+                        }
+                    }
+                } else if (ServiceType.UPLOAD_OWNER_VEHICLE == serviceType) {
+                    //update list screen and clear fields
+                    JsonElement[] jsonElements = apiResponse.datas;
+                    boolean allAreSuccess = true;
+                    int count = 0;
+                    do {
+                        if (!apiResponse.isValidResponse(count)) {
+                            utility.showToastMsg(apiResponse.getResponseMessage(count));
+                            allAreSuccess = false;
+                        }
+                    } while (++ count < jsonElements.length);
+                    if (allAreSuccess) {
+                        utility.showToastMsg("All file are uploaded successfully");
+                    }
+                    clearAndUpdateDocumentListUI();
+                    clear();
                 }
                 break;
             case ERROR:
                 utility.dismissDialog();
                 break;
         }
-    }
-
-    private boolean doesDriverNameContainsInDriverAvailableList(String driverName) {
-        for (AvailableDriversItem availableDriversItem: availableDriversItemList) {
-            String name = availableDriversItem.getDriverFirstName() + " " + availableDriversItem.getDriverLastName();
-            if (name.contains(driverName))
-                return true;
-        }
-        return false;
     }
 
     private void initially() {
@@ -254,11 +274,6 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
         addDriverDetailsParentConstrainLayout = findViewById(R.id.addDriverDetailsParentConstrainLayout);
         btnAddVehicle = findViewById(R.id.btnAddVehicle);
         recyclerView = findViewById(R.id.recyclerView);
-        //addVehicleCountryAutoCompleteTextView = findViewById(R.id.addVehicleCountryAutoCompleteTextView);
-        /**
-         * New driver fields
-         */
-        /**/
         driverPasswordTextInputLayout = findViewById(R.id.driverPasswordTextInputLayout);
         driverConTextInputLayout = findViewById(R.id.driverConTextInputLayout);
     }
@@ -266,8 +281,6 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
     private String getAddVehicleCountryAutoCompleteTextView() {
         return selectedCountry;
     }
-
-    /**/
 
     private String getEtVehicleName() {
         return etVehicleName.getText().toString().trim();
@@ -315,11 +328,18 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
         RelativeLayout.LayoutParams btnUpdateLayoutParams = (RelativeLayout.LayoutParams) btnAddVehicle.getLayoutParams();
         btnUpdateLayoutParams.setMargins(topBottomSpace * 2, 0, topBottomSpace * 2, topBottomSpace * 3);
         btnAddVehicle.setLayoutParams(btnUpdateLayoutParams);
-        btnAddVehicle.setOnClickListener(this);
     }
 
     private boolean doesDriverDetailsLayoutExpanded() {
         return addDriverDetailsParentConstrainLayout.getVisibility() == View.VISIBLE;
+    }
+
+    private void initializeListener() {
+        btnAddVehicle.setOnClickListener(this);
+    }
+
+    private void clearListener() {
+        btnAddVehicle.setOnClickListener(null);
     }
 
     private void functionality() {
@@ -355,22 +375,7 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
 
             }
         }));
-        /*compositeDisposable.add(RxTextView.textChanges(addVehicleCountryAutoCompleteTextView)
-                .map(charSequence -> {
-                  if (charSequence.length() > 1) {
-                      selectedCountry = charSequence.toString().trim();
-                      findCountryFromCountryName(selectedCountry);
-                      return true;
-                  } else {
-                      countriesItem = null;
-                      selectedCountry = null;
-                      return false;
-                  }
-                }).subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribe());*/
-        btnAddVehicle.setOnClickListener(view -> driverInformationAndVehicleInformationSendToServer());
-        //fetchAndUpdateCountryListFromDataBase();
-        addVehicleViewModel.fetchDocumentStatusVehicleRequest();
+        addVehicleViewModel.fetchVehicleTypesAndDocumentStatusVehicleRequestRequest();
     }
 
     /**
@@ -422,25 +427,22 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
     }
 
     private void updateDocumentListUI(ApiResponse apiResponse) {
-        int count = 0;
-        uploadDocumentActionInfos.clear();
-        //availableVehiclesItems.clear();
         if (apiResponse.isValidResponse()) {
+            updateDocumentListUI(apiResponse.data);
+        }
+    }
+
+    private void updateDocumentListUI(JsonElement jsonElement) {
+        uploadDocumentActionInfos.clear();
+        if (null != jsonElement) {
             try {
-                JSONObject jsonObject = new JSONObject(apiResponse.data.toString());
-                DocumentStatusResponse documentStatusResponse = new Gson().fromJson(apiResponse.data, DocumentStatusResponse.class);
+                JSONObject jsonObject = new JSONObject(jsonElement.toString());
+                DocumentStatusResponse documentStatusResponse = new Gson().fromJson(jsonElement, DocumentStatusResponse.class);
                 if (null != documentStatusResponse) {
                     for (DocumentsItem documentsItem: documentStatusResponse.getDocuments()) {
                         documentsItem.parseDocumentStatus(jsonObject);
                     }
                 }
-                /*if (null != documentStatusResponse && null != documentStatusResponse.getAvailableVehicles()
-                        && !documentStatusResponse.getAvailableVehicles().isEmpty()) {
-                    availableVehiclesItems.addAll(documentStatusResponse.getAvailableVehicles());
-                } else {
-                    selectVehicleRelativeLayout.setVisibility(View.GONE);
-                    selectVehicleDivider.setVisibility(View.GONE);
-                }*/
                 uploadDocumentActionInfos.addAll(documentStatusResponse.getDocuments());
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -450,200 +452,12 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
     }
 
     /**
-     * This method to fetch country list from data base and update in country auto complete UI.
+     * This method to remove all selected files and update DocumentList UI.
      */
-    /*private void fetchAndUpdateCountryListFromDataBase() {
-        compositeDisposable.add(DatabaseClient.getInstance(this).getAppDatabase().countryDao().getCountryList()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                    CrashlyticsHelper.d(" Country List data size is: " + result.size());
-                    if (!result.isEmpty()) {
-                        ArrayAdapter arrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, result);
-                        //addVehicleCountryAutoCompleteTextView.setAdapter(arrayAdapter);
-                        //addVehicleViewModel.fetchVehicleTypeAndDriversList();
-                        if (!doesCountryListApiFatched) {
-                            addVehicleViewModel.fetchVehicleTypeAndDriversList();
-                        }
-                    } else if (!doesCountryListApiFatched) {
-                        addVehicleViewModel.fetchVehicleAndLocationListRequest();
-                        //addVehicleViewModel.fetchLocationListRequest();
-                    }
-                }, error -> {
-                    CrashlyticsHelper.d(" Country List data getting error: " + Log.getStackTraceString(error));
-                }));
-    }*/
-
-    /**
-     * This method to update country list in data base
-     *
-     * @param countryList argument
-     */
-    private void updateCountryListInDataBase(List<CountriesItem> countryList) {
-        //compositeDisposable.add();
-        Completable.fromAction(() -> DatabaseClient.getInstance(this).getAppDatabase().countryDao().insertAllCountry(countryList))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        // just like with a Single
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        // action was completed successfully
-                        // Country list updated in DB.
-                        //fetchAndUpdateCountryListFromDataBase();
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        // something went wrong
-                    }
-                });
-    }
-
-    /**
-     * 1.This method will delete all country data in data base.
-     * 2.After delete all data completed it will update new country list data in data base
-     * 3.If data base empty then also we are getting onComplete call back.
-     *
-     * @param jsonElement we are getting server success and error response.
-     */
-    private void deleteAllCountriesFromDataBase(JsonElement jsonElement) {
-        Completable.fromAction(() -> DatabaseClient.getInstance(this).getAppDatabase().countryDao().deleteAllRowFromDataBase())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        // Delete all row is completed.
-                        CrashlyticsHelper.d("Country All data is deleted from Data base");
-                        /**
-                         * Update country list to Data base
-                         */
-                        if (null != jsonElement) {
-                            CountriesListResponse countriesListResponse = new Gson().fromJson(
-                                    jsonElement, CountriesListResponse.class);
-                            updateCountryListInDataBase(countriesListResponse.getCountries());
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        // Getting error when delete data
-                        CrashlyticsHelper.d("Country All data deleted getting error: " + Log.getStackTraceString(e));
-                    }
-                });
-    }
-
-    /**
-     * 1.This method will delete all cities data in data base.
-     * 2.After delete all data completed it will update new cities list data in data base
-     * 3.If data base empty then also we are getting onComplete call back.
-     *
-     * @param jsonElement we are getting server success and error response.
-     */
-    private void deleteAllCitiesFromDataBase(JsonElement jsonElement) {
-        Completable.fromAction(() -> DatabaseClient.getInstance(this).getAppDatabase().cityDao().deleteAllRowFromDataBase())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        // Delete all row is completed.
-                        CrashlyticsHelper.d("Cities All data is deleted from Data base");
-                        /**
-                         * Update country list to Data base
-                         */
-                        CitiesListResponse citiesListResponse = new Gson().fromJson(jsonElement, CitiesListResponse.class);
-                        updateCitiesListInDataBase(citiesListResponse.getCities());
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        // Getting error when delete data
-                        CrashlyticsHelper.d("Cities All data deleted getting error: " + Log.getStackTraceString(e));
-                    }
-                });
-    }
-
-    /**
-     * This Method will update cities to Data base.
-     *
-     * @param cityList we are getting from server.
-     */
-    private void updateCitiesListInDataBase(List<CitiesItem> cityList) {
-        //compositeDisposable.add();
-        Completable.fromAction(() -> DatabaseClient.getInstance(this).getAppDatabase().cityDao().insertAllCity(cityList))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new CompletableObserver() {
-                    @Override
-                    public void onSubscribe(Disposable d) {
-                        // just like with a Single
-                    }
-
-                    @Override
-                    public void onComplete() {
-                        // action was completed successfully
-                        // Country list updated in DB.
-                        CrashlyticsHelper.d(" Cities list updated in Data base");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        // something went wrong
-                        CrashlyticsHelper.d(" Cities list updated getting error");
-                    }
-                });
-    }
-
-    private AddVehicleRequest createAddVehicleRequest(String driverId) {
-        AddVehicleRequest addVehicleRequest = new AddVehicleRequest();
-        addVehicleRequest.setAvailableDriverId(driverId);
-        addVehicleRequest.setVehicleName(getEtVehicleName());
-        addVehicleRequest.setVehicleNumber(getEtVehicleNumber());
-        addVehicleRequest.setVehicleTypeId(getVehicleTypeId());
-        /*addVehicleRequest.setDriverFirstName(getEtDriverFirstName());
-        addVehicleRequest.setDriverLastName(getEtDriverLastName());
-        addVehicleRequest.setEmailId(getEtDriverEmail());
-        addVehicleRequest.setMobileNumber(getEtDriverContNum());
-        addVehicleRequest.setPassword(getEtDriverPassword());*/
-        if (null != countriesItem) {
-            addVehicleRequest.setCountryId(countriesItem.getCountryId());
-        }
-        return addVehicleRequest;
-    }
-
-    private void findCountryFromCountryName(String s) {
-        compositeDisposable.add(DatabaseClient.getInstance(this).getAppDatabase().countryDao().findByCountryName(s)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                    countriesItem = result;
-                    //showCountryErrorMsg();
-                }, error -> {
-                    countriesItem = null;
-                    //showCountryErrorMsg();
-                }));
-    }
-
-    private void driverInformationAndVehicleInformationSendToServer() {
-        if (doesDriverNameContainsInDriverAvailableList(getDriverName())) {
-            addVehicleViewModel.addVehicleToOwnerRequest(createAddVehicleRequest(getDriverIdFromDriverList()));
-        }
+    private void clearAndUpdateDocumentListUI() {
+        for (DocumentsItem documentsListItem: uploadDocumentActionInfos)
+            documentsListItem.setFilePath(null);
+        adapter.notifyDataSetChanged();
     }
 
     private void clear() {
@@ -667,29 +481,86 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
         }
     }
 
+    /**
+     * This method used for validate to check all Mandatory files user choose or not
+     * @return TRUE/FALSE {@code true} if all Mandatory file choose otherwise it will return {@code false}
+     */
+    private boolean isValiedAllSelected() {
+        boolean isValied = false;
+        for (DocumentsItem documentsListItem: uploadDocumentActionInfos) {
+            if (documentsListItem.getIsMandatory() == 1 && documentsListItem.getDocumentStatus().getAllowUpdate() == 1) {
+                if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+                    isValied = true;
+                } else {
+                    utility.showToastMsg("Select " + documentsListItem.getName());
+                    return false;
+                }
+            }
+        }
+        return isValied;
+    }
+
+    /**
+     * This method to find selected document file list.
+     * @return List DocumentsListItem.
+     */
+    private List<DocumentsItem> findSelectedDocumentList() {
+        List<DocumentsItem> documentsListItems = new ArrayList<>();
+        int count = 0;
+        do {
+            DocumentsItem documentsListItem = uploadDocumentActionInfos.get(count);
+            if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+                documentsListItems.add(documentsListItem);
+            }
+        } while (++ count < this.uploadDocumentActionInfos.size());
+        return documentsListItems;
+    }
+
+    /**
+     * This method to create VehicleDetailRequest Object.
+     * @return VehicleDetailRequest
+     */
+    private VehicleDetailRequest createVehicleDetailRequestObject() {
+        VehicleDetailRequest vehicleDetailRequest = new VehicleDetailRequest();
+        vehicleDetailRequest.setVehicleTypeId(getVehicleTypeId());
+        vehicleDetailRequest.setVehicleName(getEtVehicleName());
+        vehicleDetailRequest.setVehicleNumber(getEtVehicleNumber());
+        vehicleDetailRequest.setVehicleId(getVehicleTypeId());
+        return vehicleDetailRequest;
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == IMAGE_PICKER || requestCode == FILE_PICKER && resultCode == Activity.RESULT_OK) {
             List<String> filePath = data.getStringArrayListExtra(requestCode == IMAGE_PICKER ?
                     FilePickerConst.KEY_SELECTED_MEDIA : FilePickerConst.KEY_SELECTED_DOCS);
-            //Bitmap selectedImage = BitmapFactory.decodeFile(filePath);
-            //.addAll(data.getStringArrayListExtra(FilePickerConst.KEY_SELECTED_MEDIA));
             if (null != filePath && !filePath.isEmpty()) {
                 Log.d(TAG, " The image file path:" + filePath);
                 updateDocumentItem(filePath.get(0));
-                //updateUploadContentButtonUI();
             }
         } else {
             utility.showToastMsg("File not found");
         }
     }
 
+    /**
+     * When clear instance for this activity we will receive this callback
+     */
+    @Override
+    protected void onDestroy() {
+        clearListener();
+        super.onDestroy();
+    }
+
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.btnAddVehicle) {
-            /*Intent intent = new Intent(this, OnlineActivity.class);
-            startActivity(intent);*/
+            if (isValidVehicleFields()) {
+                if (isValiedAllSelected()) {
+                    addVehicleViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
+                }
+            }
         }
     }
 

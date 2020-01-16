@@ -223,4 +223,19 @@ public interface ApiCallInterface {
     @FormUrlEncoded
     Observable<JsonElement> fetchDocumentStatusVehicleRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String, String> param);
 
+    @Multipart
+    @POST(WebserviceUrls.UPLOAD_OWNER_VEHICLE)
+    Observable<JsonElement> uploadOwnerVehicleRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
+                                                   @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
+                                                   @Part MultipartBody.Part fileBody,
+                                                   @Part(Constant.USER_ID_PARAM) RequestBody userId,
+                                                   @Part(Constant.VEHICLE_TYPE_ID_PARAM) RequestBody vehicleTypeId,
+                                                   @Part(Constant.VEHICLE_ID) RequestBody vehicleId,
+                                                   @Part(Constant.VEHICLE_NUMBER_PARAM) RequestBody vehicleNumber,
+                                                   @Part(Constant.VEHICLE_NAME_PARAM) RequestBody vehicleName);
+
+
+    @POST(WebserviceUrls.GET_DOCUMENTS_STATUS_DRIVER)
+    @FormUrlEncoded
+    Observable<JsonElement> fetchDocumentStatusDriverRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String, String> param);
 }
