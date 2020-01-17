@@ -11,7 +11,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/driverNameTextInputLayout"
+        android:id="@+id/driverFirstNameTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
@@ -20,12 +20,33 @@
         >
 
         <EditText
-            android:id="@+id/etDriverName"
+            android:id="@+id/etDriverFirstName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:singleLine="true"
-            android:hint="Driver Name"
+            android:hint="First Name"
+            android:imeOptions="actionNext"
+            android:inputType="textAutoCorrect"
+            />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/driverLastNameTextInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/driverFirstNameTextInputLayout"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:hintEnabled="false"
+        >
+
+        <EditText
+            android:id="@+id/etDriverLastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:singleLine="true"
+            android:hint="Last Name"
             android:imeOptions="actionNext"
             android:inputType="textAutoCorrect"
             />
@@ -37,7 +58,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintTop_toBottomOf="@+id/driverNameTextInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/driverLastNameTextInputLayout"
         app:hintEnabled="false"
         >
 
@@ -162,12 +183,19 @@
 
     </android.support.design.widget.TextInputLayout>
 
+    <AutoCompleteTextView
+        android:id="@+id/country_autoCompleteTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/country_text"
+        app:layout_constraintTop_toBottomOf="@+id/invite_code_textInputLayout"/>
+
     <com.codesense.driverapp.di.utils.AppSpinnerViewGroup
         android:id="@+id/vehicle_appSpinnerViewGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/invite_code_textInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/country_autoCompleteTextView"
         />
 
     <android.support.v7.widget.RecyclerView
