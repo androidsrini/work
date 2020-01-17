@@ -86,7 +86,7 @@
     <!--Document Status-->
 
     <string name="docstatus_vehicle_commerical">Vehicle Commercial Insurance</string>
-    <string name="update_document_text">Update Documents</string>
+    <string name="update_document_text">Upload Documents</string>
 
     <string name="vehicle_list_title">Vehicle</string>
     <string name="add_vehicle_text">Add Vehicle</string>

@@ -19,6 +19,7 @@ import com.codesense.driverapp.net.NetworkChangeReceiver;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
+import com.codesense.driverapp.ui.documentstatus.DocumentStatusActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
 import com.codesense.driverapp.ui.launchscreen.LaunchScreenActivity;
 import com.codesense.driverapp.ui.online.OnlineActivity;
@@ -109,18 +110,20 @@ public class SplashActivity extends BaseActivity {
                         } else if (utility.parseInt(signupStatus.getAgreementAccept()) == 0) {
                             //To show Agreement screen
                             SelectTypeActivity.start(this);
-                        } else if (1 == utility.parseInt(signupStatus.getIsActivated())
-                                && 1 == utility.parseInt(signupStatus.getVehicleActivation())) {
+                        } else if (0 == utility.parseInt(signupStatus.getIsActivated())) {
                             //To show online screen.
                             //OnlineActivity.start(this);
                             if (Constant.OWNER_TYPE.equals(appSharedPreference.getUserType())) {
-                                OnlineActivity.start(this);
+                                DocumentStatusActivity.start(this);
                                 finish();
-                            } else {
+                            } else if(1 == utility.parseInt(signupStatus.getVehicleActivation())){
                                 AddVehicleActivity.start(this);
                                 finish();
                             }
-                        } else {
+                        } else if (utility.parseInt(signupStatus.getIsActivated()) == 1){
+                            OnlineActivity.start(this);
+                            finish();
+                        }else {
                             UploadDocumentActivity.start(this);
                         }
                         finish();

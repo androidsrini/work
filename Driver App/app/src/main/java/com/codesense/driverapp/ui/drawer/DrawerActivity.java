@@ -34,6 +34,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
@@ -55,7 +56,7 @@ import io.reactivex.disposables.CompositeDisposable;
 public abstract class DrawerActivity extends DaggerAppCompatActivity {
 
     private static final String SIGN_IN_DEFAULT = "signin_default";
-    private static final String SIGN_IN= "SignedIn";
+    private static final String SIGN_IN = "SignedIn";
     private static final String ADD_VEHICLE = "add_vehicle";
     private static final String ADD_DRIVER = "add_driver";
     public static boolean isSignedIn;
@@ -88,6 +89,9 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
     private CompositeDisposable disposable = new CompositeDisposable();
     protected SwitchCompat autoReloadEnableDisableSwitchCompat;
     private boolean isActivated;
+    ImageView imgProfile;
+    TextView UserName;
+    TextView tvStatus;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -128,6 +132,9 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
                 null);
         drawerList.addHeaderView(header);
 
+        imgProfile = header.findViewById(R.id.imgProfile);
+        UserName = header.findViewById(R.id.UserName);
+        tvStatus = header.findViewById(R.id.tvStatus);
         int slideMenuLeftRightSpace = (int) (screenWidth * 0.037); //0.3
         int slideMenuWidth = (int) (screenWidth * 0.0864); //0.7
         int slideMenuHeight = (int) (screenWidth * 0.0864);
@@ -144,6 +151,10 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
         drawerMenuIconSignOutLay.width = menuWidth;
         drawerMenuIconSignOutLay.height = menuWidth;
         drawerMenuIconSignOut.setLayoutParams(drawerMenuIconSignOutLay);
+
+        /*RelativeLayout.LayoutParams imgProfileLay = (RelativeLayout.LayoutParams) imgProfile.getLayoutParams();
+        drawerMenuIconSignOutLay.setMargins(slideMenuLeftRightSpace, 0, 0, 0);
+        imgProfile.setLayoutParams(drawerMenuIconSignOutLay);*/
 
         //drawerIcon.setBackgroundResource(R.drawable.ic_drawer);
 
@@ -166,6 +177,11 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
         autoReloadEnableDisableSwitchCompat.setChecked(appSharedPreference.isUserStatusOnline());
         isSignedIn = appSharedPreference.isUserIdAvailable();
         isActivated = 1 == appSharedPreference.getIsActivate();
+        if (isActivated){
+            autoReloadEnableDisableSwitchCompat.setEnabled(true);
+        }else{
+            autoReloadEnableDisableSwitchCompat.setEnabled(false);
+        }
         loadMenu();
     }
 
@@ -180,6 +196,7 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
 
     /**
      * This method to update autoReloadEnableDisableSwitchCompat visibility
+     *
      * @param isVisible
      */
     protected void updateSwitchUI(boolean isVisible) {
@@ -241,9 +258,9 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
                                 selectedMenuList.add(strItem);
                             } else */
                             if ((isActivated && typedArray.getString(k).equals(SIGN_IN))
-                            || typedArray.getString(k).equals(SIGN_IN_DEFAULT)) {
+                                    || typedArray.getString(k).equals(SIGN_IN_DEFAULT)) {
                                 if (!TextUtils.isEmpty(type)) {
-                                    if (ADD_VEHICLE.equals(type) && Constant.OWNER_CUM_DRIVER.equals(appSharedPreference.getOwnerType())) {
+                                    if (ADD_VEHICLE.equals(type)) {
                                         if (!Constant.OWNER_TYPE.equals(appSharedPreference.getUserType())) {
                                             navDrawerItems.add(new NavDrawerItem(MenuItem, menuIconName));
                                             selectedMenuList.add(strItem);
@@ -311,6 +328,10 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
         };
         drawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
+
+        Glide.with(this)
+                .load(appSharedPreference.getProfilePicture())
+                .into(imgProfile);
     }
 
     private View getActionBarView() {

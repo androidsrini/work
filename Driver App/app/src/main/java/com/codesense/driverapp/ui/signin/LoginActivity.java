@@ -15,10 +15,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.base.BaseActivity;
-import com.codesense.driverapp.data.OwnerTypeResponse;
-import com.codesense.driverapp.data.OwnerTypesItem;
 import com.codesense.driverapp.data.SigninOwnerResponse;
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.di.utils.Utility;
@@ -28,6 +28,7 @@ import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
+import com.codesense.driverapp.ui.documentstatus.DocumentStatusActivity;
 import com.codesense.driverapp.ui.online.OnlineActivity;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
@@ -39,7 +40,6 @@ import com.product.process.annotation.Onclick;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -217,7 +217,7 @@ public class LoginActivity extends BaseActivity {
                             SelectTypeActivity.start(this);
                             //TO kill this activity class from backstack
                             finish();
-                        } else if (1 != appSharedPreference.getIsActivate() || 0 == appSharedPreference.getOtpVerify()){
+                        } /*else if (1 != appSharedPreference.getIsActivate() || 0 == appSharedPreference.getOtpVerify()){
                             //To show dashboard screen.
                             OwnerTypeResponse ownerTypeResponse = new Gson().fromJson(apiResponse.data, OwnerTypeResponse.class);
                             if (null != ownerTypeResponse) {
@@ -230,14 +230,21 @@ public class LoginActivity extends BaseActivity {
                             }
                             UploadDocumentActivity.start(this);
                             finish();
-                        }else{
+                        }*/else if (1 != appSharedPreference.getIsActivate()) {
+                            //To show online screen.
+                            //OnlineActivity.start(this);
                             if (Constant.OWNER_TYPE.equals(appSharedPreference.getUserType())) {
-                                OnlineActivity.start(this);
+                                DocumentStatusActivity.start(this);
                                 finish();
-                            } else {
+                            } else if(1 != appSharedPreference.getVehicleActivate()){
                                 AddVehicleActivity.start(this);
                                 finish();
                             }
+                        } else if (appSharedPreference.getIsActivate() == 1){
+                            OnlineActivity.start(this);
+                            finish();
+                        }else {
+                            UploadDocumentActivity.start(this);
                         }
                     }
                 } else {
@@ -257,6 +264,7 @@ public class LoginActivity extends BaseActivity {
             appSharedPreference.saveAccessToken(signinOwnerResponse.getAccessToken());
             appSharedPreference.saveOwnerTypeId(signinOwnerResponse.getOwnerTypeId());
             appSharedPreference.saveOtpVerify(signinOwnerResponse.getOtpVerify());
+            appSharedPreference.saveVehicleActivate(signinOwnerResponse.getIs_vehicle_activate());
             appSharedPreference.saveMobileNumber(signinOwnerResponse.getMobileNumber());
             appSharedPreference.saveUserType(signinOwnerResponse.getUserType());
             appSharedPreference.setCountryDialCode(signinOwnerResponse.getCountryDialCode());

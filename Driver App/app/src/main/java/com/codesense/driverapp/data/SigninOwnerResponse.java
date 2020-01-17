@@ -41,6 +41,16 @@ public class SigninOwnerResponse{
 	private int status;
 @SerializedName("is_activated")
 	private int is_activated;
+@SerializedName("vehicle_activation")
+	private int is_vehicle_activate;
+
+	public int getIs_vehicle_activate() {
+		return is_vehicle_activate;
+	}
+
+	public void setIs_vehicle_activate(int is_vehicle_activate) {
+		this.is_vehicle_activate = is_vehicle_activate;
+	}
 
 	public void setEmailId(String emailId){
 		this.emailId = emailId;

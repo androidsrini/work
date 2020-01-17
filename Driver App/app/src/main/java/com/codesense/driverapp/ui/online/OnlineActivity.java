@@ -13,7 +13,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -25,6 +24,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import androidx.work.Constraints;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.net.ApiResponse;
@@ -35,7 +39,6 @@ import com.codesense.driverapp.ui.helper.LocationMonitoringService;
 import com.codesense.driverapp.ui.helper.OnSwipeTouchListener;
 import com.codesense.driverapp.ui.helper.Utils;
 import com.codesense.driverapp.ui.paymentType.PaymentActivity;
-import com.codesense.driverapp.ui.pickuplocationaccept.PickUpLocationAcceptActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -48,11 +51,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-
-import androidx.work.Constraints;
-import androidx.work.NetworkType;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
 
 public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback {
 
@@ -110,10 +108,10 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
                 broadcastReceiver, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST)
         );
 
-        new Handler().postDelayed(() -> {
+       /* new Handler().postDelayed(() -> {
             Intent i = new Intent(OnlineActivity.this, PickUpLocationAcceptActivity.class);
             startActivity(i);
-        }, TIME_OUT);
+        }, TIME_OUT);*/
 
         rlEndTrip.setOnTouchListener(new OnSwipeTouchListener(OnlineActivity.this) {
             public void onSwipeTop() {

@@ -40,8 +40,10 @@ import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.ServiceType;
+import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
+import com.codesense.driverapp.ui.online.OnlineActivity;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -128,7 +130,11 @@ public class UploadDocumentActivity extends DrawerActivity {
         availableVehiclesItems = new ArrayList<>();
         titleTextView.setText(getResources().getString(R.string.upload_doc_text));
         uploadDocumentViewModel.getApiResponseMutableLiveData().observe(this, this::handleApiResponse);
-        uploadDocumentViewModel.fetchDocumentStatusRequest();
+        if (Constant.OWNER_TYPE.equals(appSharedPreference.getUserType())) {
+            uploadDocumentViewModel.fetchDocumentStatusRequest();
+        }else {
+            uploadDocumentViewModel.fetchDocumentStatusDriverRequest();
+        }
         updateCrashDetails();
         initially();
         setDynamicValue();
@@ -181,6 +187,11 @@ public class UploadDocumentActivity extends DrawerActivity {
                         utility.showToastMsg("File are uploaded successfully");
                         clearAndUpdateDocumentListUI();
                         clearAllEditTextUI();
+                        if (Constant.OWNER_TYPE.equals(appSharedPreference.getUserType())) {
+                            OnlineActivity.start(this);
+                        }else {
+                            AddVehicleActivity.start(this);
+                        }
                     }
                 }
                 break;
@@ -200,6 +211,11 @@ public class UploadDocumentActivity extends DrawerActivity {
                     } while (++ count < jsonElements.length);
                     if (allAreSuccess) {
                         utility.showToastMsg("All file are uploaded successfully");
+                        if (Constant.OWNER_TYPE.equals(appSharedPreference.getUserType())) {
+                            OnlineActivity.start(this);
+                        }else {
+                            AddVehicleActivity.start(this);
+                        }
                     }
                     clearAndUpdateDocumentListUI();
                     clearAllEditTextUI();
@@ -760,6 +776,7 @@ public class UploadDocumentActivity extends DrawerActivity {
         vehicleTypeTextView.setText(null);
         etVehicleNumber.setText(null);
         etVehicleName.setText(null);
+        selectVehicleTextView.setText(null);
     }
 
     @Override

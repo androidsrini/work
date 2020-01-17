@@ -2,7 +2,6 @@ package com.codesense.driverapp.ui.documentstatus;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -17,6 +16,8 @@ import android.view.View;
 import android.widget.Button;
 
 import com.codesense.driverapp.R;
+import com.codesense.driverapp.data.DocumentStatusResponse;
+import com.codesense.driverapp.data.DocumentsItem;
 import com.codesense.driverapp.data.DocumentsListItem;
 import com.codesense.driverapp.data.DocumentsListStatusResponse;
 import com.codesense.driverapp.data.VehicleDetailRequest;
@@ -29,11 +30,14 @@ import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
-import com.codesense.driverapp.ui.uploaddocument.RecyclerTouchListener;
+import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.library.fileimagepicker.filepicker.FilePickerBuilder;
 import com.library.fileimagepicker.filepicker.FilePickerConst;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +51,7 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
     protected RecyclerView recyclerView;
     protected Button uploadContentButton;
     DocumentStatusAdapter adapter;
-    List<DocumentsListItem> arraylist;
+    List<DocumentsItem> arraylist;
     @Inject protected AppSharedPreference appSharedPreference;
     @Inject protected DocumentStatusViewModel documentStatusViewModel;
     @Inject protected Utility utility;
@@ -74,12 +78,18 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
         arraylist = new ArrayList<>();
         titleTextView.setText(getResources().getString(R.string.document_status_title));
         documentStatusViewModel.getApiResponseMutableLiveData().observe(this, this::handleApiResponse);
-        if (!TextUtils.isEmpty(appSharedPreference.getOwnerType())) {
+        /*if (!TextUtils.isEmpty(appSharedPreference.getOwnerType())) {
             if (Constant.OWNER_CUM_DRIVER.equalsIgnoreCase(appSharedPreference.getOwnerType())) {
                 documentStatusViewModel.fetchOwnerCumDriverStatusRequest();
             } else {
                 documentStatusViewModel.fetchNonDrivingPartnerStatusRequest();
             }
+        }*/
+
+        if (Constant.OWNER_TYPE.equals(appSharedPreference.getUserType())) {
+            documentStatusViewModel.fetchOwnerCumDriverStatusRequest();
+        }else {
+            documentStatusViewModel.fetchNonDrivingPartnerStatusRequest();
         }
         initially();
         setDynamicValue();
@@ -95,10 +105,13 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
                 break;
             case SUCCESS:
                 utility.dismissDialog();
-                if (ServiceType.UPLOAD_DOCUEMNT == serviceType) {
+                if (ServiceType.OWNER_CUM_DRIVER_STATUS == serviceType || ServiceType.NON_DRIVING_PARTNER_STATUS == serviceType) {
+                    updateDocumentListUI(apiResponse);
+                }
+                else if (ServiceType.UPLOAD_DOCUEMNT == serviceType) {
                     utility.showToastMsg("File are uploaded successfully");
                     clearAndUpdateDocumentListUI();
-                } else {
+                }/* else {
                     if (apiResponse.isValidResponse()) {
                         documentsListStatusResponse = new Gson().fromJson(apiResponse.data, DocumentsListStatusResponse.class);
                         if (documentsListStatusResponse != null) {
@@ -109,7 +122,7 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
                             }
                         }
                     }
-                }
+                }*/
                 break;
             case SUCCESS_MULTIPLE:
                 utility.dismissDialog();
@@ -135,11 +148,38 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
         }
     }
 
+    private void updateDocumentListUI(ApiResponse apiResponse) {
+        int count = 0;
+        arraylist.clear();
+        if (apiResponse.isValidResponse()) {
+            try {
+                JSONObject jsonObject = new JSONObject(apiResponse.data.toString());
+                DocumentStatusResponse documentStatusResponse = new Gson().fromJson(apiResponse.data, DocumentStatusResponse.class);
+                if (null != documentStatusResponse) {
+                    documentStatusResponse.parseDocumentStatus(jsonObject);
+                    for (DocumentsItem documentsItem: documentStatusResponse.getDocuments()) {
+                        documentsItem.parseDocumentStatus(jsonObject);
+                    }
+                }
+                /*if (null != documentStatusResponse && null != documentStatusResponse.getAvailableVehicles()
+                        && !documentStatusResponse.getAvailableVehicles().isEmpty()) {
+                    availableVehiclesItems.addAll(documentStatusResponse.getAvailableVehicles());
+                } else {
+                    selectVehicleRelativeLayout.setVisibility(View.GONE);
+                    selectVehicleDivider.setVisibility(View.GONE);
+                }*/
+                arraylist.addAll(documentStatusResponse.getDocuments());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        adapter.notifyDataSetChanged();
+    }
     /**
      * This method to remove all selected files and update DocumentList UI.
      */
     private void clearAndUpdateDocumentListUI() {
-        for (DocumentsListItem documentsListItem: arraylist)
+        for (DocumentsItem documentsListItem: arraylist)
             documentsListItem.setFilePath(null);
         adapter.notifyDataSetChanged();
     }
@@ -149,7 +189,7 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
         adapter = new DocumentStatusAdapter(this, arraylist, screenWidth, screenHeight);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {
+       /* recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {
             @Override
             public void onClick(View view, int position) {
                 selectedItemPosition = position;
@@ -160,7 +200,7 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
                             "Are you sure you want to delete this file", (DialogInterface.OnClickListener) (dialog, which) -> {
                                 selectedDocumetnsListItem.setFilePath(null);
                                 adapter.notifyDataSetChanged();
-                                updateUploadContentButtonUI();
+//                                updateUploadContentButtonUI();
                             });
                 } else {
                     showImageFromGalary();
@@ -171,7 +211,7 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
             public void onLongClick(View view, int position) {
 
             }
-        }));
+        }));*/
     }
 
     /**
@@ -202,10 +242,10 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
     /**
      * This method to update UploadContentButtonUI.
      */
-    private void updateUploadContentButtonUI() {
+   /* private void updateUploadContentButtonUI() {
         //adapter.getSelectedFilesCount() > 0 ? Show update document UI button else Disable update document UI button.
         uploadContentButton.setVisibility(adapter.getSelectedFilesCount() > 0 ? View.VISIBLE : View.GONE);
-    }
+    }*/
 
     private void setDynamicValue() {
         int topBottomSpace = (int) (screenHeight * 0.0089);
@@ -231,11 +271,12 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
         uploadContentButton = findViewById(R.id.uploadContentButton);
         recyclerView = findViewById(R.id.recyclerView);
         uploadContentButton.setOnClickListener(((view) -> {
-            if (isAnyItemDocumentSelected()) {
+            /*if (isAnyItemDocumentSelected()) {
                 documentStatusViewModel.uploadDocumentRequest(findSelectedDocumentList(), getVehicleDetailRequest());
             } else {
                 utility.showToastMsg("Please select document");
-            }
+            }*/
+            UploadDocumentActivity.start(this);
         }));
     }
 
@@ -244,7 +285,7 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
      * @return boolean
      */
     private boolean isAnyItemDocumentSelected() {
-        for (DocumentsListItem documentsListItem: arraylist) {
+        for (DocumentsItem documentsListItem: arraylist) {
             if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
                 return true;
             }
@@ -256,11 +297,11 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
      * This method to find selected document file list.
      * @return List DocumentsListItem.
      */
-    private List<DocumentsListItem> findSelectedDocumentList() {
-        List<DocumentsListItem> documentsListItems = new ArrayList<>();
+    private List<DocumentsItem> findSelectedDocumentList() {
+        List<DocumentsItem> documentsListItems = new ArrayList<>();
         int count = 0;
         do {
-            DocumentsListItem documentsListItem = arraylist.get(count);
+            DocumentsItem documentsListItem = arraylist.get(count);
             if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
                 documentsListItems.add(documentsListItem);
             }
@@ -289,7 +330,7 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
             if (null != filePath && !filePath.isEmpty()) {
                 CrashlyticsHelper.d("Update The image file path:" + filePath);
                 updateDocumentItem(filePath.get(0));
-                updateUploadContentButtonUI();
+//                updateUploadContentButtonUI();
             }
         } else {
             utility.showToastMsg("File not found");

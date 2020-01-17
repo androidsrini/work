@@ -18,6 +18,7 @@ public class AppSharedPreference {
     private static final String IS_ACTIVATE_KEY = "IsActivateKey";
     private static final String OWNER_TYPE_KEY = "OwnerTypeKey";
     private static final String OTP_VERIFY_KEY = "OtpVerifyKey";
+    private static final String VEHICLE_ACTIVATE_KEY = "VehicleActivateKey";
     private static final String USER_TYPE_KEY = "UserTypeKey";
     private static final String PERMISSION_KEY = "PermissionKey";
     private static final String NETWORK_STATUS_KEY = "NetworkStatusKey";
@@ -68,7 +69,8 @@ public class AppSharedPreference {
     public String getUserID() {
         return sharedPreferences.getString(USER_ID_KEY, DEFAULT_VALUE);
     }
-  public String getPhoneNum() {
+
+    public String getPhoneNum() {
         return sharedPreferences.getString(MOBILE_NUMBER_KEY, DEFAULT_VALUE);
     }
 
@@ -97,9 +99,16 @@ public class AppSharedPreference {
         editor.putInt(IS_ACTIVATE_KEY, isActivate);
         editor.apply();
     }
+
     public void saveOtpVerify(int otpVerify) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt(OTP_VERIFY_KEY, otpVerify);
+        editor.apply();
+    }
+
+    public void saveVehicleActivate(int otpVerify) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(VEHICLE_ACTIVATE_KEY, otpVerify);
         editor.apply();
     }
 
@@ -107,10 +116,15 @@ public class AppSharedPreference {
         return sharedPreferences.getInt(OTP_VERIFY_KEY, 0);
     }
 
+    public int getVehicleActivate() {
+        return sharedPreferences.getInt(VEHICLE_ACTIVATE_KEY, 0);
+    }
+
     public int getOwnerTypeId() {
         return sharedPreferences.getInt(OWNER_TYPE_ID_KEY, -1);
     }
-public int getIsActivate() {
+
+    public int getIsActivate() {
         return sharedPreferences.getInt(IS_ACTIVATE_KEY, -1);
     }
 

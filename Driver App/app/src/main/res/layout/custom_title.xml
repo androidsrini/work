@@ -36,11 +36,12 @@
         android:checked="true"
         app:showText="true"
         android:visibility="gone"
-        android:textSize="23sp"
+        android:textSize="20sp"
         android:textStyle="bold"
         app:track="@drawable/switch_selector_background"
         android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="20dp"/>
 
 
     <!--<Button-->

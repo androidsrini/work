@@ -116,7 +116,7 @@ public class DocumentStatusViewModel extends ViewModel {
 
     public void fetchOwnerCumDriverStatusRequest(){
         if(null != requestHandler) {
-            disposables.add(requestHandler.fetchOwnerCumDriverStatusRequest(ApiUtility.getInstance().getApiKeyMetaData()).
+            disposables.add(requestHandler.fetchDocumentStatusRequest(ApiUtility.getInstance().getApiKeyMetaData()).
                     subscribeOn(Schedulers.io()).
                     observeOn(AndroidSchedulers.mainThread()).
                     doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.OWNER_CUM_DRIVER_STATUS))).
@@ -127,7 +127,7 @@ public class DocumentStatusViewModel extends ViewModel {
 
     public void fetchNonDrivingPartnerStatusRequest(){
         if(null != requestHandler) {
-            disposables.add(requestHandler.fetchNonDrivingPartnerStatusRequest(ApiUtility.getInstance().getApiKeyMetaData()).
+            disposables.add(requestHandler.fetchDocumentStatusDriverRequest(ApiUtility.getInstance().getApiKeyMetaData()).
                     subscribeOn(Schedulers.io()).
                     observeOn(AndroidSchedulers.mainThread()).
                     doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.NON_DRIVING_PARTNER_STATUS))).
