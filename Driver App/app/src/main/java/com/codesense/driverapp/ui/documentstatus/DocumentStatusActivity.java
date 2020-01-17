@@ -86,7 +86,7 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
             }
         }*/
 
-        if (Constant.OWNER_TYPE.equals(appSharedPreference.getUserType())) {
+        if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
             documentStatusViewModel.fetchOwnerCumDriverStatusRequest();
         }else {
             documentStatusViewModel.fetchNonDrivingPartnerStatusRequest();

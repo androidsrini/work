@@ -233,7 +233,7 @@ public class LoginActivity extends BaseActivity {
                         }*/else if (1 != appSharedPreference.getIsActivate()) {
                             //To show online screen.
                             //OnlineActivity.start(this);
-                            if (Constant.OWNER_TYPE.equals(appSharedPreference.getUserType())) {
+                            if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
                                 DocumentStatusActivity.start(this);
                                 finish();
                             } else if(1 != appSharedPreference.getVehicleActivate()){

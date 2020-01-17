@@ -113,7 +113,7 @@ public class SplashActivity extends BaseActivity {
                         } else if (0 == utility.parseInt(signupStatus.getIsActivated())) {
                             //To show online screen.
                             //OnlineActivity.start(this);
-                            if (Constant.OWNER_TYPE.equals(appSharedPreference.getUserType())) {
+                            if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
                                 DocumentStatusActivity.start(this);
                                 finish();
                             } else if(1 == utility.parseInt(signupStatus.getVehicleActivation())){

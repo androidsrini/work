@@ -130,7 +130,7 @@ public class UploadDocumentActivity extends DrawerActivity {
         availableVehiclesItems = new ArrayList<>();
         titleTextView.setText(getResources().getString(R.string.upload_doc_text));
         uploadDocumentViewModel.getApiResponseMutableLiveData().observe(this, this::handleApiResponse);
-        if (Constant.OWNER_TYPE.equals(appSharedPreference.getUserType())) {
+        if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
             uploadDocumentViewModel.fetchDocumentStatusRequest();
         }else {
             uploadDocumentViewModel.fetchDocumentStatusDriverRequest();
@@ -187,7 +187,7 @@ public class UploadDocumentActivity extends DrawerActivity {
                         utility.showToastMsg("File are uploaded successfully");
                         clearAndUpdateDocumentListUI();
                         clearAllEditTextUI();
-                        if (Constant.OWNER_TYPE.equals(appSharedPreference.getUserType())) {
+                        if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
                             OnlineActivity.start(this);
                         }else {
                             AddVehicleActivity.start(this);
@@ -211,7 +211,7 @@ public class UploadDocumentActivity extends DrawerActivity {
                     } while (++ count < jsonElements.length);
                     if (allAreSuccess) {
                         utility.showToastMsg("All file are uploaded successfully");
-                        if (Constant.OWNER_TYPE.equals(appSharedPreference.getUserType())) {
+                        if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
                             OnlineActivity.start(this);
                         }else {
                             AddVehicleActivity.start(this);
@@ -347,7 +347,7 @@ public class UploadDocumentActivity extends DrawerActivity {
      */
     private void functionality() {
         uploadContentButton.setOnClickListener(((view) -> {
-            if (Constant.OWNER_TYPE.equalsIgnoreCase(appSharedPreference.getUserType())) {
+            if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
                 if (isValidAllFields()) {
                     if (isValiedAllSelected()) {
                         uploadDocumentViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());

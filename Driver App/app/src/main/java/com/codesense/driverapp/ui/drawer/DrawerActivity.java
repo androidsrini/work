@@ -261,7 +261,7 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
                                     || typedArray.getString(k).equals(SIGN_IN_DEFAULT)) {
                                 if (!TextUtils.isEmpty(type)) {
                                     if (ADD_VEHICLE.equals(type)) {
-                                        if (!Constant.OWNER_TYPE.equals(appSharedPreference.getUserType())) {
+                                        if (!Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
                                             navDrawerItems.add(new NavDrawerItem(MenuItem, menuIconName));
                                             selectedMenuList.add(strItem);
                                         }
