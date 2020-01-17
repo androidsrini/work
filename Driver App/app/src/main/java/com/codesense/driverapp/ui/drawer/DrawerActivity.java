@@ -39,11 +39,11 @@ import com.codesense.driverapp.R;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.Constant;
-import com.codesense.driverapp.ui.adddriver.AddDriverActivity;
-import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
 import com.codesense.driverapp.ui.documentstatus.DocumentStatusActivity;
+import com.codesense.driverapp.ui.driver.DriverListActivity;
 import com.codesense.driverapp.ui.referalprogram.ReferalProgramActivity;
 import com.codesense.driverapp.ui.signin.LoginActivity;
+import com.codesense.driverapp.ui.vehicle.VehicleListActivity;
 
 import java.util.ArrayList;
 
@@ -404,9 +404,10 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
                 intent = new Intent(this, ReferalProgramActivity.class);
                 startActivity(intent);
             } else if (ADD_VEHICLE.equals(menuLabel)) {
-                AddVehicleActivity.start(this);
+                VehicleListActivity.start(this);
             } else if (ADD_DRIVER.equals(menuLabel)) {
-                AddDriverActivity.start(this);
+                //AddDriverActivity.start(this);
+                DriverListActivity.start(this);
             }
         }
     }

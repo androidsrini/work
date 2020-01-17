@@ -1,8 +1,10 @@
-package com.codesense.driverapp.ui.vehicle;
+package com.codesense.driverapp.ui.driver;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,25 +13,27 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codesense.driverapp.R;
-import com.codesense.driverapp.data.VehiclesListItem;
+import com.codesense.driverapp.data.DriversListItem;
 import com.codesense.driverapp.net.Constant;
 
 import java.util.List;
 
-public class VehicleListAdapter extends RecyclerView.Adapter<VehicleListAdapter.ViewHolder> {
+public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.ViewHolder> {
 
 
-    private List<VehiclesListItem> vehicleListModelList;
+    private List<DriversListItem> driversListItemList;
     private Activity activity;
     private int width;
     private int height;
+    private OnItemActionListener onItemActionListener;
 
-    public VehicleListAdapter(Activity activity, List<VehiclesListItem> vehicleListModelList,
-                              int w, int h) {
+    public DriverListAdapter(Activity activity, List<DriversListItem> driversListItemList,
+                             int w, int h, OnItemActionListener onItemActionListener) {
         this.activity = activity;
         this.width = w;
         this.height = h;
-        this.vehicleListModelList = vehicleListModelList;
+        this.driversListItemList = driversListItemList;
+        this.onItemActionListener = onItemActionListener;
 
     }
 
@@ -44,28 +48,26 @@ public class VehicleListAdapter extends RecyclerView.Adapter<VehicleListAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        VehiclesListItem vehiclesListItem = vehicleListModelList.get(position);
-        viewHolder.tvVehicleNum.setText(vehiclesListItem.getVehicleNumber());
-        if (vehiclesListItem.getOwnerAsDriver().equals(String.valueOf(Constant.INVALID_STATUS))) {
-            viewHolder.tvVehicleName.setText(activity.getString(R.string.not_mapped_status));
-        } else {
-            //Need to update owner name.
-            viewHolder.tvVehicleName.setText(vehiclesListItem.getVehicleName());
-        }
-//        VehicleListModel vehicleListModel = vehicleListModelList.get(position);
-//        String status = vehicleListModel.getVehicleStatus();
-//        String name = vehicleListModel.getVehicleName();
-//        String vehicleNum = vehicleListModel.getVehicleNo();
-//
-//
-//        viewHolder.tvStatusText.setText(status);
-//        viewHolder.tvVehicleName.setText(name);
-//        viewHolder.tvVehicleNum.setText(vehicleNum);
+        DriversListItem driversListItem = driversListItemList.get(position);
+        viewHolder.tvVehicleNum.setText(driversListItem.getVehicleNumber());
+        viewHolder.tvVehicleName.setText(driversListItem.getDriverFirstName().concat(driversListItem.getDriverLastName()));
+        viewHolder.activeSwitchCompat.setChecked(parseInt(driversListItem.getDrivingActivationStatus()) == Constant.ACTIVE);
     }
 
     @Override
     public int getItemCount() {
-        return vehicleListModelList.size();
+        return driversListItemList.size();
+    }
+
+    private int parseInt(String s) {
+        if (!TextUtils.isEmpty(s)) {
+            try {
+                return Integer.parseInt(s);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        return 0;
     }
 
 
@@ -74,6 +76,7 @@ public class VehicleListAdapter extends RecyclerView.Adapter<VehicleListAdapter.
         private RelativeLayout rlUserVehicle, rlUserVehcleMain;
         private ImageView imgRightArrow, imgVehicle, imgPerson;
         private TextView tvStatusText, tvVehicleNum, tvVehicleName;
+        private SwitchCompat activeSwitchCompat;
 
         public ViewHolder(View view) {
             super(view);
@@ -86,6 +89,7 @@ public class VehicleListAdapter extends RecyclerView.Adapter<VehicleListAdapter.
             imgRightArrow = view.findViewById(R.id.imgRightArrow);
             imgVehicle = view.findViewById(R.id.imgVehicle);
             imgPerson = view.findViewById(R.id.imgPerson);
+            activeSwitchCompat = view.findViewById(R.id.active_switchCompat);
 
 
             int topBottomSpace = (int) (height * 0.0089);
@@ -126,8 +130,22 @@ public class VehicleListAdapter extends RecyclerView.Adapter<VehicleListAdapter.
             tvVehicleName.setPadding(topBottomSpace * 2, topBottomSpace, 0, topBottomSpace * 3);
             imgRightArrow.setPadding(0, topBottomSpace * 2, topBottomSpace * 2, 0);
 
+            itemView.setOnClickListener((v)->{
+                if (null != onItemActionListener && -1 != getAdapterPosition()) {
+                    onItemActionListener.onViewClick(getAdapterPosition());
+                }
+            });
 
+            activeSwitchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (-1 != getAdapterPosition()) {
+                    onItemActionListener.onButtonClick(getAdapterPosition(), isChecked);
+                }
+            });
         }
+    }
+    public interface OnItemActionListener {
+        void onViewClick(int position);
+        void onButtonClick(int position, boolean isChecked);
     }
 }
 

@@ -252,6 +252,29 @@ public interface ApiCallInterface {
     @FormUrlEncoded
     Observable<JsonElement> addVehicleDriverRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String, String> param);
 
+    @POST(WebserviceUrls.GET_OWNER_VEHICLES)
+    @FormUrlEncoded
+    Observable<JsonElement> getOwnerVehiclesRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String, String> param);
+
+    @POST(WebserviceUrls.GET_DRIVERS_LIST)
+    @FormUrlEncoded
+    Observable<JsonElement> getDriversListRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String, String> param);
+
+    @POST(WebserviceUrls.DRIVING_ACTIVATION)
+    @FormUrlEncoded
+    Observable<JsonElement> postDrivingActivationRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String, String> param);
+
+
+    @POST(WebserviceUrls.DRIVER_DETAILS)
+    @FormUrlEncoded
+    Observable<JsonElement> fetchDriverDetailsRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String, String> param);
+
+
+    @POST(WebserviceUrls.EDIT_VEHICLE_DRIVER)
+    @FormUrlEncoded
+    Observable<JsonElement> editVehicleDriverRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
+                                                    @FieldMap HashMap<String, String> param);
+
     /*@POST(WebserviceUrls.GET_DOCUMENTS_STATUS_DRIVER)
     @FormUrlEncoded
     Observable<JsonElement> fetchDocumentStatusDriverRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String, String> param);*/

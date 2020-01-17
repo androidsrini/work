@@ -80,6 +80,28 @@ public class RequestHandler {
     }
 
     /**
+     * This method to create userId param value as HashMap.
+     * @return HashMap;
+     */
+    private HashMap<String, String> postdrivingActivationRequestParam(int driverStatus, String vehicleId, String driverId) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
+        param.put(Constant.DRIVING_STATUS, String.valueOf(driverStatus));
+        param.put(Constant.VEHICLE_ID, vehicleId);
+        param.put(Constant.DRIVER_ID, driverId);
+        param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
+        return param;
+    }
+
+    private HashMap<String, String> driverDetailsRequestParam(String driverId) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
+        param.put(Constant.DRIVER_ID, driverId);
+        param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
+        return param;
+    }
+
+    /**
      * This method to create Agreement Accept request.
      * @param agreementAccept
      * @return HashMap
@@ -118,7 +140,8 @@ public class RequestHandler {
         param.put(Constant.EMAIL_ID_PARAM, addDriverRequest.getEmailId());
         param.put(Constant.PASSWORD_PARAM, addDriverRequest.getPassword());
         param.put(Constant.MOBILE_NUMBER_PARAM, addDriverRequest.getMobileNumber());
-        param.put(Constant.DRIVER_FIRST_NAME_PARAM, addDriverRequest.getDriverName());
+        param.put(Constant.DRIVER_FIRST_NAME_PARAM, addDriverRequest.getDriverFirstName());
+        param.put(Constant.DRIVER_LAST_NAME_PARAM, addDriverRequest.getDriverLastName());
         param.put(Constant.INVITE_CODE_PARAM, addDriverRequest.getInviteCode());
         return param;
     }
@@ -169,8 +192,24 @@ public class RequestHandler {
         param.put(Constant.MOBILE_NUMBER_PARAM, addDriverRequest.getMobileNumber());
         param.put(Constant.PASSWORD_PARAM, addDriverRequest.getPassword());
         param.put(Constant.EMAIL_ID_PARAM, addDriverRequest.getEmailId());
-        param.put(Constant.NAME_PARAM, addDriverRequest.getDriverName());
+        param.put(Constant.DRIVER_FIRST_NAME_PARAM, addDriverRequest.getDriverFirstName());
+        param.put(Constant.DRIVER_LAST_NAME_PARAM, addDriverRequest.getDriverLastName());
         param.put(Constant.VEHICLE_ID, addDriverRequest.getVehicleId());
+        param.put(Constant.COUNTRY_ID_PARAM, addDriverRequest.getCountryId());
+        return param;
+    }
+
+    private HashMap<String, String> getEditDriverRequestParam(AddDriverRequest addDriverRequest) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, addDriverRequest.getUserId());
+        param.put(Constant.DRIVER_ID, addDriverRequest.getDriverId());
+        param.put(Constant.MOBILE_NUMBER_PARAM, addDriverRequest.getMobileNumber());
+        param.put(Constant.PASSWORD_PARAM, addDriverRequest.getPassword());
+        param.put(Constant.EMAIL_ID_PARAM, addDriverRequest.getEmailId());
+        param.put(Constant.DRIVER_FIRST_NAME_PARAM, addDriverRequest.getDriverFirstName());
+        param.put(Constant.DRIVER_LAST_NAME_PARAM, addDriverRequest.getDriverLastName());
+        param.put(Constant.VEHICLE_ID, addDriverRequest.getVehicleId());
+        param.put(Constant.COUNTRY_ID_PARAM, addDriverRequest.getCountryId());
         return param;
     }
 
@@ -383,7 +422,27 @@ public class RequestHandler {
                 getDriverId(driverId));
     }
 
-        public Observable<JsonElement> addVehicleDriverRequest(String api, AddDriverRequest addDriverRequest) {
+    public Observable<JsonElement> addVehicleDriverRequest(String api, AddDriverRequest addDriverRequest) {
         return apiCallInterface.addVehicleDriverRequest(api, appSharedPreference.getAccessTokenKey(), getAddDriverRequestParam(addDriverRequest));
+    }
+
+    public Observable<JsonElement> getOwnerVehiclesRequest(String api) {
+        return apiCallInterface.getOwnerVehiclesRequest(api, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
+    }
+
+    public Observable<JsonElement> getDriversListRequest(String api) {
+        return apiCallInterface.getDriversListRequest(api, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
+    }
+
+    public Observable<JsonElement> postDrivingActivationRequest(String api, int driverStatus, String vehicleId, String driverId) {
+        return apiCallInterface.postDrivingActivationRequest(api, appSharedPreference.getAccessTokenKey(), postdrivingActivationRequestParam(driverStatus, vehicleId, driverId));
+    }
+
+    public Observable<JsonElement> fetchDriverDetailsRequest(String api, String driverId) {
+        return apiCallInterface.fetchDriverDetailsRequest(api, appSharedPreference.getAccessTokenKey(), driverDetailsRequestParam(driverId));
+    }
+
+    public Observable<JsonElement> editVehicleDriverRequest(String api, AddDriverRequest addDriverRequest) {
+        return apiCallInterface.editVehicleDriverRequest(api, appSharedPreference.getAccessTokenKey(), getEditDriverRequestParam(addDriverRequest));
     }
 }

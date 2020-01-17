@@ -5,6 +5,7 @@ import com.codesense.driverapp.ui.accept.AcceptActivity;
 import com.codesense.driverapp.ui.adddriver.AddDriverActivity;
 import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
 import com.codesense.driverapp.ui.documentstatus.DocumentStatusActivity;
+import com.codesense.driverapp.ui.driver.DriverListActivity;
 import com.codesense.driverapp.ui.editmobilenumber.EditMobileNumberActivity;
 import com.codesense.driverapp.ui.imagepicker.ImagePickerActivity;
 import com.codesense.driverapp.ui.invitefriends.InviteFriendsActivity;
@@ -103,6 +104,9 @@ public abstract class ActivityBindingModule {
 
     @ContributesAndroidInjector
     abstract AddDriverActivity bindAddDriverActivity();
+
+    @ContributesAndroidInjector
+    abstract DriverListActivity bindDriverListActivity();
 
     /*@ContributesAndroidInjector
     abstract AddDriverActivity.AddDriverFragment bindAddDriverFragment();*/

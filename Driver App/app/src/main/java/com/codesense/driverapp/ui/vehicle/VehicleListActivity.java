@@ -2,6 +2,7 @@ package com.codesense.driverapp.ui.vehicle;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,12 +14,16 @@ import android.view.View;
 import android.widget.Button;
 
 import com.codesense.driverapp.R;
+import com.codesense.driverapp.data.VehicleListResponse;
+import com.codesense.driverapp.data.VehiclesListItem;
+import com.codesense.driverapp.di.utils.RecyclerTouchListener;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
-import com.product.annotationbuilder.ProductBindView;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +40,12 @@ public class VehicleListActivity extends DrawerActivity implements View.OnClickL
     @Inject protected VehicleListViewModel vehicleListViewModel;
     @Inject protected RequestHandler requestHandler;
     @Inject protected Utility utility;
+    private List<VehiclesListItem> vehiclesItemList;
+
+    public static void start(Context context) {
+        Intent starter = new Intent(context, VehicleListActivity.class);
+        context.startActivity(starter);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -44,19 +55,34 @@ public class VehicleListActivity extends DrawerActivity implements View.OnClickL
         frameLayout.addView(contentView);
         titleTextView.setText(getResources().getString(R.string.vehicle_list_title));
         vehicleListViewModel.getApiResponseMutableLiveData().observe(this, this::handleApiResponse);
-        vehicleListViewModel.fetchAvailableVehiclesRequest();
+        //Need to implement load more concept
+        vehicleListViewModel.fetchOwnerVehiclesRequest();
         initially();
         setDynamicValue();
+        initializeListener();
         functionality();
     }
 
     private void handleApiResponse(ApiResponse apiResponse) {
+        ServiceType serviceType = apiResponse.getServiceType();
         switch (apiResponse.status) {
             case LOADING:
                 utility.showProgressDialog(this);
                 break;
             case SUCCESS:
                 utility.dismissDialog();
+                if (ServiceType.GET_OWNER_VEHICLES == serviceType) {
+                    VehicleListResponse vehiclesListsResponse = new Gson().fromJson(apiResponse.data, VehicleListResponse.class);
+                    if (null != vehiclesListsResponse && null != vehiclesListsResponse.getVehiclesListItems()) {
+                        //Clear all old values
+                        if (!vehiclesItemList.isEmpty()) {
+                            vehiclesItemList.clear();
+                        }
+                        vehiclesItemList.addAll(vehiclesListsResponse.getVehiclesListItems());
+                    }
+                    //notify adapter
+                    adapter.notifyDataSetChanged();
+                }
                 break;
             case ERROR:
                 utility.dismissDialog();
@@ -64,12 +90,37 @@ public class VehicleListActivity extends DrawerActivity implements View.OnClickL
         }
     }
 
-    private void functionality() {
+    private void initializeListener() {
         btnAddVehicle.setOnClickListener(this);
-        List<VehicleListModel> arrayList = new ArrayList<>();
-        adapter = new VehicleListAdapter(this, arrayList, screenWidth, screenHeight);
+    }
+
+    private void clearListener() {
+        btnAddVehicle.setOnClickListener(this);
+    }
+
+    private void functionality() {
+        adapter = new VehicleListAdapter(this, vehiclesItemList, screenWidth, screenHeight);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                utility.showConformationDialog(VehicleListActivity.this,
+                        getString(R.string.vehicle_edit_confirmation), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                VehiclesListItem vehiclesListItem = vehiclesItemList.get(position);
+                                AddVehicleActivity.start(VehicleListActivity.this, vehiclesListItem);
+                            }
+                        });
+            }
+
+            @Override
+            public void onLongClick(View view, int position) {
+                //Show vehicle edit screen
+                //vehiclesListItem.
+            }
+        }));
     }
 
     private void setDynamicValue() {
@@ -87,17 +138,25 @@ public class VehicleListActivity extends DrawerActivity implements View.OnClickL
     }
 
     private void initially() {
+        vehiclesItemList = new ArrayList<>();
         btnAddVehicle = findViewById(R.id.btnAddVehicle);
         recyclerView = findViewById(R.id.recyclerView);
     }
 
     @Override
-    public void onClick(View v) {
+    protected void onDestroy() {
+        clearListener();
+        super.onDestroy();
+    }
 
+    @Override
+    public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnAddVehicle:
-                Intent intent = new Intent(this, AddVehicleActivity.class);
-                startActivity(intent);
+                AddVehicleActivity.start(this);
+                break;
+                /*Intent intent = new Intent(this, AddVehicleActivity.class);
+                startActivity(intent);*/
         }
     }
 }

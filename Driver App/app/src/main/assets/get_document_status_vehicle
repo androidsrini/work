@@ -1,0 +1,95 @@
+{
+    "status": 1,
+    "documents": [
+        {
+            "name": "Vehicle Registration Certificate",
+            "field_name": "vehicle_document_8",
+            "max_size": "300.00",
+            "suported_formats": [
+                "jpeg",
+                "jpg",
+                "png",
+                "pdf"
+            ],
+            "is_mandatory": "1"
+        },
+        {
+            "name": "Vehicle Permit",
+            "field_name": "vehicle_document_9",
+            "max_size": "300.00",
+            "suported_formats": [
+                "jpeg",
+                "jpg",
+                "png",
+                "pdf"
+            ],
+            "is_mandatory": "1"
+        },
+        {
+            "name": "Vehicle Insurance",
+            "field_name": "vehicle_document_10",
+            "max_size": "300.00",
+            "suported_formats": [
+                "jpeg",
+                "jpg",
+                "png",
+                "pdf"
+            ],
+            "is_mandatory": "1"
+        },
+        {
+            "name": "Vehicle Pollution Certificate",
+            "field_name": "vehicle_document_11",
+            "max_size": "300.00",
+            "suported_formats": [
+                "jpeg",
+                "jpg",
+                "png",
+                "pdf"
+            ],
+            "is_mandatory": "1"
+        }
+    ],
+    "document_status": {
+        "vehicle_document_8": {
+            "file": "http://localhost/vava/assets/uploads/documents/vehicle/vehicledoc_5e16f64ab9447.pdf",
+            "status": "Document waiting for verification.",
+            "status_code": 2,
+            "allow_update": 1
+        },
+        "vehicle_document_9": {
+            "file": "http://localhost/vava/assets/uploads/documents/vehicle/vehicledoc_5e16f64ae7e6a.jpg",
+            "status": "Document waiting for verification.",
+            "status_code": 2,
+            "allow_update": 1
+        },
+        "vehicle_document_10": {
+            "file": "http://localhost/vava/assets/uploads/documents/vehicle/vehicledoc_5e16f64b0ab5f.jpeg",
+            "status": "Document waiting for verification.",
+            "status_code": 2,
+            "allow_update": 1
+        },
+        "vehicle_document_11": {
+            "file": "http://localhost/vava/assets/uploads/documents/vehicle/vehicledoc_5e16f64b12091.jpg",
+            "status": "Document waiting for verification.",
+            "status_code": 2,
+            "allow_update": 1
+        }
+    },
+    "vehicle_details": {
+        "vehicle_id": "92",
+        "vehicle_type_id": "4",
+        "vehicle_name": "Toyata LUV",
+        "vehicle_number": "XY01 Z0148",
+        "owner_id": "27",
+        "driver_id": null,
+        "owner_as_driver": "0",
+        "is_active": "0",
+        "duty_status": "0",
+        "plan_mode": "POST_PAID",
+        "created_on": "2020-01-09 15:10:11",
+        "created_by": null,
+        "verified_by": null,
+        "status": "1"
+    }
+}

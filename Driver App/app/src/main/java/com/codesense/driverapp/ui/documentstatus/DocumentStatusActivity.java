@@ -26,7 +26,6 @@ import com.codesense.driverapp.di.utils.PermissionManager;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.ApiResponse;
-import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
@@ -86,11 +85,12 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
             }
         }*/
 
-        if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
+        /*if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
             documentStatusViewModel.fetchOwnerCumDriverStatusRequest();
         }else {
             documentStatusViewModel.fetchNonDrivingPartnerStatusRequest();
-        }
+        }*/
+        documentStatusViewModel.fetchOwnerCumDriverStatusRequest();
         initially();
         setDynamicValue();
         functionality();
@@ -189,29 +189,6 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
         adapter = new DocumentStatusAdapter(this, arraylist, screenWidth, screenHeight);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-       /* recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                selectedItemPosition = position;
-                selectedDocumetnsListItem = arraylist.get(position);
-                String filePath = selectedDocumetnsListItem.getFilePath();
-                if (!TextUtils.isEmpty(filePath)) {
-                    utility.showConformationDialog(DocumentStatusActivity.this,
-                            "Are you sure you want to delete this file", (DialogInterface.OnClickListener) (dialog, which) -> {
-                                selectedDocumetnsListItem.setFilePath(null);
-                                adapter.notifyDataSetChanged();
-//                                updateUploadContentButtonUI();
-                            });
-                } else {
-                    showImageFromGalary();
-                }
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-
-            }
-        }));*/
     }
 
     /**

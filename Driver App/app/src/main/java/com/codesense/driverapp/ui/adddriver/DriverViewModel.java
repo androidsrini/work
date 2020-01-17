@@ -229,6 +229,35 @@ public class DriverViewModel extends ViewModel {
         }
     }
 
+    /**
+     * This method to fetch Country list from server.
+     */
+    public void fetchCountryListRequest() {
+        disposables.add(requestHandler.fetchCountryListRequest(ApiUtility.getInstance().getApiKeyMetaData())
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.COUNTRY_LIST)))
+                .subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.COUNTRY_LIST, result)),
+                        error -> apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.COUNTRY_LIST, error))));
+    }
+
+    public void fetchDriverDetailsRequest(String driverId) {
+        disposables.add(requestHandler.fetchDriverDetailsRequest(ApiUtility.getInstance().getApiKeyMetaData(), driverId)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.DRIVER_DETAILS)))
+                .subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.DRIVER_DETAILS, result)),
+                        error -> apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.DRIVER_DETAILS, error))));
+    }
+
+
+    public void editVehicleDriverRequest(AddDriverRequest addDriverRequest) {
+        disposables.add(requestHandler.editVehicleDriverRequest(ApiUtility.getInstance().getApiKeyMetaData(), addDriverRequest)
+                .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.EDIT_VEHICLE_DRIVER)))
+                .subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.EDIT_VEHICLE_DRIVER, result)),
+                        error -> apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.EDIT_VEHICLE_DRIVER, error))));
+    }
+
+
     private class MergedResponse {
         // this is just a POJO to store all the responses in one object
         private JsonElement[] docuemntListStatusResponse;

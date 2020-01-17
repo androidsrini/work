@@ -276,6 +276,7 @@
     <string name="cash_label">Cash</string>
     <string name="your_trip_finished_btn_label">Your Trip Finished</string>
     <string name="receipt_label">Receipt</string>
+    <string name="change_password">Change Password</string>
     <string-array name="upload_document_item_0">
         <item>Recommended next step</item>
         <item>Driver\'s license</item>

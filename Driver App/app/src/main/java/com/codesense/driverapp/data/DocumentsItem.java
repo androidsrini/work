@@ -1,5 +1,7 @@
 package com.codesense.driverapp.data;
 
+import android.text.TextUtils;
+
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONObject;
@@ -87,11 +89,23 @@ public class DocumentsItem {
                 DocumentStatus status = new DocumentStatus();
                 status.setStatus(statusObject.optString("status"));
                 status.setFile(statusObject.optString("file"));
-                status.setStatusCode(statusObject.optInt("status_code"));
+                status.setStatusCode(statusObject.isNull("status_code") && !TextUtils.isEmpty(statusObject.optString("status_code"))
+                        ? parseInt(statusObject.optString("status_code")) : -1);
                 status.setAllowUpdate(statusObject.optInt("allow_update", -1));
                 this.documentStatus = status;
             }
         }
+    }
+
+    private int parseInt(String s) {
+        if (!TextUtils.isEmpty(s) && !s.equals("null")) {
+            try {
+                return Integer.parseInt(s);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        return -1;
     }
 
     @Override

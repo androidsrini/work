@@ -12,7 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codesense.driverapp.R;
+import com.codesense.driverapp.data.DocumentStatus;
 import com.codesense.driverapp.data.DocumentsItem;
+import com.codesense.driverapp.net.Constant;
 
 import java.io.File;
 import java.util.List;
@@ -50,10 +52,15 @@ public class DocumentStatusAdapter extends RecyclerView.Adapter<DocumentStatusAd
     @Override
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         DocumentsItem uploadDocumentModel = uploadDocumentModelList.get(position);
-        boolean isFileSelected = !TextUtils.isEmpty(uploadDocumentModel.getFilePath());
-        String status = isFileSelected ? activity.getString(R.string.document_status_completed)
-                :  (null != uploadDocumentModel.getDocumentStatus()) ?
-                uploadDocumentModel.getDocumentStatus().getStatusMessage() : activity.getString(R.string.recommended_next_step);
+        DocumentStatus documentStatus = uploadDocumentModel.getDocumentStatus();
+        if (null != documentStatus) {
+            String status = documentStatus.getStatusCode() == Constant.VERIFIED_STATUS ?
+                    activity.getString(R.string.verified_status) : documentStatus.getStatusCode() == Constant.INVALID_STATUS ?
+                    activity.getString(R.string.invalid_status) : documentStatus.getStatusCode() == Constant.WAITING_STATUS ?
+                    activity.getString(R.string.waiting_status) : documentStatus.getStatusCode() == Constant.NOT_FOUND ?
+                    activity.getString(R.string.not_found_status) : activity.getString(R.string.document_verification_pending);
+            viewHolder.tvVehicleStatusText.setText(status);
+        }
         String title = uploadDocumentModel.getName();
         /*if (isFileSelected) {
             viewHolder.tvVehicleStatusText.setText(findFileName(uploadDocumentModel.getFilePath()));

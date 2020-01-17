@@ -6,9 +6,12 @@ public class AddDriverRequest {
 
     @SerializedName("user_id")
     private String userId;
-
-    @SerializedName("driver_name")
-    private String driverName;
+    @SerializedName("driver_id")
+    private String driverId;
+    @SerializedName("driver_first_name")
+    private String driverFirstName;
+    @SerializedName("driver_last_name")
+    private String driverLastName;
     @SerializedName("invite_code")
     private String inviteCode;
     @SerializedName("country_id")
@@ -21,6 +24,30 @@ public class AddDriverRequest {
     private String mobileNumber;
     @SerializedName("vehicle_id")
     private String vehicleId;
+
+    public String getDriverId() {
+        return driverId;
+    }
+
+    public void setDriverId(String driverId) {
+        this.driverId = driverId;
+    }
+
+    public String getDriverFirstName() {
+        return driverFirstName;
+    }
+
+    public void setDriverFirstName(String driverFirstName) {
+        this.driverFirstName = driverFirstName;
+    }
+
+    public String getDriverLastName() {
+        return driverLastName;
+    }
+
+    public void setDriverLastName(String driverLastName) {
+        this.driverLastName = driverLastName;
+    }
 
     public String getVehicleId() {
         return vehicleId;
@@ -44,14 +71,6 @@ public class AddDriverRequest {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public String getDriverName() {
-        return driverName;
-    }
-
-    public void setDriverName(String driverName) {
-        this.driverName = driverName;
     }
 
     public String getCountryId() {

@@ -198,4 +198,12 @@
     <string name="submit_action">Submit</string>
     <string name="submit_review_text">Submit Your Review</string>
     <string name="comment_here_text">Comment here</string>
+    <string name="verified_status">Verified</string>
+    <string name="invalid_status">Invalid</string>
+    <string name="waiting_status">Waiting for verification</string>
+    <string name="not_found_status">Not found</string>
+    <string name="not_mapped_status">Not mapped</string>
+    <string name="vehicle_edit_confirmation">Are you sure you want edit this vehicle?</string>
+    <string name="edit_confirmation">Are you sure want to edit vehicle. This will deactivate your vehicle upto verification?</string>
+    <string name="drivers_label">Drivers</string>
 </resources>

@@ -58,6 +58,13 @@ public final class Constant {
     public static final String LONGITUDE = "longitude" ;
     public static final String SPEED_PER_MINUTE = "speed_per_minute" ;
     public static final String VEHICLE_ID = "vehicle_id" ;
+    public static final String DRIVING_STATUS = "driving_status" ;
     public static final int OWNER_CUM_DRIVER_TYPE = 1;
     public static final int NON_DRIVING_PARTNER_TYPE = 2;
+    public static final int VERIFIED_STATUS = 1;
+    public static final int INVALID_STATUS = 0;
+    public static final int WAITING_STATUS = 2;
+    public static final int NOT_FOUND = -1;
+    public static final int ACTIVE = 1;
+    public static final int INACTIVE = 0;
 }

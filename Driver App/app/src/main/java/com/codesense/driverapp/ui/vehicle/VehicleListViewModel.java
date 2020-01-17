@@ -30,14 +30,14 @@ public class VehicleListViewModel extends ViewModel {
         return apiResponseMutableLiveData;
     }
 
-    public void fetchAvailableVehiclesRequest(){
+    public void fetchOwnerVehiclesRequest(){
         if(null != requestHandler) {
-            disposables.add(requestHandler.fetchAvailableVehiclesRequest(ApiUtility.getInstance().getApiKeyMetaData()).
+            disposables.add(requestHandler.getOwnerVehiclesRequest(ApiUtility.getInstance().getApiKeyMetaData()).
                     subscribeOn(Schedulers.io()).
                     observeOn(AndroidSchedulers.mainThread()).
-                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.AVAILABLE_VEHICLES))).
-                    subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.AVAILABLE_VEHICLES, result)),
-                            error -> {apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.AVAILABLE_VEHICLES, error));}));
+                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.GET_OWNER_VEHICLES))).
+                    subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.GET_OWNER_VEHICLES, result)),
+                            error -> {apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.GET_OWNER_VEHICLES, error));}));
         }
     }
 }

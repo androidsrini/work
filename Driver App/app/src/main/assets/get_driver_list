@@ -1,0 +1,18 @@
+{
+    "status": 1,
+    "drivers_list": [
+        {
+            "driver_id": "52",
+            "driver_first_name": "Ramkumar",
+            "driver_last_name": "Ram",
+            "driver_country_dial_code": "+91",
+            "driver_contact_number": "8598598599",
+            "driver_email_id": "testram@gmail.com",
+            "invite_code": "DRI0052",
+            "verification_status": "1",
+            "driving_activation_status": "1",
+            "vehicle_id": "91",
+            "vehicle_number": "TN01 XY8856"
+        }
+    ]
+}

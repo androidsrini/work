@@ -10,12 +10,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <LinearLayout
+        android:id="@+id/name_container_linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        >
+
     <android.support.design.widget.TextInputLayout
         android:id="@+id/driverFirstNameTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_weight="1"
         app:hintEnabled="false"
         >
 
@@ -35,6 +43,7 @@
         android:id="@+id/driverLastNameTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         app:layout_constraintTop_toBottomOf="@+id/driverFirstNameTextInputLayout"
         app:layout_constraintLeft_toLeftOf="parent"
         app:hintEnabled="false"
@@ -52,13 +61,15 @@
             />
     </android.support.design.widget.TextInputLayout>
 
+    </LinearLayout>
+
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/driverContNumTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintTop_toBottomOf="@+id/driverLastNameTextInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/name_container_linearLayout"
         app:hintEnabled="false"
         >
 
@@ -112,12 +123,35 @@
         android:layout_below="@+id/etVehicleNumber"
         app:layout_constraintTop_toBottomOf="@+id/etDriverEmail" />-->
 
+    <CheckedTextView
+        android:id="@+id/change_password_checkedTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:checkMark="@null"
+        android:gravity="center_vertical"
+        android:text="@string/change_password"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:drawableStart="?android:attr/listChoiceIndicatorMultiple"
+        android:drawableEnd="@null"
+        android:checked="true"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/driverEmailTextInputLayout"
+        app:layout_constraintHorizontal_bias="0.0"
+        />
+
+    <LinearLayout
+        android:id="@+id/password_container_linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@+id/change_password_checkedTextView"
+        app:layout_constraintHorizontal_bias="0.0">
+
     <android.support.design.widget.TextInputLayout
         android:id="@+id/driverPasswordTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@+id/driverEmailTextInputLayout"
-        app:layout_constraintHorizontal_bias="0.0"
         app:passwordToggleEnabled="true"
         app:hintEnabled="false"
         >
@@ -167,12 +201,15 @@
             />
     </android.support.design.widget.TextInputLayout>
 
+    </LinearLayout>
+
     <android.support.design.widget.TextInputLayout
         android:id="@+id/invite_code_textInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="visible"
         app:hintEnabled="false"
-        app:layout_constraintTop_toBottomOf="@+id/driverConTextInputLayout">
+        app:layout_constraintTop_toBottomOf="@+id/password_container_linearLayout">
 
         <EditText
             android:id="@+id/invite_code_editText"

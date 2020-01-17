@@ -36,6 +36,7 @@ import com.codesense.driverapp.data.VehicleDetailRequest;
 import com.codesense.driverapp.data.VehicleTypeResponse;
 import com.codesense.driverapp.data.VehicleTypesItem;
 import com.codesense.driverapp.di.utils.PermissionManager;
+import com.codesense.driverapp.di.utils.RecyclerTouchListener;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.Constant;

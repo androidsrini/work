@@ -35,13 +35,14 @@ import com.codesense.driverapp.data.DocumentsItem;
 import com.codesense.driverapp.data.VehicleDetailRequest;
 import com.codesense.driverapp.data.VehicleTypeResponse;
 import com.codesense.driverapp.data.VehicleTypesItem;
+import com.codesense.driverapp.data.VehiclesListItem;
 import com.codesense.driverapp.di.utils.PermissionManager;
+import com.codesense.driverapp.di.utils.RecyclerTouchListener;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
-import com.codesense.driverapp.ui.uploaddocument.RecyclerTouchListener;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentAdapter;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -60,6 +61,7 @@ import io.reactivex.disposables.CompositeDisposable;
 
 public class AddVehicleActivity extends DrawerActivity implements View.OnClickListener {
 
+    private static final String VEHICLES_LIST_ITEM_ARG = "VehiclesListItemArg";
     private static final int IMAGE_PICKER = 0x0001;
     private static final int FILE_PICKER = 0x0002;
     private static final String TAG = AddVehicleActivity.class.getSimpleName();
@@ -111,6 +113,7 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
     private RecyclerView recyclerView;
     private int selectedDocumentsListPosition;
     private DocumentsItem selectedDocumetnsListItem;
+    private VehiclesListItem vehiclesListItem;
 
     /**
      * This method to start AddVehicleActivity
@@ -118,6 +121,12 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
      */
     public static void start(Context context) {
         context.startActivity(new Intent(context, AddVehicleActivity.class));
+    }
+
+    public static void start(Context context, VehiclesListItem vehiclesListItem) {
+        Intent intent = new Intent(context, AddVehicleActivity.class);
+        intent.putExtra(VEHICLES_LIST_ITEM_ARG, vehiclesListItem);
+        context.startActivity(intent);
     }
 
     @Override
@@ -278,6 +287,20 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
         driverConTextInputLayout = findViewById(R.id.driverConTextInputLayout);
     }
 
+    private void updateUI(List<VehicleTypesItem> vehicleTypesItems) {
+        etVehicleName.setText(vehiclesListItem.getVehicleName());
+        etVehicleNumber.setText(vehiclesListItem.getVehicleNumber());
+        int selected = 0;
+        for (int index=0; index<vehicleTypesItems.size(); index++) {
+            VehicleTypesItem vehicleTypesItem = vehicleTypesItems.get(index);
+            if (vehicleTypesItem.getVehicleTypeId().equals(vehiclesListItem.getVehicleTypeId())) {
+                selected = index;
+                break;
+            }
+        }
+        vehicleTypeAppCompatSpinner.setSelection(selected);
+    }
+
     private String getAddVehicleCountryAutoCompleteTextView() {
         return selectedCountry;
     }
@@ -343,6 +366,10 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
     }
 
     private void functionality() {
+        Intent intent = getIntent();
+        if (null != intent) {
+            vehiclesListItem = intent.getParcelableExtra(VEHICLES_LIST_ITEM_ARG);
+        }
         adapter = new UploadDocumentAdapter(this, uploadDocumentActionInfos, screenWidth, screenHeight);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -424,6 +451,9 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
         ArrayAdapter<VehicleTypesItem> adapter = new ArrayAdapter<VehicleTypesItem>(this, android.R.layout.simple_spinner_item, vehicleTypesItems);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         vehicleTypeAppCompatSpinner.setAdapter(adapter);
+        if (null != this.vehiclesListItem) {
+            updateUI(vehicleTypesItems);
+        }
     }
 
     private void updateDocumentListUI(ApiResponse apiResponse) {
@@ -438,9 +468,19 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
             try {
                 JSONObject jsonObject = new JSONObject(jsonElement.toString());
                 DocumentStatusResponse documentStatusResponse = new Gson().fromJson(jsonElement, DocumentStatusResponse.class);
-                if (null != documentStatusResponse) {
+                if (null != documentStatusResponse && null != documentStatusResponse.getDocuments()) {
                     for (DocumentsItem documentsItem: documentStatusResponse.getDocuments()) {
                         documentsItem.parseDocumentStatus(jsonObject);
+                    }
+                } else {
+                    //For testing parse static value
+                    String staticResult = utility.findAssetFileString(this, Utility.GET_DOCUMENT_STATUS_VEHICLE);
+                    jsonObject = new JSONObject(staticResult);
+                    documentStatusResponse = new Gson().fromJson(staticResult, DocumentStatusResponse.class);
+                    if (null != documentStatusResponse) {
+                        for (DocumentsItem documentsItem : documentStatusResponse.getDocuments()) {
+                            documentsItem.parseDocumentStatus(jsonObject);
+                        }
                     }
                 }
                 uploadDocumentActionInfos.addAll(documentStatusResponse.getDocuments());
@@ -526,6 +566,9 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
         vehicleDetailRequest.setVehicleName(getEtVehicleName());
         vehicleDetailRequest.setVehicleNumber(getEtVehicleNumber());
         vehicleDetailRequest.setVehicleId(getVehicleTypeId());
+        if (isEditVehicle()) {
+            vehicleDetailRequest.setVehicleId(vehiclesListItem.getVehicleId());
+        }
         return vehicleDetailRequest;
     }
 
@@ -544,6 +587,10 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
         }
     }
 
+    private boolean isEditVehicle() {
+        return this.vehiclesListItem != null;
+    }
+
     /**
      * When clear instance for this activity we will receive this callback
      */
@@ -558,7 +605,14 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
         if (v.getId() == R.id.btnAddVehicle) {
             if (isValidVehicleFields()) {
                 if (isValiedAllSelected()) {
-                    addVehicleViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
+                    if (isEditVehicle()) {
+                        //Show conformation dialog and upload data to server
+                        utility.showConformationDialog(AddVehicleActivity.this,
+                                getString(R.string.edit_confirmation), (dialog, which) ->
+                                        addVehicleViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject()));
+                    } else {
+                        addVehicleViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
+                    }
                 }
             }
         }

@@ -1,0 +1,14 @@
+{
+  "status": 1,
+  "data": {
+    "status": "1",
+    "driver_id": "53",
+    "driver_first_name": "Gowtharee",
+    "driver_last_name": "Ravi",
+    "country_id": "1",
+    "dial_code": "+91",
+    "contact_number": "7788778855",
+    "email_id": "test8@gmail.com",
+    "allowed_vehicle": "91"
+  }
+}

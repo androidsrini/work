@@ -17,6 +17,10 @@ import android.widget.Toast;
 
 import com.codesense.driverapp.R;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
@@ -34,6 +38,9 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class Utility {
 
+    public static final String GET_DOCUMENT_STATUS_VEHICLE = "get_document_status_vehicle";
+    public static final String GET_DRIVER_LIST = "get_driver_list";
+    public static final String DRIVER_DETAIL = "driver_detail";
     /*private static final Utility utility = new Utility();*/
     private ProgressDialog progressDialog;
 
@@ -232,5 +239,42 @@ public class Utility {
         } catch (Exception e) {
             return 0.0;
         }
+    }
+
+    public String findAssetFileString(Context context, String fileName) {
+        StringBuilder stringBuilder = new StringBuilder();
+        InputStream inputStream = null;
+        InputStreamReader inputStreamReader = null;
+        BufferedReader bufferedReader = null;
+        try {
+            inputStream = context.getAssets().open(fileName);
+            //Convert to input stream reader Depantance injection
+            inputStreamReader = new InputStreamReader(inputStream);
+            //Convert to buffer reader
+            bufferedReader = new BufferedReader(inputStreamReader);
+            String result;
+            while ((result = bufferedReader.readLine()) != null) {
+                stringBuilder.append(result);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            //TO close all steam here.
+            try {
+                if (null != inputStream) {
+                    inputStream.close();
+                }
+                if (null != inputStreamReader) {
+                    inputStreamReader.close();
+                }
+                if (null != bufferedReader) {
+                    bufferedReader.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+        return stringBuilder.toString();
     }
 }
