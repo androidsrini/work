@@ -15,6 +15,7 @@ import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.codesense.driverapp.R;
@@ -52,8 +53,9 @@ public class AddDriverActivity extends DrawerActivity {
     private static final String TAG = AddDriverActivity.class.getSimpleName();
     private static final int IMAGE_PICKER = 0x0001;
     private static final int FILE_PICKER = 0x0002;
-    EditText etDriverFirstName, etDriverLastName, etDriverContNum, etDriverEmail, etDriverPassword, etDriverConPassword;
+    EditText etDriverName, etDriverContNum, etDriverEmail, etDriverPassword, etDriverConPassword, inviteCodeEditText;
     RecyclerView recyclerView;
+    Button btnAddDriver;
     AppSpinnerViewGroup<VehiclesListsItem> vehicleAppSpinnerViewGroup;
     UploadDocumentAdapter adapter;
     private List<DocumentsItem> uploadDocumentActionInfos;
@@ -69,6 +71,7 @@ public class AddDriverActivity extends DrawerActivity {
     protected PermissionManager permissionManager;
     private int selectedDocumentsListPosition;
     private DocumentsItem selectedDocumetnsListItem;
+    private String selectedVehicleId;
 
     public static void start(Context context) {
         Intent starter = new Intent(context, AddDriverActivity.class);
@@ -90,17 +93,24 @@ public class AddDriverActivity extends DrawerActivity {
 
     private void initially(View view) {
         uploadDocumentActionInfos = new ArrayList<>();
-        etDriverFirstName = view.findViewById(R.id.etDriverName);
+        etDriverName = view.findViewById(R.id.etDriverName);
         etDriverContNum = view.findViewById(R.id.etDriverContNum);
         etDriverEmail = view.findViewById(R.id.etDriverEmail);
         etDriverPassword = view.findViewById(R.id.etDriverPassword);
         etDriverConPassword = view.findViewById(R.id.etDriverConPassword);
         vehicleAppSpinnerViewGroup = view.findViewById(R.id.vehicle_appSpinnerViewGroup);
         recyclerView = view.findViewById(R.id.recyclerView);
+        btnAddDriver = view.findViewById(R.id.btnAddDriver);
+        inviteCodeEditText = view.findViewById(R.id.invite_code_editText);
         driverViewModel.getApiResponseMutableLiveData().observe(this, this::apiResponseHandler);
     }
 
     private void functionality() {
+        vehicleAppSpinnerViewGroup.setOnItemSelectListener(position -> {
+            List<VehiclesListsItem> arrayList = vehicleAppSpinnerViewGroup.getArrayList();
+            if (null != arrayList && !arrayList.isEmpty())
+                selectedVehicleId = arrayList.get(position).getVehicleId();
+        });
         adapter = new UploadDocumentAdapter(this, uploadDocumentActionInfos, screenWidth, screenHeight);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -133,6 +143,45 @@ public class AddDriverActivity extends DrawerActivity {
 
             }
         }));
+        btnAddDriver.setOnClickListener(v->{
+            if (isValidAddNewDriverFields()) {
+                if (isValiedAllSelected()) {
+                    driverViewModel.addDriverRequest(createAddDriverRequestObject());
+                }
+            }
+        });
+    }
+
+    /**
+     * This method to find selected document file list.
+     * @return List DocumentsListItem.
+     */
+    private List<DocumentsItem> findSelectedDocumentList() {
+        List<DocumentsItem> documentsListItems = new ArrayList<>();
+        int count = 0;
+        do {
+            DocumentsItem documentsListItem = uploadDocumentActionInfos.get(count);
+            if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+                documentsListItems.add(documentsListItem);
+            }
+        } while (++ count < this.uploadDocumentActionInfos.size());
+        return documentsListItems;
+    }
+
+    private boolean isValiedAllSelected() {
+        boolean isValied = false;
+        for (DocumentsItem documentsListItem: uploadDocumentActionInfos) {
+            if (documentsListItem.getIsMandatory() == 1 && documentsListItem.getDocumentStatus().getAllowUpdate() == 1) {
+                if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+                    isValied = true;
+                } else {
+                    utility.showToastMsg("Select " + documentsListItem.getName());
+                    isValied = false;
+                    return false;
+                }
+            }
+        }
+        return isValied;
     }
 
     /**
@@ -186,8 +235,19 @@ public class AddDriverActivity extends DrawerActivity {
             case SUCCESS:
                 utility.dismissDialog();
                 Log.d(TAG, "response: " + apiResponse.data);
-                if (apiResponse.isValidResponse()) {
+                /*if (apiResponse.isValidResponse()) {
                     vehicleAppSpinnerViewGroup.setVisibility(View.VISIBLE);
+                }*/
+                switch (serviceType) {
+                    case ADD_DRIVER:
+                        if (apiResponse.isValidResponse()) {
+                            String driverId = apiResponse.getResponseJsonObject().optString("driver_id");
+                            driverViewModel.uploadDocumentRequest(findSelectedDocumentList(), driverId);
+                            clear();
+                        } else {
+                            utility.showToastMsg(apiResponse.getResponseMessage());
+                        }
+                        break;
                 }
                 break;
             case SUCCESS_MULTIPLE:
@@ -202,6 +262,9 @@ public class AddDriverActivity extends DrawerActivity {
                         if (null != vehicleTypeJsonElement) {
                             VehiclesListsResponse vehiclesListsResponse = new Gson().fromJson(apiResponse.data, VehiclesListsResponse.class);
                             if (null != vehiclesListsResponse && null != vehiclesListsResponse.getVehiclesLists()) {
+                                if (apiResponse.isValidResponse()) {
+                                    vehicleAppSpinnerViewGroup.setVisibility(View.VISIBLE);
+                                }
                                 vehicleListSpinnerUI(vehiclesListsResponse.getVehiclesLists());
                             }
                         }
@@ -210,6 +273,22 @@ public class AddDriverActivity extends DrawerActivity {
                             updateDocumentListUI(documentStatus);
                         }
                         break;
+                    case UPDATE_DRIVER_DOCUMENTS:
+                        JsonElement[] jsonElements = apiResponse.datas;
+                        boolean allAreSuccess = true;
+                        int count = 0;
+                        do {
+                            if (!apiResponse.isValidResponse(count)) {
+                                utility.showToastMsg(apiResponse.getResponseMessage(count));
+                                allAreSuccess = false;
+                            }
+                        } while (++ count < jsonElements.length);
+                        if (allAreSuccess) {
+                            utility.showToastMsg("All file are uploaded successfully");
+                        }
+                        clearAndUpdateDocumentListUI();
+                        /*clearAllEditTextUI();*/
+                        break;
                 }
                 break;
             case ERROR:
@@ -217,6 +296,15 @@ public class AddDriverActivity extends DrawerActivity {
                 Log.d(TAG, "response error: " + apiResponse.error);
                 break;
         }
+    }
+
+    /**
+     * This method to remove all selected files and update DocumentList UI.
+     */
+    private void clearAndUpdateDocumentListUI() {
+        for (DocumentsItem documentsListItem: uploadDocumentActionInfos)
+            documentsListItem.setFilePath(null);
+        adapter.notifyDataSetChanged();
     }
 
     private void updateDocumentListUI(JsonElement jsonElement) {
@@ -242,14 +330,22 @@ public class AddDriverActivity extends DrawerActivity {
         vehicleAppSpinnerViewGroup.updateItem(vehiclesListsItemList);
     }
 
-    private String getEtDriverFirstName() {
-        return etDriverFirstName.getText().toString().trim();
+    private String getEtDriverName() {
+        return etDriverName.getText().toString().trim();
 
     }
 
-    private String getEtDriverLastName() {
+    private String getInviteCodeEditText() {
+        return inviteCodeEditText.getText().toString().trim();
+    }
+
+    private String getSelectedVehicleId() {
+        return selectedVehicleId;
+    }
+
+    /*private String getEtDriverLastName() {
         return etDriverLastName.getText().toString().trim();
-    }
+    }*/
 
     private String getEtDriverContNum() {
         return etDriverContNum.getText().toString().trim();
@@ -270,11 +366,8 @@ public class AddDriverActivity extends DrawerActivity {
 
     private boolean isValidAddNewDriverFields() {
         boolean isValid = true;
-        if (TextUtils.isEmpty(getEtDriverFirstName())) {
-            utility.showToastMsg("Driver First Name Required");
-            isValid = false;
-        } else if (TextUtils.isEmpty(getEtDriverLastName())) {
-            utility.showToastMsg("Driver Last Name Required");
+        if (TextUtils.isEmpty(getEtDriverName())) {
+            utility.showToastMsg("Driver Name Required");
             isValid = false;
         } else if (TextUtils.isEmpty(getEtDriverContNum())) {
             utility.showToastMsg("Driver Contact Number Required");
@@ -309,7 +402,7 @@ public class AddDriverActivity extends DrawerActivity {
             etDriverName.setOnItemClickListener((adapterView, view, i, l) -> {
                 availableDriversItem = adapter.getItem(i);
                 if (null != availableDriversItem) {
-                    etDriverFirstName.setText(availableDriversItem.getDriverFirstName());
+                    etDriverFirstName.setText(availableDriversItem.getDriverName());
                     etDriverLastName.setText(availableDriversItem.getDriverLastName());
                     etDriverEmail.setText(availableDriversItem.getDriverEmailId());
                 *//*driverPasswordTextInputLayout.setVisibility(View.GONE);
@@ -323,18 +416,20 @@ public class AddDriverActivity extends DrawerActivity {
             /*if (null != countriesItem) {
                 addDriverRequest.setCountryId(countriesItem.getCountryId());
             }*/
-        addDriverRequest.setDriverFirstName(getEtDriverFirstName());
-        addDriverRequest.setDriverLastName(getEtDriverLastName());
+        addDriverRequest.setDriverName(getEtDriverName());
+        addDriverRequest.setInviteCode(getInviteCodeEditText());
+        /*addDriverRequest.setDriverLastName(getEtDriverLastName());*/
         addDriverRequest.setEmailId(getEtDriverEmail());
         addDriverRequest.setMobileNumber(getEtDriverContNum());
         addDriverRequest.setPassword(getEtDriverPassword());
         addDriverRequest.setUserId(appSharedPreference.getUserID());
+        addDriverRequest.setVehicleId(getSelectedVehicleId());
         return addDriverRequest;
     }
 
     private void clear() {
-        etDriverFirstName.setText(null);
-        etDriverLastName.setText(null);
+        etDriverName.setText(null);
+        //etDriverLastName.setText(null);
         etDriverContNum.setText(null);
         etDriverEmail.setText(null);
         etDriverPassword.setText(null);

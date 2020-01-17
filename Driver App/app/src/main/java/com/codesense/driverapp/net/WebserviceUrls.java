@@ -41,5 +41,8 @@ public class WebserviceUrls {
     public static final String GET_DOCUMENTS_STATUS = "owner_registation/get_documents_status";
     public static final String GET_DOCUMENTS_STATUS_VEHICLE = "get_documents_status/vehicle";
     public static final String GET_DOCUMENTS_STATUS_DRIVER = "get_documents_status/driver";
+    public static final String UPDATE_DRIVER_DOCUMENTS = "update_driver_documents";
+    public static final String ADD_VEHICLE_DRIVER = "add_vehicle_driver";
+    //public static final String UPDATE_DRIVER_DOCUMENTS = "driver_details";
 
 }

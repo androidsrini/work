@@ -37,6 +37,7 @@ public class AppSpinnerViewGroup<T> extends FrameLayout {
     private int mSelectedVehicle;
     private boolean vehicleSelectionFirstTime = true;
     private List<T> arrayList;
+    private OnItemSelectListener onItemSelectListener;
 
     public AppSpinnerViewGroup(@NonNull @android.support.annotation.NonNull Context context) {
         super(context);
@@ -133,6 +134,9 @@ public class AppSpinnerViewGroup<T> extends FrameLayout {
         listView.setSelection(mSelectedVehicle);
         listView.setOnItemClickListener((parent, view3, position, id) -> {
             popupWindow.dismiss();
+            if (null != onItemSelectListener) {
+                onItemSelectListener.onItemSelected(position);
+            }
             Object o = arrayList.get(position);
             if (o instanceof VehiclesListsItem) {
                 VehiclesListsItem selectedState = (VehiclesListsItem) o;
@@ -148,9 +152,17 @@ public class AppSpinnerViewGroup<T> extends FrameLayout {
         popupWindow.showAsDropDown(view);
     }
 
+    public void setOnItemSelectListener(OnItemSelectListener onItemSelectListener) {
+        this.onItemSelectListener = onItemSelectListener;
+    }
+
     public void updateItem(List<T> objectArrayList) {
         arrayList.clear();
         arrayList.addAll(objectArrayList);
+    }
+
+    public List<T> getArrayList(){
+        return arrayList;
     }
 
     public interface OnItemSelectListener {

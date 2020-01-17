@@ -24,8 +24,10 @@ import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.ApiResponse;
+import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
+import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
 import com.codesense.driverapp.ui.online.OnlineActivity;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
@@ -229,8 +231,13 @@ public class LoginActivity extends BaseActivity {
                             UploadDocumentActivity.start(this);
                             finish();
                         }else{
-                            OnlineActivity.start(this);
-                            finish();
+                            if (Constant.OWNER_TYPE.equals(appSharedPreference.getUserType())) {
+                                OnlineActivity.start(this);
+                                finish();
+                            } else {
+                                AddVehicleActivity.start(this);
+                                finish();
+                            }
                         }
                     }
                 } else {

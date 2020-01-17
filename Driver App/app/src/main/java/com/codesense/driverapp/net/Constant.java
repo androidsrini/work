@@ -14,6 +14,7 @@ public final class Constant {
     public static final String USER_ID_RESPONSE = "user_id";
     public static final String USER_TYPE_RESPONSE = "user_type";
     public static final String USER_TYPE_REQUEST = "user_type";
+    public static final String NAME_PARAM = "name";
     public static final String FIRST_NAME_PARAM = "first_name";
     public static final String LAST_NAME_PARAM = "last_name";
     public static final String MOBILE_NUMBER_PARAM = "mobile_number";

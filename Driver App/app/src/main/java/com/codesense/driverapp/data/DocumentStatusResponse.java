@@ -66,7 +66,7 @@ public class DocumentStatusResponse {
     }
 
     public void parseDocumentStatus(JSONObject jsonObject) {
-        if (null != jsonObject) {
+        if (null != jsonObject && !jsonObject.isNull("vehicle_details")) {
             try {
                 JSONObject vehicleDetailsObject = jsonObject.getJSONObject("vehicle_details");
                 this.vehicleDetailObject = new Gson().fromJson(vehicleDetailsObject.toString(), VehicleDetails.class);

@@ -238,4 +238,21 @@ public interface ApiCallInterface {
     @POST(WebserviceUrls.GET_DOCUMENTS_STATUS_DRIVER)
     @FormUrlEncoded
     Observable<JsonElement> fetchDocumentStatusDriverRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String, String> param);
+
+
+    @Multipart
+    @POST(WebserviceUrls.UPDATE_DRIVER_DOCUMENTS)
+    Observable<JsonElement> uploadDriverDocumentRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
+                                                      @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
+                                                      @Part MultipartBody.Part fileBody,
+                                                      @Part(Constant.USER_ID_PARAM) RequestBody userId,
+                                                      @Part(Constant.DRIVER_ID) RequestBody driverId);
+
+    @POST(WebserviceUrls.ADD_VEHICLE_DRIVER)
+    @FormUrlEncoded
+    Observable<JsonElement> addVehicleDriverRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String, String> param);
+
+    /*@POST(WebserviceUrls.GET_DOCUMENTS_STATUS_DRIVER)
+    @FormUrlEncoded
+    Observable<JsonElement> fetchDocumentStatusDriverRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken, @FieldMap HashMap<String, String> param);*/
 }

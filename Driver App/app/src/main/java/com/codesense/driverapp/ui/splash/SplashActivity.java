@@ -14,9 +14,11 @@ import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.ApiResponse;
+import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.NetworkChangeReceiver;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
+import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
 import com.codesense.driverapp.ui.launchscreen.LaunchScreenActivity;
 import com.codesense.driverapp.ui.online.OnlineActivity;
@@ -110,7 +112,14 @@ public class SplashActivity extends BaseActivity {
                         } else if (1 == utility.parseInt(signupStatus.getIsActivated())
                                 && 1 == utility.parseInt(signupStatus.getVehicleActivation())) {
                             //To show online screen.
-                            OnlineActivity.start(this);
+                            //OnlineActivity.start(this);
+                            if (Constant.OWNER_TYPE.equals(appSharedPreference.getUserType())) {
+                                OnlineActivity.start(this);
+                                finish();
+                            } else {
+                                AddVehicleActivity.start(this);
+                                finish();
+                            }
                         } else {
                             UploadDocumentActivity.start(this);
                         }

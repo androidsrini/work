@@ -118,8 +118,8 @@ public class RequestHandler {
         param.put(Constant.EMAIL_ID_PARAM, addDriverRequest.getEmailId());
         param.put(Constant.PASSWORD_PARAM, addDriverRequest.getPassword());
         param.put(Constant.MOBILE_NUMBER_PARAM, addDriverRequest.getMobileNumber());
-        param.put(Constant.DRIVER_FIRST_NAME_PARAM, addDriverRequest.getDriverFirstName());
-        param.put(Constant.DRIVER_LAST_NAME_PARAM, addDriverRequest.getDriverLastName());
+        param.put(Constant.DRIVER_FIRST_NAME_PARAM, addDriverRequest.getDriverName());
+        param.put(Constant.INVITE_CODE_PARAM, addDriverRequest.getInviteCode());
         return param;
     }
 
@@ -162,6 +162,18 @@ public class RequestHandler {
         return param;
     }
 
+    private HashMap<String, String> getAddDriverRequestParam(AddDriverRequest addDriverRequest) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, addDriverRequest.getUserId());
+        param.put(Constant.INVITE_CODE_PARAM, addDriverRequest.getInviteCode());
+        param.put(Constant.MOBILE_NUMBER_PARAM, addDriverRequest.getMobileNumber());
+        param.put(Constant.PASSWORD_PARAM, addDriverRequest.getPassword());
+        param.put(Constant.EMAIL_ID_PARAM, addDriverRequest.getEmailId());
+        param.put(Constant.NAME_PARAM, addDriverRequest.getDriverName());
+        param.put(Constant.VEHICLE_ID, addDriverRequest.getVehicleId());
+        return param;
+    }
+
     private MultipartBody.Part getUploadDocumentFileRequest(DocumentsItem documentsListItem) {
         File file = new File(documentsListItem.getFilePath());
         RequestBody requestFile = RequestBody.create(MediaType.parse(Constant.MULTIPART_FORM_DATA), file);
@@ -180,6 +192,10 @@ public class RequestHandler {
 
     private RequestBody getUploadDocumentUserID() {
         return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), appSharedPreference.getUserID());
+    }
+
+    private RequestBody getDriverId(String driverId) {
+        return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), driverId);
     }
 
     private RequestBody getVehicleTypeId(VehicleDetailRequest vehicleDetailRequest) {
@@ -359,5 +375,15 @@ public class RequestHandler {
 
     public Observable<JsonElement> fetchDocumentStatusDriverRequest(String apiKey) {
         return apiCallInterface.fetchDocumentStatusDriverRequest(apiKey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
+    }
+
+    public Observable<JsonElement> uploadDriverDocumentRequest(String api, DocumentsItem documentsListItem, String driverId) {
+        return apiCallInterface.uploadDriverDocumentRequest(api, appSharedPreference.getAccessTokenKey(),
+                getUploadDocumentFileRequest(documentsListItem), getUploadDocumentUserID(),
+                getDriverId(driverId));
+    }
+
+        public Observable<JsonElement> addVehicleDriverRequest(String api, AddDriverRequest addDriverRequest) {
+        return apiCallInterface.addVehicleDriverRequest(api, appSharedPreference.getAccessTokenKey(), getAddDriverRequestParam(addDriverRequest));
     }
 }
