@@ -166,7 +166,7 @@ public class EditMobileNumberActivity extends BaseActivity {
 
 
     private void changeMobileNumberRequest(String userID, String phoneNumber) {
-        compositeDisposable.add(requestHandler.updateMobileNumber(ApiUtility.getInstance().getApiKeyMetaData(), userID, phoneNumber)
+        compositeDisposable.add(requestHandler.updateMobileNumber(ApiUtility.getInstance().getApiKeyMetaData(), userID, etMobileNumber.getText().toString().trim())
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(d -> apiResponseHandle(ApiResponse.loading(ServiceType.CHANGE_MOBILE_NUMBER)))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -183,10 +183,14 @@ public class EditMobileNumberActivity extends BaseActivity {
                 break;
             case SUCCESS:
                 utility.dismissDialog();
-                if (ServiceType.CHANGE_MOBILE_NUMBER == serviceType) {
-                    VerifyMobileActivity.start(this, userID,
-                            etMobileNumber.getText().toString().trim(),"edit", VerifyMobileActivity.NEED_TO_CALL_SEND_OTP);
-                    finish();
+                if (apiResponse.isValidResponse()) {
+                    if (ServiceType.CHANGE_MOBILE_NUMBER == serviceType) {
+                        VerifyMobileActivity.start(this, userID,
+                                etMobileNumber.getText().toString().trim(), "edit", VerifyMobileActivity.NEED_TO_CALL_SEND_OTP);
+                        finish();
+                    }
+                }else{
+                    Toast.makeText(this,apiResponse.getResponseMessage(),Toast.LENGTH_SHORT).show();
                 }
                 break;
             case ERROR:

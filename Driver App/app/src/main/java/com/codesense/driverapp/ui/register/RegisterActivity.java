@@ -457,6 +457,7 @@ public class RegisterActivity extends BaseActivity {
                 }
                 break;
             case ERROR:
+                utility.showToastMsg(apiResponse.getResponseMessage());
                 utility.dismissDialog();
                 break;
         }

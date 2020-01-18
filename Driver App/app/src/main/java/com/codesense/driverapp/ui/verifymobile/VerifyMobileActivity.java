@@ -109,7 +109,7 @@ public class VerifyMobileActivity extends BaseActivity {
     private boolean isValiedAllFields;
     private ClipboardManager clipboardManager;
     private boolean isNeedToCallSendOtp;
-    private  boolean ispasteValue;
+    private boolean ispasteValue;
 
     public static void start(Context context, String userID, String phoneNumber, boolean isNeedToCallSendOtp) {
         Intent starter = new Intent(context, VerifyMobileActivity.class);
@@ -155,16 +155,23 @@ public class VerifyMobileActivity extends BaseActivity {
             sendOTPRequest(getUserId(), getPhoneNumber());
         } else {*/
         Intent intent = getIntent();
-        if (intent != null && intent.getStringExtra("from")!=null && !TextUtils.isEmpty(intent.getStringExtra("from"))) {
+        if (intent != null && intent.getStringExtra("from") != null && !TextUtils.isEmpty(intent.getStringExtra("from"))) {
             if (intent.getStringExtra("from").equalsIgnoreCase("Edit")) {
                 sendOTPRequest(getUserId(), getPhoneNumber());
             } else {
                 startStop();
             }
-        }else{
+        } else {
             startStop();
         }
         /* }*/
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        ispasteValue = false;
     }
 
     /**
@@ -190,24 +197,78 @@ public class VerifyMobileActivity extends BaseActivity {
         optNumber3.setOnLongClickListener(this::handleClipBoardPaste);
         optNumber4.setOnLongClickListener(this::handleClipBoardPaste);*/
         toolbarClose.setImageResource(R.drawable.ic_close);
-       optNumber1.addTextChangedListener(new TextWatcher() {
-           @Override
-           public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        optNumber1.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-           }
+            }
 
-           @Override
-           public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-           }
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
-           @Override
-           public void afterTextChanged(Editable editable) {
-               if (!ispasteValue) {
-                   ispasteValue = true;
-                   handleClipBoardPaste();
-               }
-           }
-       });
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!ispasteValue && editable.length() > 0) {
+                    ispasteValue = true;
+                    handleClipBoardPaste();
+                }else{
+                    ispasteValue = false;
+                }
+            }
+        });
+
+        optNumber2.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() <= 0) {
+                   optNumber1.requestFocus();
+                }
+            }
+        });
+        optNumber3.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() <= 0) {
+                    optNumber2.requestFocus();
+                }
+            }
+        });
+        optNumber4.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() <= 0) {
+                    optNumber3.requestFocus();
+                }
+            }
+        });
         optNumber1.setOnTouchListener(new View.OnTouchListener() {
             public boolean onTouch(View arg0, MotionEvent arg1) {
                 view.setBackgroundResource(R.drawable.view_for_edittext_primary);
@@ -308,38 +369,48 @@ public class VerifyMobileActivity extends BaseActivity {
 
     private boolean handleClipBoardPaste() {
         ClipData clipData = clipboardManager.getPrimaryClip();
-        if (clipData!=null) {
             int itemCount = clipData.getItemCount();
             if (itemCount > 0) {
                 ClipData.Item item = clipData.getItemAt(0);
-                String text = item.getText().toString();
-                if (text.length() == 4) {
-                    optNumber1.setText(text.substring(0, 1));
-                    optNumber2.setText(text.substring(1, 2));
-                    optNumber3.setText(text.substring(2, 3));
-                    optNumber4.setText(text.substring(3, 4));
-                    view1.setBackgroundResource(R.drawable.view_for_edittext_primary);
-                    view2.setBackgroundResource(R.drawable.view_for_edittext_primary);
-                    view3.setBackgroundResource(R.drawable.view_for_edittext_primary);
-                    view.setBackgroundResource(R.drawable.view_for_edittext_primary);
+                if (item.getText()!=null) {
+                    String text = item.getText().toString();
+                        if (text.length() == 4) {
+                            optNumber1.setText(text.substring(0, 1));
+                            optNumber2.setText(text.substring(1, 2));
+                            optNumber3.setText(text.substring(2, 3));
+                            optNumber4.setText(text.substring(3, 4));
 
-                    clipData = null;
+                            optNumber4.requestFocus();
+                            optNumber4.setSelection(optNumber4.getText().toString().trim().length());
+                            view1.setBackgroundResource(R.drawable.view_for_edittext_primary);
+                            view2.setBackgroundResource(R.drawable.view_for_edittext_primary);
+                            view3.setBackgroundResource(R.drawable.view_for_edittext_primary);
+                            view.setBackgroundResource(R.drawable.view_for_edittext_primary);
+                            clearClipboard();
+                        }
+
                 }
                 //destTextView.setText(text);
-                Log.d(TAG, " Clip board message: " + text);
-            } else {
-                view.setBackgroundResource(R.drawable.view_for_edittext_primary);
-                view1.setBackgroundResource(R.drawable.view_for_edittext_lowconstract);
-                view2.setBackgroundResource(R.drawable.view_for_edittext_lowconstract);
-                view3.setBackgroundResource(R.drawable.view_for_edittext_lowconstract);
-            }
-        }else{
+
+        } else {
             view.setBackgroundResource(R.drawable.view_for_edittext_primary);
             view1.setBackgroundResource(R.drawable.view_for_edittext_lowconstract);
             view2.setBackgroundResource(R.drawable.view_for_edittext_lowconstract);
             view3.setBackgroundResource(R.drawable.view_for_edittext_lowconstract);
+            optNumber2.requestFocus();
         }
         return true;
+    }
+
+
+
+    private void clearClipboard() {
+        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        // you can set an empty string or set to null, same result
+        //android.content.ClipData clip = android.content.ClipData.newPlainText("", "");
+        android.content.ClipData clip = android.content.ClipData.newPlainText(null, null);
+        clipboard.setPrimaryClip(clip);
+
     }
 
     @UiThread
@@ -511,7 +582,9 @@ public class VerifyMobileActivity extends BaseActivity {
     private String getPhoneNumber() {
         if (null != getIntent() && TextUtils.isEmpty(phoneNumber)) {
             phoneNumber = getIntent().getStringExtra(PHONE_NUMBER_ARG);
-        }else{
+            appSharedPreference.saveMobileNumber(phoneNumber);
+            return phoneNumber;
+        } else {
             phoneNumber = appSharedPreference.getPhoneNum();
         }
         return phoneNumber;

@@ -424,7 +424,7 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
                     .enableCameraSupport(true)
                     .showGifs(false)
                     .showFolderView(true)
-                    .enableSelectAll(false)
+                    .enableSelectAll(true)
                     .enableImagePicker(true)
                     .setMaxCount(1)
                     .withOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
@@ -436,11 +436,10 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
                     .enableCameraSupport(true)
                     .showGifs(false)
                     .showFolderView(true)
-                    .enableSelectAll(false)
+                    .enableSelectAll(true)
                     .enableImagePicker(false)
                     .setMaxCount(1)
                     .enableDocSupport(false)
-                    .fileSize(fileSize)
                     .addFileSupport(supportedFileType)
                     .withOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
                     .pickFile(this, FILE_PICKER);
@@ -608,7 +607,7 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
                     if (isEditVehicle()) {
                         //Show conformation dialog and upload data to server
                         utility.showConformationDialog(AddVehicleActivity.this,
-                                getString(R.string.edit_confirmation), (dialog, which) ->
+                                "Confirmation", (dialog, which) ->
                                         addVehicleViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject()));
                     } else {
                         addVehicleViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
