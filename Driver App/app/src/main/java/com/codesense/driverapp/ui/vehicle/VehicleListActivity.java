@@ -2,7 +2,6 @@ package com.codesense.driverapp.ui.vehicle;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -106,12 +105,9 @@ public class VehicleListActivity extends DrawerActivity implements View.OnClickL
             @Override
             public void onClick(View view, int position) {
                 utility.showConformationDialog(VehicleListActivity.this,
-                        getString(R.string.vehicle_edit_confirmation), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                VehiclesListItem vehiclesListItem = vehiclesItemList.get(position);
-                                AddVehicleActivity.start(VehicleListActivity.this, vehiclesListItem);
-                            }
+                        getString(R.string.vehicle_edit_confirmation), (dialog, which) -> {
+                            VehiclesListItem vehiclesListItem = vehiclesItemList.get(position);
+                            AddVehicleActivity.start(VehicleListActivity.this, vehiclesListItem);
                         });
             }
 

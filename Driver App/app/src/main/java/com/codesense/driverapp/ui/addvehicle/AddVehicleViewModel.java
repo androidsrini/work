@@ -232,7 +232,7 @@ public class AddVehicleViewModel extends ViewModel {
      */
     public void uploadDocumentRequest(List<DocumentsItem> documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
         if (null != requestHandler) {
-            disposables.add(requestHandler.uploadDocumentsItemRequest(ApiUtility.getInstance().getApiKeyMetaData(),
+            disposables.add(requestHandler.uploadOwnerVehicleRequest(ApiUtility.getInstance().getApiKeyMetaData(),
                     documentsListItem, vehicleDetailRequest).
                     subscribeOn(Schedulers.io()).
                     observeOn(AndroidSchedulers.mainThread()).

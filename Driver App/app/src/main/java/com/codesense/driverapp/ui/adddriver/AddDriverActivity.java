@@ -165,7 +165,8 @@ public class AddDriverActivity extends DrawerActivity {
                 titleTextView.setText(getResources().getString(R.string.edit_driver));
                 btnAddDriver.setText(getResources().getString(R.string.update_document_driver));
             }
-        } else {
+        }
+        if (!isEditDriver()) {
             inviteCodeTextInputLayout.setVisibility(View.VISIBLE);
             passwordContainerLinearLayout.setVisibility(View.VISIBLE);
             countryAutoCompleteTextView.setVisibility(View.VISIBLE);

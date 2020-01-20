@@ -241,8 +241,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/vehicle_appSpinnerViewGroup"
+        app:layout_constraintTop_toBottomOf="@+id/invite_code_textInputLayout"
         app:layout_constraintBottom_toTopOf="@+id/btnAddDriver"
         />
     <!--</ScrollView>-->

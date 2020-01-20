@@ -3,6 +3,7 @@ package com.codesense.driverapp.ui.vehicle;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +31,6 @@ public class VehicleListAdapter extends RecyclerView.Adapter<VehicleListAdapter.
         this.width = w;
         this.height = h;
         this.vehicleListModelList = vehicleListModelList;
-
     }
 
     @NonNull
@@ -74,6 +74,7 @@ public class VehicleListAdapter extends RecyclerView.Adapter<VehicleListAdapter.
         private RelativeLayout rlUserVehicle, rlUserVehcleMain;
         private ImageView imgRightArrow, imgVehicle, imgPerson;
         private TextView tvStatusText, tvVehicleNum, tvVehicleName;
+        private SwitchCompat activeSwitchCompat;
 
         public ViewHolder(View view) {
             super(view);
@@ -86,7 +87,7 @@ public class VehicleListAdapter extends RecyclerView.Adapter<VehicleListAdapter.
             imgRightArrow = view.findViewById(R.id.imgRightArrow);
             imgVehicle = view.findViewById(R.id.imgVehicle);
             imgPerson = view.findViewById(R.id.imgPerson);
-
+            activeSwitchCompat = view.findViewById(R.id.active_switchCompat);
 
             int topBottomSpace = (int) (height * 0.0089);
 
@@ -126,6 +127,7 @@ public class VehicleListAdapter extends RecyclerView.Adapter<VehicleListAdapter.
             tvVehicleName.setPadding(topBottomSpace * 2, topBottomSpace, 0, topBottomSpace * 3);
             imgRightArrow.setPadding(0, topBottomSpace * 2, topBottomSpace * 2, 0);
 
+            activeSwitchCompat.setVisibility(View.GONE);
 
         }
     }

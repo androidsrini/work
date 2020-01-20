@@ -121,7 +121,7 @@ public class DriverViewModel extends ViewModel {
 
     public void fetchVehiclesListAndDocumentStatusRequest() {
         Observable<JsonElement> vehiclesListObservable = requestHandler.fetchVehiclesListRequest(ApiUtility.getInstance().getApiKeyMetaData());
-        Observable<JsonElement> documentStatusDriverObservable = requestHandler.fetchDocumentStatusRequest(ApiUtility.getInstance().getApiKeyMetaData());
+        Observable<JsonElement> documentStatusDriverObservable = requestHandler.fetchDocumentStatusDriverRequest(ApiUtility.getInstance().getApiKeyMetaData());
         disposables.add(Observable.zip(vehiclesListObservable, documentStatusDriverObservable, MergedResponse::new)
                 .subscribeOn(Schedulers.io())
                 .doOnSubscribe(d->apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.GET_DOCUMENTS_STATUS_DRIVER_AND_VEHICLE_LIST)))
