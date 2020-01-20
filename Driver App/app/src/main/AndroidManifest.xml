@@ -14,9 +14,11 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:appComponentFactory">
-        <activity android:name=".ui.driver.DriverListActivity">
+        <activity android:name=".ui.driver.DriverListActivity"
+            android:windowSoftInputMode="adjustPan">
         </activity>
-        <activity android:name=".ui.adddriver.AddDriverActivity">
+        <activity android:name=".ui.adddriver.AddDriverActivity"
+            android:windowSoftInputMode="adjustPan">
         </activity>
         <activity
             android:name=".ui.receipt.ReceiptActivity"
@@ -78,6 +80,10 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.addvehicle.AddVehicleActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".ui.uploadDriver.UploadDocumentDriverActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <activity

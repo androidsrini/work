@@ -17,7 +17,9 @@ import com.codesense.driverapp.data.OwnerTypeResponse;
 import com.codesense.driverapp.data.OwnerTypesItem;
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.di.utils.Utility;
+import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.ApiResponse;
+import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.legalagreement.LegalAgreementActivity;
@@ -60,6 +62,8 @@ public class SelectTypeActivity extends BaseActivity {
     private SelectTypeAdapter selectTypeAdapter;
 
     OwnerTypesItem ownerTypesItem;
+    @Inject protected AppSharedPreference appSharedPreference;
+
     /**
      * To created compositeDisposable object
      */
@@ -181,6 +185,7 @@ public class SelectTypeActivity extends BaseActivity {
                         }
                     }
                 }else if (ServiceType.SUBMIT_OWNER_TYPE == serviceType){
+                    appSharedPreference.saveOwnerTypeId(apiResponse.getResponseJsonObject().optInt(Constant.OWNER_TYPE_ID_RESPONSE));
                     LegalAgreementActivity.start(this, ownerTypesItem);
                 }
                 break;

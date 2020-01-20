@@ -369,30 +369,32 @@ public class VerifyMobileActivity extends BaseActivity {
 
     private boolean handleClipBoardPaste() {
         ClipData clipData = clipboardManager.getPrimaryClip();
+        if (clipData!=null) {
             int itemCount = clipData.getItemCount();
             if (itemCount > 0) {
                 ClipData.Item item = clipData.getItemAt(0);
-                if (item.getText()!=null) {
+                if (item.getText() != null) {
                     String text = item.getText().toString();
-                        if (text.length() == 4) {
-                            optNumber1.setText(text.substring(0, 1));
-                            optNumber2.setText(text.substring(1, 2));
-                            optNumber3.setText(text.substring(2, 3));
-                            optNumber4.setText(text.substring(3, 4));
+                    if (text.length() == 4) {
+                        optNumber1.setText(text.substring(0, 1));
+                        optNumber2.setText(text.substring(1, 2));
+                        optNumber3.setText(text.substring(2, 3));
+                        optNumber4.setText(text.substring(3, 4));
 
-                            optNumber4.requestFocus();
-                            optNumber4.setSelection(optNumber4.getText().toString().trim().length());
-                            view1.setBackgroundResource(R.drawable.view_for_edittext_primary);
-                            view2.setBackgroundResource(R.drawable.view_for_edittext_primary);
-                            view3.setBackgroundResource(R.drawable.view_for_edittext_primary);
-                            view.setBackgroundResource(R.drawable.view_for_edittext_primary);
-                            clearClipboard();
-                        }
+                        optNumber4.requestFocus();
+                        optNumber4.setSelection(optNumber4.getText().toString().trim().length());
+                        view1.setBackgroundResource(R.drawable.view_for_edittext_primary);
+                        view2.setBackgroundResource(R.drawable.view_for_edittext_primary);
+                        view3.setBackgroundResource(R.drawable.view_for_edittext_primary);
+                        view.setBackgroundResource(R.drawable.view_for_edittext_primary);
+                        clearClipboard();
+                    }
 
                 }
                 //destTextView.setText(text);
 
-        } else {
+            }
+        }else {
             view.setBackgroundResource(R.drawable.view_for_edittext_primary);
             view1.setBackgroundResource(R.drawable.view_for_edittext_lowconstract);
             view2.setBackgroundResource(R.drawable.view_for_edittext_lowconstract);

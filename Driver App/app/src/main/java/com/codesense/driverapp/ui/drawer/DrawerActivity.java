@@ -35,6 +35,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
@@ -164,6 +165,7 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
                         appSharedPreference.clear();
                         LoginActivity.start(this);
                         finish();
+                        finishAffinity();
                     });
         });
         drawerIcon.setOnClickListener(v -> {
@@ -329,8 +331,12 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
         drawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
 
-        Glide.with(this)
-                .load(appSharedPreference.getProfilePicture())
+        RequestOptions options = new RequestOptions()
+                .centerCrop()
+                .placeholder(R.drawable.profile)
+                .error(R.drawable.profile);
+        Glide.with(this).load(appSharedPreference.getProfilePicture())
+                .apply(options)
                 .into(imgProfile);
     }
 

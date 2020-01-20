@@ -3,6 +3,7 @@ package com.codesense.driverapp.ui.driver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,7 @@ public class DriverListActivity extends DrawerActivity {
     private RecyclerView driverRecyclerView;
     private DriverListAdapter driverListAdapter;
     private List<DriversListItem> driversListItemList;
+    private AppCompatTextView tvNodrivers;
 
     public static void start(Context context) {
         Intent starter = new Intent(context, DriverListActivity.class);
@@ -47,6 +49,7 @@ public class DriverListActivity extends DrawerActivity {
         frameLayout.addView(contentView);
         titleTextView.setText(getResources().getString(R.string.drivers_label));
         driverRecyclerView = contentView.findViewById(R.id.driver_recyclerView);
+        tvNodrivers = contentView.findViewById(R.id.tvNodrivers);
         //Initialize array list and adapter object
         driversListItemList = new ArrayList<>();
         driverListAdapter = new DriverListAdapter(this, driversListItemList, screenWidth, screenHeight, new DriverListAdapter.OnItemActionListener() {
@@ -84,16 +87,20 @@ public class DriverListActivity extends DrawerActivity {
                 utility.dismissDialog();
                 if (ServiceType.GET_DRIVERS_LIST == serviceType) {
                     DriverListResponse driverListResponse = new Gson().fromJson(apiResponse.data, DriverListResponse.class);
-                    if (null != driverListResponse && (null != driverListResponse.getDriversList() &&
-                            !driverListResponse.getDriversList().isEmpty() )) {
+                    if (null != driverListResponse && driverListResponse.getDriversList().size()>0) {
                         driversListItemList.addAll(driverListResponse.getDriversList());
-                    } else {
+                        driverRecyclerView.setVisibility(View.VISIBLE);
+                        tvNodrivers.setVisibility(View.GONE);
+                        driverListAdapter.notifyDataSetChanged();
+                    } else{
+                        driverRecyclerView.setVisibility(View.GONE);
+                        tvNodrivers.setVisibility(View.VISIBLE);
+                    }/*else {
                         //To show static driver list for testing
                         String driverList = utility.findAssetFileString(this, Utility.GET_DRIVER_LIST);
                         driverListResponse = new Gson().fromJson(driverList, DriverListResponse.class);
                         driversListItemList.addAll(driverListResponse.getDriversList());
-                    }
-                    driverListAdapter.notifyDataSetChanged();
+                    }*/
                 } else if (ServiceType.DRIVING_ACTIVATION == serviceType) {
                     if (apiResponse.isValidResponse()) {
                         utility.showToastMsg("Updated");

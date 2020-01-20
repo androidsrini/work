@@ -26,6 +26,7 @@ import com.codesense.driverapp.di.utils.PermissionManager;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.ApiResponse;
+import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
@@ -76,6 +77,17 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
 
         arraylist = new ArrayList<>();
         titleTextView.setText(getResources().getString(R.string.document_status_title));
+
+        initially();
+        setDynamicValue();
+        functionality();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
         documentStatusViewModel.getApiResponseMutableLiveData().observe(this, this::handleApiResponse);
         /*if (!TextUtils.isEmpty(appSharedPreference.getOwnerType())) {
             if (Constant.OWNER_CUM_DRIVER.equalsIgnoreCase(appSharedPreference.getOwnerType())) {
@@ -85,16 +97,12 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
             }
         }*/
 
-        /*if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
+        if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
             documentStatusViewModel.fetchOwnerCumDriverStatusRequest();
         }else {
             documentStatusViewModel.fetchNonDrivingPartnerStatusRequest();
-        }*/
-        documentStatusViewModel.fetchOwnerCumDriverStatusRequest();
-        initially();
-        setDynamicValue();
-        functionality();
-
+        }
+//        documentStatusViewModel.fetchOwnerCumDriverStatusRequest();
     }
 
     private void handleApiResponse(ApiResponse apiResponse) {
@@ -293,6 +301,7 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
     private void updateDocumentItem(@NonNull String path) {
         if (null != arraylist) {
             selectedDocumetnsListItem.setFilePath(path);
+            selectedDocumetnsListItem.setName(arraylist.get(selectedItemPosition).getFieldName());
             adapter.notifyItemChanged(selectedItemPosition);
         }
     }

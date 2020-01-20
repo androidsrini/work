@@ -19,9 +19,10 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckedTextView;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.data.AddDriverRequest;
@@ -45,6 +46,7 @@ import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
+import com.codesense.driverapp.ui.uploadDriver.UploadDocumentDriverActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentAdapter;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
@@ -99,7 +101,7 @@ public class AddDriverActivity extends DrawerActivity {
     private Data data;
     private List<CountriesItem> countriesItemList;
     private TextInputLayout inviteCodeTextInputLayout;
-    private CheckedTextView changePasswordCheckedTextView;
+    private CheckBox changePasswordCheckedTextView;
     private LinearLayout passwordContainerLinearLayout;
 
     public static void start(Context context) {
@@ -156,17 +158,30 @@ public class AddDriverActivity extends DrawerActivity {
             //Fetch driver details from server.
             if (null != driversListItem) {
                 changePasswordCheckedTextView.setVisibility(View.VISIBLE);
-                changePasswordCheckedTextView.setOnClickListener(v -> passwordContainerLinearLayout.setVisibility(changePasswordCheckedTextView.isChecked() ?
-                        View.VISIBLE : View.GONE));
+                changePasswordCheckedTextView.setChecked(false);
                 passwordContainerLinearLayout.setVisibility(View.GONE);
                 inviteCodeTextInputLayout.setVisibility(View.GONE);
                 driverViewModel.fetchDriverDetailsRequest(driversListItem.getDriverId());
+                titleTextView.setText(getResources().getString(R.string.edit_driver));
+                btnAddDriver.setText(getResources().getString(R.string.update_document_driver));
             }
         } else {
             inviteCodeTextInputLayout.setVisibility(View.VISIBLE);
             passwordContainerLinearLayout.setVisibility(View.VISIBLE);
+            countryAutoCompleteTextView.setVisibility(View.VISIBLE);
             changePasswordCheckedTextView.setVisibility(View.GONE);
         }
+
+        changePasswordCheckedTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (changePasswordCheckedTextView.isChecked()){
+                    passwordContainerLinearLayout.setVisibility(View.VISIBLE);
+                }else{
+                    passwordContainerLinearLayout.setVisibility(View.GONE);
+                }
+            }
+        });
         addTextWatcherForCountyUI();
         vehicleAppSpinnerViewGroup.setOnItemSelectListener(position -> {
             List<VehiclesListsItem> arrayList = vehicleAppSpinnerViewGroup.getArrayList();
@@ -207,13 +222,12 @@ public class AddDriverActivity extends DrawerActivity {
         }));
         btnAddDriver.setOnClickListener(v->{
             if (isValidAddNewDriverFields()) {
-                if (isValiedAllSelected()) {
                     if (isEditDriver()) {
                         driverViewModel.editVehicleDriverRequest(createAddDriverRequestObject());
                     } else {
                         driverViewModel.addDriverRequest(createAddDriverRequestObject());
                     }
-                }
+
             }
         });
         fetchAndUpdateCountryListFromDataBase();
@@ -361,7 +375,8 @@ public class AddDriverActivity extends DrawerActivity {
                     case ADD_DRIVER:
                         if (apiResponse.isValidResponse()) {
                             String driverId = apiResponse.getResponseJsonObject().optString("driver_id");
-                            driverViewModel.uploadDocumentRequest(findSelectedDocumentList(), driverId);
+//                            driverViewModel.uploadDocumentRequest(findSelectedDocumentList(), driverId);
+                            UploadDocumentDriverActivity.start(this,driverId);
                             clear();
                         } else {
                             utility.showToastMsg(apiResponse.getResponseMessage());
@@ -389,7 +404,8 @@ public class AddDriverActivity extends DrawerActivity {
                     case EDIT_VEHICLE_DRIVER:
                         if (apiResponse.isValidResponse()) {
                             String driverId = apiResponse.getResponseJsonObject().optString("driver_id");
-                            driverViewModel.uploadDocumentRequest(findSelectedDocumentList(), driverId);
+//                            driverViewModel.uploadDocumentRequest(findSelectedDocumentList(), driverId);
+                            UploadDocumentDriverActivity.start(this,driverId,"edit");
                             clear();
                         } else {
                             utility.showToastMsg(apiResponse.getResponseMessage());
@@ -448,6 +464,7 @@ public class AddDriverActivity extends DrawerActivity {
                 break;
             case ERROR:
                 utility.dismissDialog();
+                Toast.makeText(this, ""+apiResponse.error, Toast.LENGTH_SHORT).show();
                 Log.d(TAG, "response error: " + apiResponse.error);
                 break;
         }
@@ -590,10 +607,10 @@ public class AddDriverActivity extends DrawerActivity {
         } else if (!Patterns.EMAIL_ADDRESS.matcher(getEtDriverEmail()).matches()) {
             utility.showToastMsg("Email id not valid");
             isValid = false;
-        } else if (TextUtils.isEmpty(getEtDriverPassword())) {
+        } else if (!isEditDriver()&&TextUtils.isEmpty(getEtDriverPassword())) {
             utility.showToastMsg("Driver Password Required");
             isValid = false;
-        } else if (isPasswordContainerEnable() && TextUtils.isEmpty(getEtDriverConPassword())) {
+        } else if ( !isEditDriver() && isPasswordContainerEnable() && TextUtils.isEmpty(getEtDriverConPassword())) {
             utility.showToastMsg("Driver Confirm Password Required");
             isValid = false;
         } else if (!TextUtils.isEmpty(getEtDriverPassword()) && !getEtDriverPassword().equals(getEtDriverConPassword())) {
@@ -602,7 +619,7 @@ public class AddDriverActivity extends DrawerActivity {
         } else if (!isEditDriver() && getEtDriverPassword().equals(getInviteCodeEditText())) {
             utility.showToastMsg("Invite code resuired");
             isValid = false;
-        } else if (TextUtils.isEmpty(getAddVehicleCountryAutoCompleteTextView())) {
+        } else if (!isEditDriver() && TextUtils.isEmpty(getAddVehicleCountryAutoCompleteTextView())) {
             utility.showToastMsg("Country required");
             isValid = false;
         }

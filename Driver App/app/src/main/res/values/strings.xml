@@ -204,7 +204,7 @@
         <!-- video url / website url -->
         <item></item>
         <!-- Screen Page Title Label -->
-        <item></item>
+        <item>@drawable/vehicles_menu_icon</item>
         <!-- sso configuration -->
         <item>signin_default</item>
         <!-- Login non login configuration-->
@@ -225,7 +225,7 @@
         <!-- video url / website url -->
         <item></item>
         <!-- Screen Page Title Label -->
-        <item></item>
+        <item>@drawable/driver_menu_icon</item>
         <!-- sso configuration -->
         <item>signin_default</item>
         <!-- Login non login configuration-->
@@ -247,6 +247,7 @@
     <color name="light_blue_color">#D6EAF8</color>
     <color name="dark_grey">#515A5A</color>
     <color name="background_document_status">#FA8072</color>
+    <color name="background_document_status_enable">#06A216</color>
     <color name="transprent_black">#80000000</color>
     <integer name="upload_document_count">3</integer>
     <integer name="upload_document2_count">3</integer>

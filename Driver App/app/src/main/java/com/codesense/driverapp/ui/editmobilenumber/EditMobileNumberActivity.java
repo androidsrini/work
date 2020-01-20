@@ -190,7 +190,13 @@ public class EditMobileNumberActivity extends BaseActivity {
                         finish();
                     }
                 }else{
-                    Toast.makeText(this,apiResponse.getResponseMessage(),Toast.LENGTH_SHORT).show();
+                    if (apiResponse.getResponseMessage().contains("Verify your mobile number")){
+                        VerifyMobileActivity.start(this, userID,
+                                etMobileNumber.getText().toString().trim(), "edit", VerifyMobileActivity.NEED_TO_CALL_SEND_OTP);
+                        finish();
+                    }else {
+                        Toast.makeText(this, apiResponse.getResponseMessage(), Toast.LENGTH_SHORT).show();
+                    }
                 }
                 break;
             case ERROR:

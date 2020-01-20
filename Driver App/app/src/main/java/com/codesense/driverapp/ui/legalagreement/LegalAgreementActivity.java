@@ -74,7 +74,8 @@ public class LegalAgreementActivity extends BaseActivity {
     /**
      * To create AppSharedPreference object
      */
-    @Inject protected AppSharedPreference appSharedPreference;
+    @Inject
+    protected AppSharedPreference appSharedPreference;
     /**
      * To create CompositeDisposable object.
      */
@@ -83,6 +84,7 @@ public class LegalAgreementActivity extends BaseActivity {
 
     /**
      * This method to start LegalAgreementActivity class.
+     *
      * @param context
      * @param ownerTypesItem
      */
@@ -121,6 +123,8 @@ public class LegalAgreementActivity extends BaseActivity {
             }
         });
         setDynamicValue();
+        btnAcceptContinue.setEnabled(false);
+        btnAcceptContinue.setClickable(false);
         fetchLegalAgreementRequest();
     }
 
@@ -172,11 +176,11 @@ public class LegalAgreementActivity extends BaseActivity {
      */
     private void updateRegistationOwnerTypeRequest() {
         compositeDisposable.add(requestHandler.updateRegistationOwnerTypeRequest(ApiUtility.getInstance().getApiKeyMetaData(), getOwnerTypeId())
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .doOnSubscribe(d->handleAgreementResponse(ApiResponse.loading(ServiceType.REGISTATION_OWNER_TYPE)))
-        .subscribe(result->handleAgreementResponse(ApiResponse.success(ServiceType.REGISTATION_OWNER_TYPE, result)),
-                error->handleAgreementResponse(ApiResponse.error(ServiceType.REGISTATION_OWNER_TYPE, error))));
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(d -> handleAgreementResponse(ApiResponse.loading(ServiceType.REGISTATION_OWNER_TYPE)))
+                .subscribe(result -> handleAgreementResponse(ApiResponse.success(ServiceType.REGISTATION_OWNER_TYPE, result)),
+                        error -> handleAgreementResponse(ApiResponse.error(ServiceType.REGISTATION_OWNER_TYPE, error))));
     }
 
     /**
@@ -186,9 +190,9 @@ public class LegalAgreementActivity extends BaseActivity {
         compositeDisposable.add(requestHandler.updateAgreementAcceptRequest(ApiUtility.getInstance().getApiKeyMetaData(), "1")
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(d->handleAgreementResponse(ApiResponse.loading(ServiceType.ACCEPT_LEGAL_AGREEMENT)))
-                .subscribe(result->handleAgreementResponse(ApiResponse.success(ServiceType.ACCEPT_LEGAL_AGREEMENT, result)),
-                        error->handleAgreementResponse(ApiResponse.error(ServiceType.ACCEPT_LEGAL_AGREEMENT, error))));
+                .doOnSubscribe(d -> handleAgreementResponse(ApiResponse.loading(ServiceType.ACCEPT_LEGAL_AGREEMENT)))
+                .subscribe(result -> handleAgreementResponse(ApiResponse.success(ServiceType.ACCEPT_LEGAL_AGREEMENT, result)),
+                        error -> handleAgreementResponse(ApiResponse.error(ServiceType.ACCEPT_LEGAL_AGREEMENT, error))));
     }
 
     /**
@@ -196,11 +200,11 @@ public class LegalAgreementActivity extends BaseActivity {
      */
     private void fetchLegalAgreementRequest() {
         compositeDisposable.add(requestHandler.getOwnerAgreementRequest(ApiUtility.getInstance().getApiKeyMetaData())
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .doOnSubscribe(d->handleAgreementResponse(ApiResponse.loading(ServiceType.GET_LEGAL_AGREEMENT)))
-        .subscribe(result->handleAgreementResponse(ApiResponse.success(ServiceType.GET_LEGAL_AGREEMENT, result)),
-                error->handleAgreementResponse(ApiResponse.error(ServiceType.GET_LEGAL_AGREEMENT, error))));
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(d -> handleAgreementResponse(ApiResponse.loading(ServiceType.GET_LEGAL_AGREEMENT)))
+                .subscribe(result -> handleAgreementResponse(ApiResponse.success(ServiceType.GET_LEGAL_AGREEMENT, result)),
+                        error -> handleAgreementResponse(ApiResponse.error(ServiceType.GET_LEGAL_AGREEMENT, error))));
     }
 
     private void handleAgreementResponse(ApiResponse apiResponse) {
@@ -222,15 +226,11 @@ public class LegalAgreementActivity extends BaseActivity {
                         }
                     } else if (ServiceType.REGISTATION_OWNER_TYPE == serviceType) {
                         updateAgreementAcceptRequest();
-                    } else if (ServiceType.ACCEPT_LEGAL_AGREEMENT== serviceType){
-                            //To show dashboard screen.
+                    } else if (ServiceType.ACCEPT_LEGAL_AGREEMENT == serviceType) {
+                        //To show dashboard screen.
                         UploadDocumentActivity.start(this);
-                        if (null != apiResponse.getResponseJsonObject()) {
-                                appSharedPreference.saveOwnerTypeId(apiResponse.getResponseJsonObject().optInt(Constant.OWNER_TYPE_ID_RESPONSE));
-                                appSharedPreference.saveOwnerType(ownerType.getOwnerType());
-                            }
-                            //To clear all Activity class from backstack
-                            ActivityCompat.finishAffinity(this);
+                        //To clear all Activity class from backstack
+                        ActivityCompat.finishAffinity(this);
 
                     }
                 } else {
@@ -253,11 +253,15 @@ public class LegalAgreementActivity extends BaseActivity {
         if (checkbox.isChecked()) {
             btnAcceptContinue.setBackgroundColor(getResources().getColor(R.color.primary_color));
             btnAcceptContinue.setTextColor(getResources().getColor(R.color.secondary_color));
+            btnAcceptContinue.setEnabled(true);
+            btnAcceptContinue.setClickable(true);
             toolbarClose.setVisibility(View.GONE);
         } else {
             btnAcceptContinue.setBackgroundColor(getResources().getColor(R.color.low_contrast));
             btnAcceptContinue.setTextColor(getResources().getColor(R.color.background_color));
             toolbarClose.setVisibility(View.VISIBLE);
+            btnAcceptContinue.setEnabled(false);
+            btnAcceptContinue.setClickable(false);
         }
     }
 

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.codesense.driverapp.R;
@@ -53,8 +54,9 @@ public class DocumentStatusAdapter extends RecyclerView.Adapter<DocumentStatusAd
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         DocumentsItem uploadDocumentModel = uploadDocumentModelList.get(position);
         DocumentStatus documentStatus = uploadDocumentModel.getDocumentStatus();
+        String status =null;
         if (null != documentStatus) {
-            String status = documentStatus.getStatusCode() == Constant.VERIFIED_STATUS ?
+             status = documentStatus.getStatusCode() == Constant.VERIFIED_STATUS ?
                     activity.getString(R.string.verified_status) : documentStatus.getStatusCode() == Constant.INVALID_STATUS ?
                     activity.getString(R.string.invalid_status) : documentStatus.getStatusCode() == Constant.WAITING_STATUS ?
                     activity.getString(R.string.waiting_status) : documentStatus.getStatusCode() == Constant.NOT_FOUND ?
@@ -62,6 +64,11 @@ public class DocumentStatusAdapter extends RecyclerView.Adapter<DocumentStatusAd
             viewHolder.tvVehicleStatusText.setText(status);
         }
         String title = uploadDocumentModel.getName();
+        if (status!=null && status.equalsIgnoreCase(activity.getString(R.string.verified_status))){
+            viewHolder.rlDriverMain.setBackgroundResource(R.color.background_document_status_enable);
+        }else{
+            viewHolder.rlDriverMain.setBackgroundResource(R.color.background_document_status);
+        }
         /*if (isFileSelected) {
             viewHolder.tvVehicleStatusText.setText(findFileName(uploadDocumentModel.getFilePath()));
             viewHolder.imgRightArrow.setBackgroundResource(0);
@@ -129,15 +136,15 @@ public class DocumentStatusAdapter extends RecyclerView.Adapter<DocumentStatusAd
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        //private RelativeLayout rlDriverVehicle, rlDriverMain;
+        private RelativeLayout rlDriverMain;
         private ImageView imgRightArrow;
         private TextView tvVehicleStatusText, tvVehicledesc;
 
         public ViewHolder(View view) {
             super(view);
 
-            /*rlDriverVehicle = view.findViewById(R.id.rlDriverVehicle);
-            rlDriverMain = view.findViewById(R.id.rlDriverMain);*/
+            rlDriverMain = view.findViewById(R.id.rlDriverMain);
+            /*rlDriverMain = view.findViewById(R.id.rlDriverMain);*/
             tvVehicleStatusText = view.findViewById(R.id.tvVehicleStatusText);
             tvVehicledesc = view.findViewById(R.id.tvVehicledesc);
 //            imgRightArrow = view.findViewById(R.id.imgRightArrow);

@@ -115,6 +115,7 @@ public class SplashActivity extends BaseActivity {
                             //OnlineActivity.start(this);
                             if (Constant.OWNER_ID.equals(String.valueOf(signupStatus.getOwnerTypeId())) ||
                                     1 == utility.parseInt(signupStatus.getVehicleActivation())) {
+                                appSharedPreference.saveOwnerTypeId(Integer.parseInt(signupStatus.getOwnerTypeId()));
                                 DocumentStatusActivity.start(this);
                                 finish();
                             } else {

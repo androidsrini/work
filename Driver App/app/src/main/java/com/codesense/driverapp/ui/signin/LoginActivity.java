@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -73,8 +74,8 @@ public class LoginActivity extends BaseActivity {
     TextView tvTitle;
     @Initialize(R.id.toolbar)
     Toolbar toolbar;
-    /*@Initialize(R.id.toolbarClose)
-    ImageView toolbarClose;*/
+    @Initialize(R.id.toolbarClose)
+    ImageView toolbarClose;
     /**
      * To add the asyncrones subscribe process RXJava
      */
@@ -93,7 +94,7 @@ public class LoginActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ProductBindView.bind(this);
-        setSupportActionBar(toolbar);
+//        setSupportActionBar(toolbar);
         functionality();
         setDynamicValue();
     }
@@ -103,10 +104,10 @@ public class LoginActivity extends BaseActivity {
         int imgIconWidth = (int) (screenWidth * 0.075);
         int imgIconHeight = (int) (screenWidth * 0.075);
 
-        /*RelativeLayout.LayoutParams imgLayParams = (RelativeLayout.LayoutParams) toolbarClose.getLayoutParams();
+        RelativeLayout.LayoutParams imgLayParams = (RelativeLayout.LayoutParams) toolbarClose.getLayoutParams();
         imgLayParams.width = imgIconWidth;
         imgLayParams.height = imgIconHeight;
-        toolbarClose.setLayoutParams(imgLayParams);*/
+        toolbarClose.setLayoutParams(imgLayParams);
 
         int topBottomSpace = (int) (screenHeight * 0.0089);
 
@@ -125,13 +126,13 @@ public class LoginActivity extends BaseActivity {
 
     private void functionality() {
         tvTitle.setText(getResources().getText(R.string.login_title));
-        if (null != getSupportActionBar()) {
+        /*if (null != getSupportActionBar()) {
             getSupportActionBar().setTitle(null);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_close);
-        }
-        //toolbarClose.setBackground(null);
-        //toolbarClose.setBackgroundResource(R.drawable.icon_close);
+        }*/
+//        toolbarClose.setBackground(null);
+        toolbarClose.setBackgroundResource(R.drawable.icon_close);
     }
 
     /**
@@ -280,10 +281,10 @@ public class LoginActivity extends BaseActivity {
         compositeDisposable.clear();
     }
 
-    /*@Onclick(R.id.toolbarClose)
+    @Onclick(R.id.toolbarClose)
     public void toolbarClose(View v) {
         finish();
-    }*/
+    }
 
     @Onclick(R.id.btnLogin)
     protected void siginInClick(View v) {

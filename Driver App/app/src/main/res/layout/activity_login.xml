@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
+    <!--<android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -26,11 +26,11 @@
             android:textSize="23sp"
             android:textStyle="bold"
             />
-    </android.support.v7.widget.Toolbar>
+    </android.support.v7.widget.Toolbar>-->
 
-    <!--<include
+    <include
         android:id="@+id/toolbar"
-        layout="@layout/toolbar_lay" />-->
+        layout="@layout/toolbar_lay" />
 
     <ImageView
         android:id="@+id/imgLaunchImage"
