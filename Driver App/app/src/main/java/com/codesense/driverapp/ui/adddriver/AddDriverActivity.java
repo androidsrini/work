@@ -395,6 +395,14 @@ public class AddDriverActivity extends DrawerActivity {
                             utility.showToastMsg(apiResponse.getResponseMessage());
                         }
                         break;
+                    case UPDATE_DRIVER_DOCUMENTS:
+                        if (apiResponse.isValidResponse()) {
+                            utility.showToastMsg("All file are uploaded successfully");
+                            clearAndUpdateDocumentListUI();
+                        } else {
+                            utility.showToastMsg(apiResponse.getResponseMessage());
+                        }
+                        break;
                 }
                 break;
             case SUCCESS_MULTIPLE:

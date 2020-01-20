@@ -11,7 +11,6 @@ import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
 import com.google.gson.JsonElement;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -51,7 +50,7 @@ public class DriverViewModel extends ViewModel {
         int count = 0;
         do {
             Observable<JsonElement> observable = requestHandler.uploadDriverDocumentRequest(ApiUtility.getInstance().getApiKeyMetaData(),
-                    documentsListItem.get(count), driverId);
+                    documentsListItem, driverId);
             switch (count) {
                 case 0:
                     observable1 = observable;
@@ -143,7 +142,16 @@ public class DriverViewModel extends ViewModel {
      */
     public void uploadDocumentRequest(List<DocumentsItem> documentsListItem, String driverId) {
         if (null != requestHandler && null != documentsListItem) {
-            if (1 == documentsListItem.size()) {
+            disposables.add(requestHandler.uploadDriverDocumentRequest(ApiUtility.getInstance().getApiKeyMetaData(),
+                    documentsListItem, driverId)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.UPDATE_DRIVER_DOCUMENTS)))
+                    .subscribe(result ->
+                                    apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.UPDATE_DRIVER_DOCUMENTS, result)),
+                            error -> apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.UPDATE_DRIVER_DOCUMENTS, error))));
+        }
+            /*if (1 == documentsListItem.size()) {
                 uploadDocumentRequest(documentsListItem.get(0), driverId);
                 return;
             } else if (documentsListItem.size() > 10) {
@@ -194,16 +202,16 @@ public class DriverViewModel extends ViewModel {
                                         apiResponseMutableLiveData.setValue(ApiResponse.successMultiple(ServiceType.UPDATE_DRIVER_DOCUMENTS, result.docuemntListStatusResponse)),
                                 error -> apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.UPDATE_DRIVER_DOCUMENTS, error))));
             }
-        }
+        }*/
     }
 
     /**
      * This method to upload document to server.
      *
-     * @param documentsListItem
-     * @param driverId
+     * @param
+     * @param
      */
-    public void uploadDocumentRequest(DocumentsItem documentsListItem, String driverId) {
+    /*public void uploadDocumentRequest(List<DocumentsItem> documentsListItem, String driverId) {
         if (null != requestHandler) {
             disposables.add(requestHandler.uploadDriverDocumentRequest(ApiUtility.getInstance().getApiKeyMetaData(), documentsListItem, driverId).
                     subscribeOn(Schedulers.io()).
@@ -214,7 +222,7 @@ public class DriverViewModel extends ViewModel {
                                 apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.UPDATE_DRIVER_DOCUMENTS, error));
                             }));
         }
-    }
+    }*/
 
     public void addDriverRequest(AddDriverRequest addDriverRequest) {
         if (null != requestHandler) {

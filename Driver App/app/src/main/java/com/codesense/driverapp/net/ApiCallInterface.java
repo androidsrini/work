@@ -131,7 +131,7 @@ public interface ApiCallInterface {
     @POST(WebserviceUrls.UPLOAD_DOCUMENTS)
     Observable<JsonElement> uploadDocumentsRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
                                                    @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
-                                                   @Part MultipartBody.Part fileBody,
+                                                   @Part MultipartBody.Part[] fileBody,
                                                    @Part(Constant.USER_ID_PARAM) RequestBody userId,
                                                    @Part(Constant.VEHICLE_TYPE_ID_PARAM) RequestBody vehicleTypeId,
                                                    @Part(Constant.VEHICLE_ID) RequestBody vehicleId,
@@ -142,7 +142,7 @@ public interface ApiCallInterface {
     @POST(WebserviceUrls.UPLOAD_DOCUMENTS)
     Observable<JsonElement> uploadDocumentsWithoutVehicleRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
                                                    @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
-                                                   @Part MultipartBody.Part fileBody,
+                                                   @Part MultipartBody.Part[] fileBody,
                                                    @Part(Constant.USER_ID_PARAM) RequestBody userId);
 
 
@@ -227,7 +227,7 @@ public interface ApiCallInterface {
     @POST(WebserviceUrls.UPLOAD_OWNER_VEHICLE)
     Observable<JsonElement> uploadOwnerVehicleRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
                                                    @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
-                                                   @Part MultipartBody.Part fileBody,
+                                                   @Part MultipartBody.Part[] fileBody,
                                                    @Part(Constant.USER_ID_PARAM) RequestBody userId,
                                                    @Part(Constant.VEHICLE_TYPE_ID_PARAM) RequestBody vehicleTypeId,
                                                    @Part(Constant.VEHICLE_ID) RequestBody vehicleId,
@@ -244,7 +244,7 @@ public interface ApiCallInterface {
     @POST(WebserviceUrls.UPDATE_DRIVER_DOCUMENTS)
     Observable<JsonElement> uploadDriverDocumentRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,
                                                       @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
-                                                      @Part MultipartBody.Part fileBody,
+                                                      @Part MultipartBody.Part[] fileBody,
                                                       @Part(Constant.USER_ID_PARAM) RequestBody userId,
                                                       @Part(Constant.DRIVER_ID) RequestBody driverId);
 

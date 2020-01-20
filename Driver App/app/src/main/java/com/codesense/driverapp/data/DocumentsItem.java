@@ -89,7 +89,7 @@ public class DocumentsItem {
                 DocumentStatus status = new DocumentStatus();
                 status.setStatus(statusObject.optString("status"));
                 status.setFile(statusObject.optString("file"));
-                status.setStatusCode(statusObject.isNull("status_code") && !TextUtils.isEmpty(statusObject.optString("status_code"))
+                status.setStatusCode(!statusObject.isNull("status_code") && !TextUtils.isEmpty(statusObject.optString("status_code"))
                         ? parseInt(statusObject.optString("status_code")) : -1);
                 status.setAllowUpdate(statusObject.optInt("allow_update", -1));
                 this.documentStatus = status;

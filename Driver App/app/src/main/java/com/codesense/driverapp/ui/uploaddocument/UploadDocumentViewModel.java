@@ -13,7 +13,6 @@ import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
 import com.google.gson.JsonElement;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -39,8 +38,8 @@ public class UploadDocumentViewModel extends ViewModel {
         SparseArray<Observable<JsonElement>> hashMap = new SparseArray<>();
         int count = 0;
         do {
-            hashMap.put(count, requestHandler.uploadDocumentsRequest(ApiUtility.getInstance().getApiKeyMetaData(),
-                    documentsListItems.get(count), vehicleDetailRequest));
+            hashMap.put(count, requestHandler.uploadDocumentsItemRequest(ApiUtility.getInstance().getApiKeyMetaData(),
+                    documentsListItems, vehicleDetailRequest));
         } while (++count < documentsListItems.size());
         return hashMap;
     }
@@ -58,8 +57,8 @@ public class UploadDocumentViewModel extends ViewModel {
         Observable<JsonElement> observable9 = null;
         int count = 0;
         do {
-            Observable<JsonElement> observable = requestHandler.uploadDocumentsRequest(ApiUtility.getInstance().getApiKeyMetaData(),
-                    documentsListItem.get(count), vehicleDetailRequest);
+            Observable<JsonElement> observable = requestHandler.uploadDocumentsItemRequest(ApiUtility.getInstance().getApiKeyMetaData(),
+                    documentsListItem, vehicleDetailRequest);
             switch (count) {
                 case 0:
                     observable1 = observable;
@@ -207,9 +206,10 @@ public class UploadDocumentViewModel extends ViewModel {
      * @param documentsListItem
      * @param vehicleDetailRequest
      */
-    public void uploadDocumentRequest(DocumentsItem documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
+    /*public void uploadDocumentRequest(DocumentsItem documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
         if (null != requestHandler) {
-            disposables.add(requestHandler.uploadDocumentsRequest(ApiUtility.getInstance().getApiKeyMetaData(), documentsListItem, vehicleDetailRequest).
+            disposables.add(requestHandler.uploadDocumentsItemRequest(ApiUtility.getInstance().getApiKeyMetaData(),
+                    documentsListItem, vehicleDetailRequest).
                     subscribeOn(Schedulers.io()).
                     observeOn(AndroidSchedulers.mainThread()).
                     doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.UPLOAD_DOCUEMNT))).
@@ -218,7 +218,7 @@ public class UploadDocumentViewModel extends ViewModel {
                                 apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.UPLOAD_DOCUEMNT, error));
                             }));
         }
-    }
+    }*/
 
     /**
      * This method to upload multiple files to server.
@@ -230,7 +230,15 @@ public class UploadDocumentViewModel extends ViewModel {
      */
     public void uploadDocumentRequest(List<DocumentsItem> documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
         if (null != requestHandler && null != documentsListItem) {
-            if (1 == documentsListItem.size()) {
+            disposables.add(requestHandler.uploadDocumentsItemRequest(ApiUtility.getInstance().getApiKeyMetaData(),
+                    documentsListItem, vehicleDetailRequest)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.UPLOAD_DOCUEMNT)))
+                    .subscribe(result ->
+                                    apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.UPLOAD_DOCUEMNT, result)),
+                            error -> apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.UPLOAD_DOCUEMNT, error))));
+            /*if (1 == documentsListItem.size()) {
                 uploadDocumentRequest(documentsListItem.get(0), vehicleDetailRequest);
                 return;
             } else if (documentsListItem.size() > 10) {
@@ -280,7 +288,7 @@ public class UploadDocumentViewModel extends ViewModel {
                         .subscribe(result ->
                                         apiResponseMutableLiveData.setValue(ApiResponse.successMultiple(ServiceType.UPLOAD_DOCUEMNTS, result.docuemntListStatusResponse)),
                                 error -> apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.UPLOAD_DOCUEMNTS, error))));
-            }
+            }*/
         }
     }
 

@@ -13,6 +13,7 @@ import com.google.gson.JsonElement;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 
 import io.reactivex.Observable;
 import okhttp3.MediaType;
@@ -213,16 +214,38 @@ public class RequestHandler {
         return param;
     }
 
-    private MultipartBody.Part getUploadDocumentFileRequest(DocumentsItem documentsListItem) {
+    private MultipartBody.Part[] getUploadDocumentItemFileRequest(List<DocumentsItem> documentsListItem) {
+        MultipartBody.Part[] parts = new MultipartBody.Part[documentsListItem.size()];
+        for (int index=0; index<documentsListItem.size(); index++) {
+            DocumentsItem documentsItem = documentsListItem.get(index);
+            File file = new File(documentsItem.getFilePath());
+            RequestBody requestFile = RequestBody.create(MediaType.parse(Constant.MULTIPART_FORM_DATA), file);
+            parts[index] = MultipartBody.Part.createFormData(documentsItem.getFieldName(), file.getName(), requestFile);
+        }
+        return parts;
+    }
+
+    private MultipartBody.Part getUploadDocumentItemFileRequest(DocumentsItem documentsListItem) {
         File file = new File(documentsListItem.getFilePath());
         RequestBody requestFile = RequestBody.create(MediaType.parse(Constant.MULTIPART_FORM_DATA), file);
-        return MultipartBody.Part.createFormData(documentsListItem.getName(), file.getName(), requestFile);
+        return MultipartBody.Part.createFormData(documentsListItem.getFieldName(), file.getName(), requestFile);
     }
 
     private MultipartBody.Part getUploadDocumentFileRequest(DocumentsListItem documentsListItem) {
         File file = new File(documentsListItem.getFilePath());
         RequestBody requestFile = RequestBody.create(MediaType.parse(Constant.MULTIPART_FORM_DATA), file);
         return MultipartBody.Part.createFormData(documentsListItem.getName(), file.getName(), requestFile);
+    }
+
+    private MultipartBody.Part[] getUploadDocumentFileRequest(List<DocumentsListItem> documentsListItem) {
+        MultipartBody.Part[] parts = new MultipartBody.Part[documentsListItem.size()];
+        for (int index=0; index<documentsListItem.size(); index++) {
+            DocumentsListItem documentsListItem1 = documentsListItem.get(index);
+            File file = new File(documentsListItem1.getFilePath());
+            RequestBody requestFile = RequestBody.create(MediaType.parse(Constant.MULTIPART_FORM_DATA), file);
+            parts[index] = MultipartBody.Part.createFormData(documentsListItem1.getName(), file.getName(), requestFile);
+        }
+        return parts;
     }
 
     private RequestBody getUploadDocumentFileName(DocumentsListItem documentsListItem) {
@@ -331,7 +354,16 @@ public class RequestHandler {
         return apiCallInterface.fetchVehicleListRequest(apikey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
     }
 
-    public Observable<JsonElement> uploadDocumentsRequest(String api, DocumentsItem documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
+    public Observable<JsonElement> uploadDocumentsItemRequest(String api, List<DocumentsItem> documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
+        return apiCallInterface.uploadDocumentsRequest(api, appSharedPreference.getAccessTokenKey(),
+                getUploadDocumentItemFileRequest(documentsListItem), getUploadDocumentUserID(),
+                getVehicleTypeId(vehicleDetailRequest),
+                getVehicleId(vehicleDetailRequest),
+                getVehicleNumber(vehicleDetailRequest),
+                getVehicleName(vehicleDetailRequest));
+    }
+
+    public Observable<JsonElement> uploadDocumentsRequest(String api, List<DocumentsListItem> documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
         return apiCallInterface.uploadDocumentsRequest(api, appSharedPreference.getAccessTokenKey(),
                 getUploadDocumentFileRequest(documentsListItem), getUploadDocumentUserID(),
                 getVehicleTypeId(vehicleDetailRequest),
@@ -340,18 +372,9 @@ public class RequestHandler {
                 getVehicleName(vehicleDetailRequest));
     }
 
-    public Observable<JsonElement> uploadDocumentsRequest(String api, DocumentsListItem documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
-        return apiCallInterface.uploadDocumentsRequest(api, appSharedPreference.getAccessTokenKey(),
-                getUploadDocumentFileRequest(documentsListItem), getUploadDocumentUserID(),
-                getVehicleTypeId(vehicleDetailRequest),
-                getVehicleId(vehicleDetailRequest),
-                getVehicleNumber(vehicleDetailRequest),
-                getVehicleName(vehicleDetailRequest));
-    }
-
-    public Observable<JsonElement> uploadDocumentsWithoutVehicleRequest(String api, DocumentsItem documentsListItem) {
+    public Observable<JsonElement> uploadDocumentsWithoutVehicleRequest(String api, List<DocumentsItem> documentsListItem) {
         return apiCallInterface.uploadDocumentsWithoutVehicleRequest(api, appSharedPreference.getAccessTokenKey(),
-                getUploadDocumentFileRequest(documentsListItem), getUploadDocumentUserID());
+                getUploadDocumentItemFileRequest(documentsListItem), getUploadDocumentUserID());
     }
 
     public Observable<JsonElement> fetchOwnerSignupStatusRequest(String api) {
@@ -403,9 +426,9 @@ public class RequestHandler {
         return apiCallInterface.fetchDocumentStatusVehicleRequest(apiKey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
     }
 
-    public Observable<JsonElement> uploadOwnerVehicleRequest(String api, DocumentsItem documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
+    public Observable<JsonElement> uploadOwnerVehicleRequest(String api, List<DocumentsItem> documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
         return apiCallInterface.uploadOwnerVehicleRequest(api, appSharedPreference.getAccessTokenKey(),
-                getUploadDocumentFileRequest(documentsListItem), getUploadDocumentUserID(),
+                getUploadDocumentItemFileRequest(documentsListItem), getUploadDocumentUserID(),
                 getVehicleTypeId(vehicleDetailRequest),
                 getVehicleId(vehicleDetailRequest),
                 getVehicleNumber(vehicleDetailRequest),
@@ -416,9 +439,9 @@ public class RequestHandler {
         return apiCallInterface.fetchDocumentStatusDriverRequest(apiKey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
     }
 
-    public Observable<JsonElement> uploadDriverDocumentRequest(String api, DocumentsItem documentsListItem, String driverId) {
+    public Observable<JsonElement> uploadDriverDocumentRequest(String api, List<DocumentsItem> documentsListItem, String driverId) {
         return apiCallInterface.uploadDriverDocumentRequest(api, appSharedPreference.getAccessTokenKey(),
-                getUploadDocumentFileRequest(documentsListItem), getUploadDocumentUserID(),
+                getUploadDocumentItemFileRequest(documentsListItem), getUploadDocumentUserID(),
                 getDriverId(driverId));
     }
 

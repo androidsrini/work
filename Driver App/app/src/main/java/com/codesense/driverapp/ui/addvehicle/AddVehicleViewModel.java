@@ -51,7 +51,7 @@ public class AddVehicleViewModel extends ViewModel {
         int count = 0;
         do {
             Observable<JsonElement> observable = requestHandler.uploadOwnerVehicleRequest(ApiUtility.getInstance().getApiKeyMetaData(),
-                    documentsListItem.get(count), vehicleDetailRequest);
+                    documentsListItem, vehicleDetailRequest);
             switch (count) {
                 case 0:
                     observable1 = observable;
@@ -230,9 +230,10 @@ public class AddVehicleViewModel extends ViewModel {
      * @param documentsListItem
      * @param vehicleDetailRequest
      */
-    public void uploadDocumentRequest(DocumentsItem documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
+    public void uploadDocumentRequest(List<DocumentsItem> documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
         if (null != requestHandler) {
-            disposables.add(requestHandler.uploadDocumentsRequest(ApiUtility.getInstance().getApiKeyMetaData(), documentsListItem, vehicleDetailRequest).
+            disposables.add(requestHandler.uploadDocumentsItemRequest(ApiUtility.getInstance().getApiKeyMetaData(),
+                    documentsListItem, vehicleDetailRequest).
                     subscribeOn(Schedulers.io()).
                     observeOn(AndroidSchedulers.mainThread()).
                     doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.UPLOAD_OWNER_VEHICLE))).
@@ -251,21 +252,22 @@ public class AddVehicleViewModel extends ViewModel {
      * @param documentsListItem
      * @param vehicleDetailRequest
      */
-    public void uploadDocumentRequest(List<DocumentsItem> documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
+    /*public void uploadDocumentRequest(List<DocumentsItem> documentsListItem, VehicleDetailRequest vehicleDetailRequest) {
         if (null != requestHandler && null != documentsListItem) {
-            if (1 == documentsListItem.size()) {
+            *//*if (1 == documentsListItem.size()) {
                 uploadDocumentRequest(documentsListItem.get(0), vehicleDetailRequest);
                 return;
-            }
-            disposables.add(createObservableObject(documentsListItem, vehicleDetailRequest)
+            }*//*
+            disposables.add(requestHandler.uploadOwnerVehicleRequest(ApiUtility.getInstance().getApiKeyMetaData(),
+                    documentsListItem, vehicleDetailRequest)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.UPLOAD_OWNER_VEHICLE)))
                     .subscribe(result ->
-                                    apiResponseMutableLiveData.setValue(ApiResponse.successMultiple(ServiceType.UPLOAD_OWNER_VEHICLE, result.jsonElementsResponse)),
+                                    apiResponseMutableLiveData.setValue(ApiResponse.successMultiple(ServiceType.UPLOAD_OWNER_VEHICLE, result)),
                             error -> apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.UPLOAD_OWNER_VEHICLE, error))));
         }
-    }
+    }*/
 
     @Override
     protected void onCleared() {
