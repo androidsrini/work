@@ -499,8 +499,19 @@ public class AddDriverActivity extends DrawerActivity {
             countryAutoCompleteTextView.setSelection(selected);
             countryAutoCompleteTextView.setText(country);
         }
-        /*if (data.getAllowedVehicle())
-        vehicleAppSpinnerViewGroup.setSelection();*/
+        if (null != driversListItem && !TextUtils.isEmpty(driversListItem.getVehicleId())) {
+            if (null != vehicleAppSpinnerViewGroup.getArrayList()) {
+                int index = 0;
+                for (int i = 0; i < vehicleAppSpinnerViewGroup.getArrayList().size(); i++) {
+                    VehiclesListsItem vehiclesListsItem = vehicleAppSpinnerViewGroup.getArrayList().get(i);
+                    if (driversListItem.getVehicleId().equals(vehiclesListsItem.getVehicleId())) {
+                        index = i;
+                        break;
+                    }
+                }
+                vehicleAppSpinnerViewGroup.setSelection(index);
+            }
+        }
 
     }
 
