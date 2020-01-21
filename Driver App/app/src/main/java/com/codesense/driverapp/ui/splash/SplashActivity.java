@@ -99,6 +99,7 @@ public class SplashActivity extends BaseActivity {
                         SiginUpStatusResponse siginUpStatusResponse = new Gson().fromJson(apiResponse.data, SiginUpStatusResponse.class);
                         SignupStatus signupStatus = siginUpStatusResponse.getSignupStatus();
                         appSharedPreference.saveIsActivate(utility.parseInt(signupStatus.getIsActivated()));
+                        appSharedPreference.saveIsLive(utility.parseInt(signupStatus.getLiveStatus()));
                         if (utility.parseInt(signupStatus.getOtpVerify()) == 0 || ApiResponse.OTP_VALIDATION == apiResponse.getResponseStatus()) {
                             //To show OTP screen.
                             VerifyMobileActivity.start(this, appSharedPreference.getUserID(),
@@ -130,7 +131,7 @@ public class SplashActivity extends BaseActivity {
                         }
                         finish();
                     } else {
-                        UploadDocumentActivity.start(this);
+                        LaunchScreenActivity.start(this);
                         finish();
                     }
                 }

@@ -15,7 +15,8 @@
         android:id="@+id/btnUploadDriver"
         android:text="@string/update_document_text"
         style="@style/appButtonProperty"
-        android:visibility="visible"/>
+        android:visibility="visible"
+        android:layout_marginBottom="20dp"/>
 
 
 </RelativeLayout>

@@ -13,7 +13,7 @@
 
     <Button
         android:id="@+id/uploadContentButton"
-        android:text="@string/update_document_text"
+        android:text="Update document"
         style="@style/appButtonProperty"
         android:visibility="visible"/>
 

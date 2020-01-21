@@ -209,14 +209,6 @@
         android:singleLine="true"
         app:layout_constraintTop_toBottomOf="@+id/password_container_linearLayout"/>
 
-    <com.codesense.driverapp.di.utils.AppSpinnerViewGroup
-        android:id="@+id/vehicle_appSpinnerViewGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:layout_marginTop="5dp"
-        app:layout_constraintTop_toBottomOf="@+id/country_autoCompleteTextView"
-        />
 
 
     <android.support.design.widget.TextInputLayout
@@ -225,7 +217,7 @@
         android:layout_height="wrap_content"
         android:visibility="visible"
         app:hintEnabled="false"
-        app:layout_constraintTop_toBottomOf="@+id/vehicle_appSpinnerViewGroup">
+        app:layout_constraintTop_toBottomOf="@+id/country_autoCompleteTextView">
 
         <EditText
             android:id="@+id/invite_code_editText"
@@ -237,13 +229,24 @@
     </android.support.design.widget.TextInputLayout>
 
 
+    <com.codesense.driverapp.di.utils.AppSpinnerViewGroup
+        android:id="@+id/vehicle_appSpinnerViewGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        android:padding="3dp"
+        app:layout_constraintTop_toBottomOf="@+id/invite_code_textInputLayout"
+        />
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/invite_code_textInputLayout"
+        app:layout_constraintTop_toBottomOf="@+id/vehicle_appSpinnerViewGroup"
         app:layout_constraintBottom_toTopOf="@+id/btnAddDriver"
-        />
+        android:visibility="gone"/>
     <!--</ScrollView>-->
 
     <Button

@@ -1,14 +1,18 @@
 package com.codesense.driverapp.ui.uploadDriver;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -36,9 +40,11 @@ import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.adddriver.AddDriverActivity;
 import com.codesense.driverapp.ui.adddriver.DriverViewModel;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
+import com.codesense.driverapp.ui.driver.DriverListActivity;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.library.fileimagepicker.filepicker.FilePickerBuilder;
+import com.library.fileimagepicker.filepicker.FilePickerConst;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -91,6 +97,7 @@ public class UploadDocumentDriverActivity extends DrawerActivity {
     public static void start(Context context, String driverId) {
         Intent starter = new Intent(context, UploadDocumentDriverActivity.class);
         starter.putExtra("driver_id", driverId);
+        starter.putExtra("from", "upload");
         context.startActivity(starter);
     }
 
@@ -113,7 +120,6 @@ public class UploadDocumentDriverActivity extends DrawerActivity {
         initially(view);
         functionality();
         driverViewModel.fetchVehiclesListAndDocumentStatusRequest();
-
     }
 
     private void initially(View view) {
@@ -272,6 +278,8 @@ public class UploadDocumentDriverActivity extends DrawerActivity {
 
                     case UPDATE_DRIVER_DOCUMENTS:
                         if (apiResponse.isValidResponse()) {
+                            currentPosition = -1;
+                            DriverListActivity.start(this);
                             utility.showToastMsg("All file are uploaded successfully");
                             clearAndUpdateDocumentListUI();
                         } else {
@@ -308,6 +316,8 @@ public class UploadDocumentDriverActivity extends DrawerActivity {
                         if (allAreSuccess) {
                             utility.showToastMsg("All file are uploaded successfully");
                         }
+                        currentPosition = -1;
+                        DriverListActivity.start(this);
                         clearAndUpdateDocumentListUI();
                         /*clearAllEditTextUI();*/
                         break;
@@ -345,6 +355,64 @@ public class UploadDocumentDriverActivity extends DrawerActivity {
             }
         }
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == IMAGE_PICKER || requestCode == FILE_PICKER && resultCode == Activity.RESULT_OK) {
+            List<String> filePath = data.getStringArrayListExtra(requestCode == IMAGE_PICKER ?
+                    FilePickerConst.KEY_SELECTED_MEDIA : FilePickerConst.KEY_SELECTED_DOCS);
+            if (null != filePath && !filePath.isEmpty()) {
+                Log.d(TAG, " The image file path:" + filePath);
+                updateDocumentItem(filePath.get(0));
+            }
+        } else {
+            utility.showToastMsg("File not found");
+        }
+    }
+
+    private void updateDocumentItem(@NonNull String path) {
+        if (null != selectedDocumetnsListItem) {
+            selectedDocumetnsListItem.setFilePath(path);
+            adapter.notifyItemChanged(selectedDocumentsListPosition);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PermissionManager.PERMISSIONS_REQUEST) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // permission was granted, yay! Do the
+                // contacts-related task you need to do.
+                String[] supportFile = selectedDocumetnsListItem.getSuportedFormats().toArray(new String[0]);
+                showImagePickerScreen(supportFile, utility.parseDouble(selectedDocumetnsListItem.getMaxSize()));
+            } else {
+                // permission denied, boo! Disable the
+                // functionality that depends on this permission.
+                permissionManager.showRequestPermissionDialog(this, permissions, new PermissionManager.PermissionAskListener() {
+                    @Override
+                    public void onNeedPermission() {
+
+                    }
+
+                    @Override
+                    public void onPermissionPreviouslyDenied(String permission) {
+                        permissionManager.showPermissionNeededDialog(UploadDocumentDriverActivity.this,
+                                getString(R.string.storage_picker), (dialogInterface, i) -> {
+                                    dialogInterface.dismiss();
+                                });
+                    }
+
+                    @Override
+                    public void onPermissionGranted() {
+
+                    }
+                });
+            }
+
+        }
     }
 
 

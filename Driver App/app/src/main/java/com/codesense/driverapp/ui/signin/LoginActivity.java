@@ -82,7 +82,11 @@ public class LoginActivity extends BaseActivity {
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public static void start(Context context) {
-        context.startActivity(new Intent(context, LoginActivity.class));
+        Intent intent = new Intent(context,
+                LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 
     @Override
@@ -272,6 +276,7 @@ public class LoginActivity extends BaseActivity {
             appSharedPreference.setEmailId(signinOwnerResponse.getEmailId());
             appSharedPreference.setProfilePicture(signinOwnerResponse.getProfilePicture());
             appSharedPreference.saveIsActivate(signinOwnerResponse.getIs_activated());
+            appSharedPreference.saveIsLive(signinOwnerResponse.getLiveStatus());
         }
     }
 

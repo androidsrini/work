@@ -472,6 +472,7 @@ public class AddDriverActivity extends DrawerActivity {
     }
 
     private void updateUI() {
+        String country=null;
         etDriverFirstName.setText(data.getDriverFirstName());
         etDriverLastName.setText(data.getDriverLastName());
         etDriverContNum.setText(data.getContactNumber());
@@ -482,11 +483,14 @@ public class AddDriverActivity extends DrawerActivity {
                 CountriesItem countriesItem = countriesItemList.get(index);
                 if (countriesItem.countryId.equals(data.getCountryId())) {
                     selected = index;
+                    country = countriesItemList.get(index).getCountryName();
                     break;
                 }
             }
             countryAutoCompleteTextView.setSelection(selected);
+            countryAutoCompleteTextView.setText(country);
         }
+
     }
 
     /**
@@ -548,6 +552,10 @@ public class AddDriverActivity extends DrawerActivity {
 
     private void vehicleListSpinnerUI(List<VehiclesListsItem> vehiclesListsItemList) {
         vehicleAppSpinnerViewGroup.updateItem(vehiclesListsItemList);
+
+        if (isEditDriver()){
+
+        }
     }
 
     private String getEtDriverFirstName() {

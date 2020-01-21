@@ -181,6 +181,11 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
         isActivated = 1 == appSharedPreference.getIsActivate();
         if (isActivated){
             autoReloadEnableDisableSwitchCompat.setEnabled(true);
+            if (appSharedPreference.getIsLive()==1){
+                autoReloadEnableDisableSwitchCompat.setChecked(true);
+            }else{
+                autoReloadEnableDisableSwitchCompat.setChecked(false);
+            }
         }else{
             autoReloadEnableDisableSwitchCompat.setEnabled(false);
         }
