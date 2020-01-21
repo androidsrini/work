@@ -136,6 +136,17 @@ public class DocumentStatusViewModel extends ViewModel {
         }
     }
 
+    public void fetchDocumentStatusDriverRequest(){
+        if(null != requestHandler) {
+            disposables.add(requestHandler.fetchDocumentStatusDriverRequest(ApiUtility.getInstance().getApiKeyMetaData()).
+                    subscribeOn(Schedulers.io()).
+                    observeOn(AndroidSchedulers.mainThread()).
+                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.DRIVER_DOCUMENT_STATUS))).
+                    subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.DRIVER_DOCUMENT_STATUS, result)),
+                            error -> {apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.DRIVER_DOCUMENT_STATUS, error));}));
+        }
+    }
+
     /**
      * This method to upload multiple files to server.
      * This method support 9 Observable.

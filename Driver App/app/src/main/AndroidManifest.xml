@@ -20,6 +20,9 @@
         <activity android:name=".ui.adddriver.AddDriverActivity"
             android:windowSoftInputMode="adjustPan">
         </activity>
+        <activity android:name=".ui.driverdocumentstatus.DriverDocumentStatusActivity"
+            android:windowSoftInputMode="adjustPan">
+        </activity>
         <activity
             android:name=".ui.receipt.ReceiptActivity"
             android:theme="@style/AppThemeWithoutSideDrawer">

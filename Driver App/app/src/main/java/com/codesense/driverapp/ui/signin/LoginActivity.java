@@ -16,8 +16,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.base.BaseActivity;
 import com.codesense.driverapp.data.SigninOwnerResponse;
@@ -41,6 +39,7 @@ import com.product.process.annotation.Onclick;
 
 import javax.inject.Inject;
 
+import androidx.annotation.NonNull;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -239,7 +238,7 @@ public class LoginActivity extends BaseActivity {
                             //To show online screen.
                             //OnlineActivity.start(this);
                             if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
-                                DocumentStatusActivity.start(this);
+                                DocumentStatusActivity.start(this, Constant.NON_DRIVER_DOCUMENT_STATUS);
                                 finish();
                             } else if(1 != appSharedPreference.getVehicleActivate()){
                                 AddVehicleActivity.start(this);

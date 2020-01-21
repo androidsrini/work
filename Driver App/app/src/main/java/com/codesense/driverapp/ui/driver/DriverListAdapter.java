@@ -130,6 +130,12 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
             tvVehicleName.setPadding(topBottomSpace * 2, topBottomSpace, 0, topBottomSpace * 3);
             imgRightArrow.setPadding(0, topBottomSpace * 2, topBottomSpace * 2, 0);
 
+            imgRightArrow.setOnClickListener((v)->{
+                if (null != onItemActionListener && -1 != getAdapterPosition()) {
+                    onItemActionListener.onEditActionClick(getAdapterPosition());
+                }
+            });
+
             itemView.setOnClickListener((v)->{
                 if (null != onItemActionListener && -1 != getAdapterPosition()) {
                     onItemActionListener.onViewClick(getAdapterPosition());
@@ -145,6 +151,7 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
     }
     public interface OnItemActionListener {
         void onViewClick(int position);
+        void onEditActionClick(int position);
         void onButtonClick(int position, boolean isChecked);
     }
 }

@@ -146,7 +146,7 @@ public class UploadDocumentDriverActivity extends DrawerActivity {
             from = intent.getStringExtra("from");
         }
 
-        if (from.equalsIgnoreCase("edit")){
+        if ("edit".equalsIgnoreCase(from)){
             titleTextView.setText(getResources().getString(R.string.update_document_driver));
         }
 

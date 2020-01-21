@@ -17,6 +17,7 @@ import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.adddriver.AddDriverActivity;
+import com.codesense.driverapp.ui.documentstatus.DocumentStatusActivity;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.google.gson.Gson;
 
@@ -55,11 +56,8 @@ public class DriverListActivity extends DrawerActivity {
         driverListAdapter = new DriverListAdapter(this, driversListItemList, screenWidth, screenHeight, new DriverListAdapter.OnItemActionListener() {
             @Override
             public void onViewClick(int position) {
-                utility.showConformationDialog(DriverListActivity.this,
-                        getString(R.string.vehicle_edit_confirmation), (dialog, which) -> {
-                            DriversListItem driversListItem = driversListItemList.get(position);
-                            AddDriverActivity.start(DriverListActivity.this, driversListItem);
-                        });
+                //show driver document status screen.
+                DocumentStatusActivity.start(DriverListActivity.this, Constant.DRIVER_DOCUMENT_STATUS);
             }
 
             @Override
@@ -68,6 +66,15 @@ public class DriverListActivity extends DrawerActivity {
                 DriversListItem driversListItem = driversListItemList.get(position);
                 driverListViewModel.postDrivingActivationRequest(isChecked ? Constant.ACTIVE :
                         Constant.INACTIVE, driversListItem.getVehicleId(), driversListItem.getDriverId());
+            }
+
+            @Override
+            public void onEditActionClick(int position) {
+                utility.showConformationDialog(DriverListActivity.this,
+                        getString(R.string.vehicle_edit_confirmation), (dialog, which) -> {
+                            DriversListItem driversListItem = driversListItemList.get(position);
+                            AddDriverActivity.start(DriverListActivity.this, driversListItem);
+                        });
             }
         });
         driverRecyclerView.setAdapter(driverListAdapter);

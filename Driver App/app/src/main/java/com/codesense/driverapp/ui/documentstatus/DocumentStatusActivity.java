@@ -28,6 +28,7 @@ import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.ServiceType;
+import com.codesense.driverapp.ui.adddriver.AddDriverActivity;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
@@ -47,6 +48,7 @@ import javax.inject.Inject;
 public class  DocumentStatusActivity extends DrawerActivity implements View.OnClickListener {
 
     private static final int IMAGE_PICKER = 0x0001;
+    private static final String SCREEN_ARG = "ScreenArg";
     //Button btnUpdate;
     protected RecyclerView recyclerView;
     protected Button uploadContentButton;
@@ -64,8 +66,10 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
      * This method to start DocumentStatusActivity class.
      * @param context
      */
-    public static void start(Context context) {
-        context.startActivity(new Intent(context, DocumentStatusActivity.class));
+    public static void start(Context context, boolean isDriverStatusScreen) {
+        Intent intent = new Intent(context, DocumentStatusActivity.class);
+        intent.putExtra(SCREEN_ARG, isDriverStatusScreen);
+        context.startActivity(intent);
     }
 
     @Override
@@ -87,7 +91,10 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
     @Override
     protected void onResume() {
         super.onResume();
+//        documentStatusViewModel.fetchOwnerCumDriverStatusRequest();
+    }
 
+    private void fetchDataFromApi() {
         documentStatusViewModel.getApiResponseMutableLiveData().observe(this, this::handleApiResponse);
         /*if (!TextUtils.isEmpty(appSharedPreference.getOwnerType())) {
             if (Constant.OWNER_CUM_DRIVER.equalsIgnoreCase(appSharedPreference.getOwnerType())) {
@@ -96,13 +103,23 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
                 documentStatusViewModel.fetchNonDrivingPartnerStatusRequest();
             }
         }*/
-
-        if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
+        if (isDriverDocumentStatusScreen()) {
+            // fetch driver document status api
+            documentStatusViewModel.fetchDocumentStatusDriverRequest();
+        } else if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
             documentStatusViewModel.fetchOwnerCumDriverStatusRequest();
         }else {
             documentStatusViewModel.fetchNonDrivingPartnerStatusRequest();
         }
-//        documentStatusViewModel.fetchOwnerCumDriverStatusRequest();
+    }
+
+    /**
+     * This method is used to find this is driver document screen or not
+     * @return TRUE | FALSE if driver document screen return {@code true} otherwise {@code false}
+     */
+    private boolean isDriverDocumentStatusScreen() {
+        Intent intent = getIntent();
+        return null != intent && intent.getBooleanExtra(SCREEN_ARG, false);
     }
 
     private void handleApiResponse(ApiResponse apiResponse) {
@@ -113,13 +130,16 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
                 break;
             case SUCCESS:
                 utility.dismissDialog();
-                if (ServiceType.OWNER_CUM_DRIVER_STATUS == serviceType || ServiceType.NON_DRIVING_PARTNER_STATUS == serviceType) {
+                if (ServiceType.OWNER_CUM_DRIVER_STATUS == serviceType ||
+                        ServiceType.NON_DRIVING_PARTNER_STATUS == serviceType ||
+                        ServiceType.DRIVER_DOCUMENT_STATUS == serviceType) {
                     updateDocumentListUI(apiResponse);
                 }
                 else if (ServiceType.UPLOAD_DOCUEMNT == serviceType) {
                     utility.showToastMsg("File are uploaded successfully");
                     clearAndUpdateDocumentListUI();
-                }/* else {
+                }
+                /* else {
                     if (apiResponse.isValidResponse()) {
                         documentsListStatusResponse = new Gson().fromJson(apiResponse.data, DocumentsListStatusResponse.class);
                         if (documentsListStatusResponse != null) {
@@ -197,6 +217,7 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
         adapter = new DocumentStatusAdapter(this, arraylist, screenWidth, screenHeight);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        fetchDataFromApi();
     }
 
     /**
@@ -261,7 +282,13 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
             } else {
                 utility.showToastMsg("Please select document");
             }*/
-            UploadDocumentActivity.start(this);
+            if (isDriverDocumentStatusScreen()) {
+                startActivityForResult(AddDriverActivity.findStartIntent(DocumentStatusActivity.this), AddDriverActivity.RESULT);
+                //AddDriverActivity.start(DocumentStatusActivity.this);
+            } else {
+                startActivityForResult(UploadDocumentActivity.findIntent(DocumentStatusActivity.this), UploadDocumentActivity.RESULT);
+                //UploadDocumentActivity.start(this);
+            }
         }));
     }
 
@@ -317,6 +344,12 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
                 CrashlyticsHelper.d("Update The image file path:" + filePath);
                 updateDocumentItem(filePath.get(0));
 //                updateUploadContentButtonUI();
+            }
+        } else if (Activity.RESULT_OK == resultCode && (AddDriverActivity.RESULT  == requestCode ||
+                UploadDocumentActivity.RESULT == requestCode)) {
+            // fetch document status list and update UI
+            if (data.getBooleanExtra(AddDriverActivity.IS_NEED_TO_UPDATE_STATUS_LIST_ARG, false)) {
+                fetchDataFromApi();
             }
         } else {
             utility.showToastMsg("File not found");

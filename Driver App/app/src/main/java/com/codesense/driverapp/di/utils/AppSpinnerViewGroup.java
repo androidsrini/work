@@ -17,14 +17,14 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.data.VehiclesListsItem;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class AppSpinnerViewGroup<T> extends FrameLayout {
 
@@ -160,6 +160,13 @@ public class AppSpinnerViewGroup<T> extends FrameLayout {
     public void updateItem(List<T> objectArrayList) {
         arrayList.clear();
         arrayList.addAll(objectArrayList);
+    }
+
+    public void setSelection(int position) {
+        mSelectedVehicle = position;
+        if (null != onItemSelectListener) {
+            onItemSelectListener.onItemSelected(mSelectedVehicle);
+        }
     }
 
     /*public void editValue(){

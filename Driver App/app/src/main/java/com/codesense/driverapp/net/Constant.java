@@ -67,4 +67,6 @@ public final class Constant {
     public static final int NOT_FOUND = -1;
     public static final int ACTIVE = 1;
     public static final int INACTIVE = 0;
+    public static final boolean NON_DRIVER_DOCUMENT_STATUS = false;
+    public static final boolean DRIVER_DOCUMENT_STATUS = true;
 }

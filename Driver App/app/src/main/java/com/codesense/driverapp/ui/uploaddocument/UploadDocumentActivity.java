@@ -63,7 +63,9 @@ public class UploadDocumentActivity extends DrawerActivity {
 
     public static final int UPLOAD_DOCUMENT_STATUS_INDEX = 0;
     public static final int UPLOAD_DOCUMENT_NAME_INDEX = 1;
+    public static final String IS_NEED_TO_UPDATE_STATUS_LIST_ARG = "IsNeedToUpdateStatusListArg";
     private static final String TAG = "Driver";
+    public static final int RESULT = 0x0004;
     private static final int IMAGE_PICKER = 0x0001;
     private static final int FILE_PICKER = 0x0002;
     private static final int UPLOAD_DOCUMENT_ICON_NAME_INDEX = 2;
@@ -106,6 +108,8 @@ public class UploadDocumentActivity extends DrawerActivity {
     private DocumentsItem selectedDocumetnsListItem;
     private int selectedDocumentsListPosition;
     private List<AvailableVehiclesItem> availableVehiclesItems;
+    private boolean isDocumentAdded;
+
     /**
      * This method to start UploadDocumentActivity class
      *
@@ -114,6 +118,10 @@ public class UploadDocumentActivity extends DrawerActivity {
     public static void start(Context context) {
         context.startActivity(new Intent(context, UploadDocumentActivity.class));
         CrashlyticsHelper.startLog(UploadDocumentActivity.class.getName());
+    }
+
+    public static Intent findIntent(Context context) {
+        return new Intent(context, UploadDocumentActivity.class);
     }
 
 
@@ -211,6 +219,7 @@ public class UploadDocumentActivity extends DrawerActivity {
                         }
                     } while (++ count < jsonElements.length);
                     if (allAreSuccess) {
+                        isDocumentAdded = true;
                         utility.showToastMsg("All file are uploaded successfully");
                         if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
                             OnlineActivity.start(this);
@@ -795,6 +804,15 @@ public class UploadDocumentActivity extends DrawerActivity {
         } else {
             utility.showToastMsg("File not found");
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra(IS_NEED_TO_UPDATE_STATUS_LIST_ARG, isDocumentAdded);
+        setResult(Activity.RESULT_OK, intent);
+        finish();
+        //super.onBackPressed();
     }
 
     @Override

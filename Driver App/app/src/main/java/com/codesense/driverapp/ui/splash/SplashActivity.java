@@ -117,7 +117,7 @@ public class SplashActivity extends BaseActivity {
                             if (Constant.OWNER_ID.equals(String.valueOf(signupStatus.getOwnerTypeId())) ||
                                     1 == utility.parseInt(signupStatus.getVehicleActivation())) {
                                 appSharedPreference.saveOwnerTypeId(Integer.parseInt(signupStatus.getOwnerTypeId()));
-                                DocumentStatusActivity.start(this);
+                                DocumentStatusActivity.start(this, Constant.NON_DRIVER_DOCUMENT_STATUS);
                                 finish();
                             } else {
                                 AddVehicleActivity.start(this);

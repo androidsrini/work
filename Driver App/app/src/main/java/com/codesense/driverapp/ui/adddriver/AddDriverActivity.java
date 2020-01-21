@@ -73,6 +73,9 @@ public class AddDriverActivity extends DrawerActivity {
 
     private static final String TAG = AddDriverActivity.class.getSimpleName();
     public static final String DRIVERS_LIST_ITEM_ARG = "DriversListItemArg";
+    public static final String IS_NEED_TO_UPDATE_STATUS_LIST_ARG = "IsNeedToUpdateStatusListArg";
+    //public static final String DRIVERS_LIST_ITEM_ARG = "DriversListItemArg";
+    public static final int RESULT = 0x0003;
     private static final int IMAGE_PICKER = 0x0001;
     private static final int FILE_PICKER = 0x0002;
     EditText etDriverFirstName, etDriverLastName, etDriverContNum, etDriverEmail, etDriverPassword, etDriverConPassword, inviteCodeEditText;
@@ -103,10 +106,15 @@ public class AddDriverActivity extends DrawerActivity {
     private TextInputLayout inviteCodeTextInputLayout;
     private CheckBox changePasswordCheckedTextView;
     private LinearLayout passwordContainerLinearLayout;
+    private boolean isDriverAdded;
 
     public static void start(Context context) {
         Intent starter = new Intent(context, AddDriverActivity.class);
         context.startActivity(starter);
+    }
+
+    public static Intent findStartIntent(Context context) {
+        return new Intent(context, AddDriverActivity.class);
     }
 
     public static void start(Context context, DriversListItem driversListItem) {
@@ -375,6 +383,7 @@ public class AddDriverActivity extends DrawerActivity {
                 switch (serviceType) {
                     case ADD_DRIVER:
                         if (apiResponse.isValidResponse()) {
+                            isDriverAdded = true;
                             String driverId = apiResponse.getResponseJsonObject().optString("driver_id");
 //                            driverViewModel.uploadDocumentRequest(findSelectedDocumentList(), driverId);
                             UploadDocumentDriverActivity.start(this,driverId);
@@ -490,6 +499,8 @@ public class AddDriverActivity extends DrawerActivity {
             countryAutoCompleteTextView.setSelection(selected);
             countryAutoCompleteTextView.setText(country);
         }
+        /*if (data.getAllowedVehicle())
+        vehicleAppSpinnerViewGroup.setSelection();*/
 
     }
 
@@ -694,6 +705,18 @@ public class AddDriverActivity extends DrawerActivity {
             selectedDocumetnsListItem.setFilePath(path);
             adapter.notifyItemChanged(selectedDocumentsListPosition);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!isEditDriver()) {
+            Intent intent = new Intent();
+            intent.putExtra(IS_NEED_TO_UPDATE_STATUS_LIST_ARG, isDriverAdded);
+            setResult(Activity.RESULT_OK, intent);
+            finish();
+            return;
+        }
+        super.onBackPressed();
     }
 
     @Override
