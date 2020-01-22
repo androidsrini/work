@@ -481,6 +481,8 @@ public class AddDriverActivity extends DrawerActivity {
     }
 
     private void updateUI() {
+        if (null == data)
+            return;
         String country=null;
         etDriverFirstName.setText(data.getDriverFirstName());
         etDriverLastName.setText(data.getDriverLastName());
@@ -498,19 +500,6 @@ public class AddDriverActivity extends DrawerActivity {
             }
             countryAutoCompleteTextView.setSelection(selected);
             countryAutoCompleteTextView.setText(country);
-        }
-        if (null != driversListItem && !TextUtils.isEmpty(driversListItem.getVehicleId())) {
-            if (null != vehicleAppSpinnerViewGroup.getArrayList()) {
-                int index = 0;
-                for (int i = 0; i < vehicleAppSpinnerViewGroup.getArrayList().size(); i++) {
-                    VehiclesListsItem vehiclesListsItem = vehicleAppSpinnerViewGroup.getArrayList().get(i);
-                    if (driversListItem.getVehicleId().equals(vehiclesListsItem.getVehicleId())) {
-                        index = i;
-                        break;
-                    }
-                }
-                vehicleAppSpinnerViewGroup.setSelection(index);
-            }
         }
 
     }
@@ -576,7 +565,19 @@ public class AddDriverActivity extends DrawerActivity {
         vehicleAppSpinnerViewGroup.updateItem(vehiclesListsItemList);
 
         if (isEditDriver()){
-
+            if (!TextUtils.isEmpty(data.getAllowedVehicle())) {
+                if (null != vehicleAppSpinnerViewGroup.getArrayList()) {
+                    int index = 0;
+                    for (int i = 0; i < vehicleAppSpinnerViewGroup.getArrayList().size(); i++) {
+                        VehiclesListsItem vehiclesListsItem = vehicleAppSpinnerViewGroup.getArrayList().get(i);
+                        if (data.getAllowedVehicle().equals(vehiclesListsItem.getVehicleId())) {
+                            index = i;
+                            break;
+                        }
+                    }
+                    vehicleAppSpinnerViewGroup.setSelection(index);
+                }
+            }
         }
     }
 

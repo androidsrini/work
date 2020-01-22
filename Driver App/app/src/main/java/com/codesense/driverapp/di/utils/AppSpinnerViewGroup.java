@@ -139,17 +139,23 @@ public class AppSpinnerViewGroup<T> extends FrameLayout {
             }
             Object o = arrayList.get(position);
             if (o instanceof VehiclesListsItem) {
-                VehiclesListsItem selectedState = (VehiclesListsItem) o;
-                selectVehicleTextView.setText(selectedState.getVehicleName());
-                selectVehicleTextView.setTextColor(getResources().getColor(R.color.secondary_color));
-                mSelectedVehicle = position;
-                vehicleSelectionFirstTime = false;
+                updateSpinnerUI((VehiclesListsItem) o, position);
+                /*mSelectedVehicle = position;
+                vehicleSelectionFirstTime = false;*/
             }
             //updateSelectedVehicleUI(selectedState);
         });
         popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
         popupWindow.setOutsideTouchable(true);
         popupWindow.showAsDropDown(view);
+    }
+
+    private void updateSpinnerUI(VehiclesListsItem vehiclesListsItem, int position) {
+        //VehiclesListsItem selectedState = (VehiclesListsItem) o;
+        selectVehicleTextView.setText(vehiclesListsItem.getVehicleName());
+        selectVehicleTextView.setTextColor(getResources().getColor(R.color.secondary_color));
+        mSelectedVehicle = position;
+        vehicleSelectionFirstTime = false;
     }
 
 
@@ -163,7 +169,11 @@ public class AppSpinnerViewGroup<T> extends FrameLayout {
     }
 
     public void setSelection(int position) {
-        mSelectedVehicle = position;
+        Object o = arrayList.get(position);
+        if (o instanceof VehiclesListsItem) {
+            VehiclesListsItem vehiclesListsItem = (VehiclesListsItem) o;
+            updateSpinnerUI(vehiclesListsItem, position);
+        }
         if (null != onItemSelectListener) {
             onItemSelectListener.onItemSelected(mSelectedVehicle);
         }
