@@ -20,6 +20,7 @@ import com.codesense.driverapp.data.DocumentStatusResponse;
 import com.codesense.driverapp.data.DocumentsItem;
 import com.codesense.driverapp.data.DocumentsListItem;
 import com.codesense.driverapp.data.DocumentsListStatusResponse;
+import com.codesense.driverapp.data.DriversListItem;
 import com.codesense.driverapp.data.VehicleDetailRequest;
 import com.codesense.driverapp.data.VehicleDetails;
 import com.codesense.driverapp.di.utils.PermissionManager;
@@ -45,6 +46,8 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import static com.codesense.driverapp.ui.adddriver.AddDriverActivity.DRIVERS_LIST_ITEM_ARG;
+
 public class  DocumentStatusActivity extends DrawerActivity implements View.OnClickListener {
 
     private static final int IMAGE_PICKER = 0x0001;
@@ -61,11 +64,19 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
     private DocumentsListItem selectedDocumetnsListItem;
     private int selectedItemPosition;
     private DocumentsListStatusResponse documentsListStatusResponse;
+    DriversListItem driversListItem;
 
     /**
      * This method to start DocumentStatusActivity class.
      * @param context
      */
+    public static void start(Context context, boolean isDriverStatusScreen, DriversListItem driversListItem) {
+        Intent intent = new Intent(context, DocumentStatusActivity.class);
+        intent.putExtra(SCREEN_ARG, isDriverStatusScreen);
+        intent.putExtra(DRIVERS_LIST_ITEM_ARG, driversListItem);
+        context.startActivity(intent);
+    }
+
     public static void start(Context context, boolean isDriverStatusScreen) {
         Intent intent = new Intent(context, DocumentStatusActivity.class);
         intent.putExtra(SCREEN_ARG, isDriverStatusScreen);
@@ -85,6 +96,11 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
         initially();
         setDynamicValue();
         functionality();
+
+        if (getIntent().getParcelableExtra(DRIVERS_LIST_ITEM_ARG)!=null) {
+            driversListItem = getIntent().getParcelableExtra(DRIVERS_LIST_ITEM_ARG);
+        }
+
 
     }
 
@@ -283,7 +299,7 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
                 utility.showToastMsg("Please select document");
             }*/
             if (isDriverDocumentStatusScreen()) {
-                startActivityForResult(AddDriverActivity.findStartIntent(DocumentStatusActivity.this), AddDriverActivity.RESULT);
+                startActivityForResult(AddDriverActivity.findStartIntent(DocumentStatusActivity.this,driversListItem), AddDriverActivity.RESULT);
                 //AddDriverActivity.start(DocumentStatusActivity.this);
             } else {
                 startActivityForResult(UploadDocumentActivity.findIntent(DocumentStatusActivity.this), UploadDocumentActivity.RESULT);

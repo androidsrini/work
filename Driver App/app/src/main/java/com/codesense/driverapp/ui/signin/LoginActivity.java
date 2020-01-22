@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.base.BaseActivity;
 import com.codesense.driverapp.data.SigninOwnerResponse;
@@ -28,6 +30,7 @@ import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
 import com.codesense.driverapp.ui.documentstatus.DocumentStatusActivity;
+import com.codesense.driverapp.ui.legalagreement.LegalAgreementActivity;
 import com.codesense.driverapp.ui.online.OnlineActivity;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
@@ -39,7 +42,6 @@ import com.product.process.annotation.Onclick;
 
 import javax.inject.Inject;
 
-import androidx.annotation.NonNull;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
@@ -83,8 +85,8 @@ public class LoginActivity extends BaseActivity {
     public static void start(Context context) {
         Intent intent = new Intent(context,
                 LoginActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 
@@ -221,6 +223,10 @@ public class LoginActivity extends BaseActivity {
                             SelectTypeActivity.start(this);
                             //TO kill this activity class from backstack
                             finish();
+                        } else if (-1 == appSharedPreference.getAgreementAccept() || 0 == appSharedPreference.getAgreementAccept()) {
+                            LegalAgreementActivity.start(this,""+appSharedPreference.getOwnerTypeId());
+                            //TO kill this activity class from backstack
+                            finish();
                         } /*else if (1 != appSharedPreference.getIsActivate() || 0 == appSharedPreference.getOtpVerify()){
                             //To show dashboard screen.
                             OwnerTypeResponse ownerTypeResponse = new Gson().fromJson(apiResponse.data, OwnerTypeResponse.class);
@@ -276,6 +282,7 @@ public class LoginActivity extends BaseActivity {
             appSharedPreference.setProfilePicture(signinOwnerResponse.getProfilePicture());
             appSharedPreference.saveIsActivate(signinOwnerResponse.getIs_activated());
             appSharedPreference.saveIsLive(signinOwnerResponse.getLiveStatus());
+            appSharedPreference.saveIsAgreement(signinOwnerResponse.getAgreementAccept());
         }
     }
 

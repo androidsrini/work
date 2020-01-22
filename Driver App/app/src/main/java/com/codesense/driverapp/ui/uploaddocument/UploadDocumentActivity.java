@@ -197,6 +197,7 @@ public class UploadDocumentActivity extends DrawerActivity {
                         clearAndUpdateDocumentListUI();
                         clearAllEditTextUI();
                         if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
+                            currentPosition = -1;
                             OnlineActivity.start(this);
                         }else {
                             AddVehicleActivity.start(this);
@@ -222,6 +223,7 @@ public class UploadDocumentActivity extends DrawerActivity {
                         isDocumentAdded = true;
                         utility.showToastMsg("All file are uploaded successfully");
                         if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
+                            currentPosition=-1;
                             OnlineActivity.start(this);
                         }else {
                             AddVehicleActivity.start(this);

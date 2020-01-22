@@ -28,6 +28,7 @@ import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
+import com.codesense.driverapp.ui.signin.LoginActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
 import com.product.annotationbuilder.ProductBindView;
 import com.product.process.annotation.Initialize;
@@ -94,6 +95,13 @@ public class LegalAgreementActivity extends BaseActivity {
         context.startActivity(intent);
     }
 
+    public static void start(Context context, String ownerId) {
+        Intent intent = new Intent(context, LegalAgreementActivity.class);
+        intent.putExtra("owner_id", ownerId);
+//        intent.putExtra("from", from);
+        context.startActivity(intent);
+    }
+
     @Override
     protected int layoutRes() {
         return R.layout.activity_legal_agreement;
@@ -126,6 +134,9 @@ public class LegalAgreementActivity extends BaseActivity {
         btnAcceptContinue.setEnabled(false);
         btnAcceptContinue.setClickable(false);
         fetchLegalAgreementRequest();
+
+        toolbarClose.setVisibility(View.VISIBLE);
+        toolbarClose.setBackgroundResource(R.drawable.ic_close);
     }
 
     private OwnerTypesItem getOwnerType() {
@@ -136,10 +147,16 @@ public class LegalAgreementActivity extends BaseActivity {
     }
 
     private String getOwnerTypeId() {
+        String ownerId = null;
         if (null == ownerType) {
             ownerType = getOwnerType();
+            ownerId = ownerType.getOwnerTypeId();
+        } else {
+            if (null != getIntent()) {
+                ownerId = getIntent().getStringExtra("owner_id");
+            }
         }
-        return ownerType.getOwnerTypeId();
+        return ownerId;
     }
 
     private void setDynamicValue() {
@@ -245,6 +262,7 @@ public class LegalAgreementActivity extends BaseActivity {
 
     @Onclick(R.id.toolbarClose)
     public void toolbarClose(View v) {
+        LoginActivity.start(this);
         finish();
     }
 

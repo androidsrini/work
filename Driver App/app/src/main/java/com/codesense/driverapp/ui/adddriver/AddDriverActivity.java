@@ -113,8 +113,10 @@ public class AddDriverActivity extends DrawerActivity {
         context.startActivity(starter);
     }
 
-    public static Intent findStartIntent(Context context) {
-        return new Intent(context, AddDriverActivity.class);
+    public static Intent findStartIntent(Context context, DriversListItem driversListItem) {
+        Intent starter = new Intent(context, AddDriverActivity.class);
+        starter.putExtra(DRIVERS_LIST_ITEM_ARG, driversListItem);
+        return starter;
     }
 
     public static void start(Context context, DriversListItem driversListItem) {

@@ -409,14 +409,18 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
         if (strItem != null) {
             String menuLabel = strItem[0];
             if (menuLabel.equals("checkstatus")) {
+                currentPosition=-1;
                 DocumentStatusActivity.start(this, Constant.NON_DRIVER_DOCUMENT_STATUS);
                 //OnlineActivity.start(this);
             } else if (menuLabel.equals("referearn")) {
+                currentPosition=-1;
                 intent = new Intent(this, ReferalProgramActivity.class);
                 startActivity(intent);
             } else if (ADD_VEHICLE.equals(menuLabel)) {
+                currentPosition=-1;
                 VehicleListActivity.start(this);
             } else if (ADD_DRIVER.equals(menuLabel)) {
+                currentPosition=-1;
                 //AddDriverActivity.start(this);
                 DriverListActivity.start(this);
             }

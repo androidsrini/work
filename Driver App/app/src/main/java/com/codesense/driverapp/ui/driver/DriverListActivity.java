@@ -57,7 +57,8 @@ public class DriverListActivity extends DrawerActivity {
             @Override
             public void onViewClick(int position) {
                 //show driver document status screen.
-                DocumentStatusActivity.start(DriverListActivity.this, Constant.DRIVER_DOCUMENT_STATUS);
+                DriversListItem driversListItem = driversListItemList.get(position);
+                DocumentStatusActivity.start(DriverListActivity.this, Constant.DRIVER_DOCUMENT_STATUS,driversListItem);
             }
 
             @Override

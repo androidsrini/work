@@ -22,6 +22,7 @@ import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
 import com.codesense.driverapp.ui.documentstatus.DocumentStatusActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
 import com.codesense.driverapp.ui.launchscreen.LaunchScreenActivity;
+import com.codesense.driverapp.ui.legalagreement.LegalAgreementActivity;
 import com.codesense.driverapp.ui.online.OnlineActivity;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
@@ -110,7 +111,7 @@ public class SplashActivity extends BaseActivity {
                             SelectTypeActivity.start(this);
                         } else if (utility.parseInt(signupStatus.getAgreementAccept()) == 0) {
                             //To show Agreement screen
-                            SelectTypeActivity.start(this);
+                            LegalAgreementActivity.start(this,signupStatus.getOwnerTypeId());
                         } else if (0 == utility.parseInt(signupStatus.getIsActivated())) {
                             //To show online screen.
                             //OnlineActivity.start(this);

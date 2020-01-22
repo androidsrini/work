@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">DriverApp</string>
-    <string name="welcome_text_prefix">Welcome to the </string>
+    <string name="welcome_text_prefix">Welcome to </string>
     <string name="welcome_text_sufix">" "VAVA</string>
     <string name="driver_text">Driver app</string>
     <string name="sign_in_button">Sign In</string>

@@ -16,6 +16,7 @@ public class AppSharedPreference {
     private static final String MOBILE_NUMBER_KEY = "MobileNumberKey";
     private static final String OWNER_TYPE_ID_KEY = "OwnerTypeIdKey";
     private static final String IS_ACTIVATE_KEY = "IsActivateKey";
+    private static final String IS_AGREEMENT_KEY = "IsAgreementKey";
     private static final String IS_LIVE_KEY = "IsLiveKey";
     private static final String OWNER_TYPE_KEY = "OwnerTypeKey";
     private static final String OTP_VERIFY_KEY = "OtpVerifyKey";
@@ -100,6 +101,11 @@ public class AppSharedPreference {
         editor.putInt(IS_ACTIVATE_KEY, isActivate);
         editor.apply();
     }
+  public void saveIsAgreement(int isAgrrement) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(IS_AGREEMENT_KEY, isAgrrement);
+        editor.apply();
+    }
 
     public void saveIsLive(int isLive) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -121,6 +127,9 @@ public class AppSharedPreference {
 
     public int getOtpVerify() {
         return sharedPreferences.getInt(OTP_VERIFY_KEY, 0);
+    }
+    public int getAgreementAccept() {
+        return sharedPreferences.getInt(IS_AGREEMENT_KEY, 0);
     }
 
     public int getVehicleActivate() {
