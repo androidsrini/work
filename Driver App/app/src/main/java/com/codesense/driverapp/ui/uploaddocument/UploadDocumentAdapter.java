@@ -84,7 +84,7 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
             }
             String title = uploadDocumentModel.getName();
             viewHolder.tvDriverdesc.setText(title);
-            if (status!=null && status.equalsIgnoreCase(activity.getString(R.string.verified_status))){
+            if (activity.getString(R.string.verified_status).equalsIgnoreCase(status)){
                 viewHolder.rlMain.setBackgroundResource(R.color.background_document_status_enable);
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
             }else{

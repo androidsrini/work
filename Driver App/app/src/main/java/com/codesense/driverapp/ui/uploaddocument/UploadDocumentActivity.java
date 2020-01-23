@@ -398,7 +398,6 @@ public class UploadDocumentActivity extends DrawerActivity {
                 if (isValidAllFields()) {
                     if (from!=null &&from.equalsIgnoreCase("edit")) {
                             uploadDocumentViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
-
                     }else{
                         if (isValiedAllSelected()) {
                             uploadDocumentViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());

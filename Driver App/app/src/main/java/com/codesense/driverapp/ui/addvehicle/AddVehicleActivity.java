@@ -370,7 +370,8 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
         if (null != intent) {
             vehiclesListItem = intent.getParcelableExtra(VEHICLES_LIST_ITEM_ARG);
         }
-        adapter = new UploadDocumentAdapter(this, uploadDocumentActionInfos, screenWidth, screenHeight,null);
+        adapter = new UploadDocumentAdapter(this, uploadDocumentActionInfos, screenWidth, screenHeight,
+                isEditVehicle() ? "edit" : null);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {
@@ -603,15 +604,14 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
     public void onClick(View v) {
         if (v.getId() == R.id.btnAddVehicle) {
             if (isValidVehicleFields()) {
-                if (isValiedAllSelected()) {
-                    if (isEditVehicle()) {
-                        //Show conformation dialog and upload data to server
-                        utility.showConformationDialog(AddVehicleActivity.this,
-                                "Confirmation", (dialog, which) ->
-                                        addVehicleViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject()));
-                    } else {
-                        addVehicleViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
-                    }
+                if (isEditVehicle()) {
+                    utility.showConformationDialog(AddVehicleActivity.this,
+                            "Confirmation", (dialog, which) ->
+                            {
+                                addVehicleViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
+                            });
+                } else if (isValiedAllSelected()) {
+                    addVehicleViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
                 }
             }
         }
