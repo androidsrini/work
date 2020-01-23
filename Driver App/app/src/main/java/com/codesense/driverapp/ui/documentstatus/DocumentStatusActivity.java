@@ -93,13 +93,14 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
         arraylist = new ArrayList<>();
         titleTextView.setText(getResources().getString(R.string.document_status_title));
 
-        initially();
-        setDynamicValue();
-        functionality();
 
         if (getIntent().getParcelableExtra(DRIVERS_LIST_ITEM_ARG)!=null) {
             driversListItem = getIntent().getParcelableExtra(DRIVERS_LIST_ITEM_ARG);
         }
+        initially();
+        setDynamicValue();
+        functionality();
+
 
 
     }
@@ -121,7 +122,7 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
         }*/
         if (isDriverDocumentStatusScreen()) {
             // fetch driver document status api
-            documentStatusViewModel.fetchDocumentStatusDriverRequest();
+            documentStatusViewModel.fetchDocumentStatusDriverRequest(driversListItem.getDriverId());
         } else if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
             documentStatusViewModel.fetchOwnerCumDriverStatusRequest();
         }else {
@@ -302,7 +303,7 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
                 startActivityForResult(AddDriverActivity.findStartIntent(DocumentStatusActivity.this,driversListItem), AddDriverActivity.RESULT);
                 //AddDriverActivity.start(DocumentStatusActivity.this);
             } else {
-                startActivityForResult(UploadDocumentActivity.findIntent(DocumentStatusActivity.this), UploadDocumentActivity.RESULT);
+                startActivityForResult(UploadDocumentActivity.findIntent(DocumentStatusActivity.this,"edit"), UploadDocumentActivity.RESULT);
                 //UploadDocumentActivity.start(this);
             }
         }));

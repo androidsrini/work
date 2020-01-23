@@ -39,6 +39,7 @@ public class DriverListActivity extends DrawerActivity {
 
     public static void start(Context context) {
         Intent starter = new Intent(context, DriverListActivity.class);
+        starter.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
         context.startActivity(starter);
     }
 

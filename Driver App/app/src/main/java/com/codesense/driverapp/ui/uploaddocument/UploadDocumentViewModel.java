@@ -311,6 +311,29 @@ public class UploadDocumentViewModel extends ViewModel {
                         error -> apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.GET_DOCUMENTS_STATUS, error))));
     }
 
+
+    public void fetchOwnerCumDriverStatusRequest(){
+        if(null != requestHandler) {
+            disposables.add(requestHandler.fetchDocumentStatusRequest(ApiUtility.getInstance().getApiKeyMetaData()).
+                    subscribeOn(Schedulers.io()).
+                    observeOn(AndroidSchedulers.mainThread()).
+                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.GET_DOCUMENTS_STATUS))).
+                    subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.GET_DOCUMENTS_STATUS, result)),
+                            error -> {apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.GET_DOCUMENTS_STATUS, error));}));
+        }
+    }
+
+    public void fetchNonDrivingPartnerStatusRequest(){
+        if(null != requestHandler) {
+            disposables.add(requestHandler.fetchDocumentStatusDriverRequest(ApiUtility.getInstance().getApiKeyMetaData()).
+                    subscribeOn(Schedulers.io()).
+                    observeOn(AndroidSchedulers.mainThread()).
+                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.GET_DOCUMENTS_STATUS))).
+                    subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.success(ServiceType.GET_DOCUMENTS_STATUS, result)),
+                            error -> {apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.GET_DOCUMENTS_STATUS, error));}));
+        }
+    }
+
     private class MergedResponse {
         // this is just a POJO to store all the responses in one object
         private JsonElement[] docuemntListStatusResponse;

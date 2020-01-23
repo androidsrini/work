@@ -132,6 +132,22 @@ public class DriverViewModel extends ViewModel {
                                 error))));
     }
 
+
+    public void fetchDocumentStatusDriverRequest(String driverId){
+        if(null != requestHandler) {
+            Observable<JsonElement> vehiclesListObservable = requestHandler.fetchVehiclesListRequest(ApiUtility.getInstance().getApiKeyMetaData());
+            Observable<JsonElement> documentStatusDriverObservable = requestHandler.fetchDocumentStatusDriver(ApiUtility.getInstance().getApiKeyMetaData(),driverId);
+            disposables.add(Observable.zip(vehiclesListObservable,documentStatusDriverObservable, MergedResponse::new)
+                    .subscribeOn(Schedulers.io())
+                    .doOnSubscribe(d->apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.GET_DOCUMENTS_STATUS_DRIVER_AND_VEHICLE_LIST)))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(result->apiResponseMutableLiveData.setValue(ApiResponse.successMultiple(ServiceType.GET_DOCUMENTS_STATUS_DRIVER_AND_VEHICLE_LIST,
+                            result.docuemntListStatusResponse)),
+                            error->apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.GET_DOCUMENTS_STATUS_DRIVER_AND_VEHICLE_LIST,
+                                    error))));
+        }
+    }
+
     /**
      * This method to upload multiple files to server.
      * This method support 9 Observable.

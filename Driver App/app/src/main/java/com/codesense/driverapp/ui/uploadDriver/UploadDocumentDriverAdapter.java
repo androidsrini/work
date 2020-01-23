@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.data.DocumentsItem;
+import com.codesense.driverapp.net.Constant;
 
 import java.io.File;
 import java.util.List;
@@ -24,12 +25,14 @@ public class UploadDocumentDriverAdapter extends RecyclerView.Adapter<UploadDocu
     private Activity activity;
     private int width;
     private int height;
+    String from;
 
     public UploadDocumentDriverAdapter(Activity activity, List<DocumentsItem> uploadDocumentModelList,
-                                       int w, int h) {
+                                       int w, int h,String from) {
         this.activity = activity;
         this.width = w;
         this.height = h;
+        this.from = from;
         this.uploadDocumentModelList = uploadDocumentModelList;
 
     }
@@ -52,21 +55,52 @@ public class UploadDocumentDriverAdapter extends RecyclerView.Adapter<UploadDocu
 
         DocumentsItem uploadDocumentModel = uploadDocumentModelList.get(position);
         boolean isFileSelected = !TextUtils.isEmpty(uploadDocumentModel.getFilePath());
-        String status = isFileSelected ? activity.getString(R.string.document_status_completed)
-                :  (null != uploadDocumentModel.getDocumentStatus()) ?
-                uploadDocumentModel.getDocumentStatus().getStatus() : activity.getString(R.string.recommended_next_step);
-        String title = uploadDocumentModel.getName();
-        viewHolder.tvDriverText.setText(status);
-        viewHolder.tvDriverdesc.setText(title);
-        if (!isFileSelected) {
-            //To show selected image UI
-            viewHolder.documentFileNameTextView.setVisibility(View.GONE);
-            viewHolder.imgRightArrow.setBackgroundResource(R.drawable.right_only_bg);
-        } else {
-            viewHolder.documentFileNameTextView.setVisibility(View.VISIBLE);
-            viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFilePath()));
-            viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
-            // To show unselected image and content
+        if (!from.equalsIgnoreCase("edit")) {
+            String status = isFileSelected ? activity.getString(R.string.document_status_completed)
+                    : (null != uploadDocumentModel.getDocumentStatus()) ?
+                    uploadDocumentModel.getDocumentStatus().getStatus() : activity.getString(R.string.recommended_next_step);
+            String title = uploadDocumentModel.getName();
+            viewHolder.tvDriverText.setText(status);
+            viewHolder.tvDriverdesc.setText(title);
+            if (!isFileSelected) {
+                //To show selected image UI
+                viewHolder.documentFileNameTextView.setVisibility(View.GONE);
+                viewHolder.imgRightArrow.setBackgroundResource(R.drawable.right_only_bg);
+            } else {
+                viewHolder.documentFileNameTextView.setVisibility(View.VISIBLE);
+                viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFilePath()));
+                viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
+                // To show unselected image and content
+            }
+        }else{
+            String status=null;
+            if (null != uploadDocumentModel.getDocumentStatus()) {
+                status = uploadDocumentModel.getDocumentStatus().getStatusCode() == Constant.VERIFIED_STATUS ?
+                        activity.getString(R.string.verified_status) : uploadDocumentModel.getDocumentStatus().getStatusCode() == Constant.INVALID_STATUS ?
+                        activity.getString(R.string.invalid_status) : uploadDocumentModel.getDocumentStatus().getStatusCode() == Constant.WAITING_STATUS ?
+                        activity.getString(R.string.waiting_status) : uploadDocumentModel.getDocumentStatus().getStatusCode() == Constant.NOT_FOUND ?
+                        activity.getString(R.string.not_found_status) : activity.getString(R.string.document_verification_pending);
+                viewHolder.tvDriverText.setText(status);
+            }
+            String title = uploadDocumentModel.getName();
+            viewHolder.tvDriverdesc.setText(title);
+            if (status!=null && status.equalsIgnoreCase(activity.getString(R.string.verified_status))){
+                viewHolder.rlMain.setBackgroundResource(R.color.background_document_status_enable);
+                viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
+            }else{
+                viewHolder.rlMain.setBackgroundResource(R.color.background_document_status);
+                viewHolder.imgRightArrow.setBackgroundResource(R.drawable.right_only_bg);
+            }
+            if (!isFileSelected) {
+                //To show selected image UI
+                viewHolder.documentFileNameTextView.setVisibility(View.GONE);
+                viewHolder.imgRightArrow.setBackgroundResource(R.drawable.right_only_bg);
+            } else {
+                viewHolder.documentFileNameTextView.setVisibility(View.VISIBLE);
+                viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFilePath()));
+                viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
+                // To s
+            }
         }
     }
 
@@ -91,7 +125,7 @@ public class UploadDocumentDriverAdapter extends RecyclerView.Adapter<UploadDocu
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        private RelativeLayout rlDriveLicense;
+        private RelativeLayout rlDriveLicense,rlMain;
         private ImageView imgRightArrow;
         private TextView tvDriverText, tvDriverdesc ,documentFileNameTextView;
         //int position;
@@ -100,6 +134,7 @@ public class UploadDocumentDriverAdapter extends RecyclerView.Adapter<UploadDocu
             super(view);
 
             rlDriveLicense = view.findViewById(R.id.rlDriveLicense);
+            rlMain = view.findViewById(R.id.rlMain);
             tvDriverText = view.findViewById(R.id.tvDriverText);
             tvDriverdesc = view.findViewById(R.id.tvDriverdesc);
             imgRightArrow = view.findViewById(R.id.imgRightArrow);
@@ -114,9 +149,9 @@ public class UploadDocumentDriverAdapter extends RecyclerView.Adapter<UploadDocu
             imgLayParams.height = imgIconHeight;
             imgRightArrow.setLayoutParams(imgLayParams);
 
-            RelativeLayout.LayoutParams rlDriveLicenseLayoutParams = (RelativeLayout.LayoutParams) rlDriveLicense.getLayoutParams();
+          /*  RelativeLayout.LayoutParams rlDriveLicenseLayoutParams = (RelativeLayout.LayoutParams) rlMain.getLayoutParams();
             rlDriveLicenseLayoutParams.setMargins(topBottomSpace * 3, topBottomSpace * 3, topBottomSpace * 3, 0);
-            rlDriveLicense.setLayoutParams(rlDriveLicenseLayoutParams);
+            rlMain.setLayoutParams(rlDriveLicenseLayoutParams);*/
 
             tvDriverText.setPadding(topBottomSpace * 3, topBottomSpace, 0, 0);
             tvDriverdesc.setPadding(topBottomSpace * 3, topBottomSpace * 2, 0, topBottomSpace * 3);

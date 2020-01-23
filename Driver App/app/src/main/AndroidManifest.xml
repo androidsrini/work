@@ -15,10 +15,12 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:appComponentFactory">
         <activity android:name=".ui.driver.DriverListActivity"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+            android:launchMode="singleTask">
         </activity>
         <activity android:name=".ui.adddriver.AddDriverActivity"
-            android:windowSoftInputMode="adjustPan">
+            android:windowSoftInputMode="adjustPan"
+           >
         </activity>
         <activity android:name=".ui.driverdocumentstatus.DriverDocumentStatusActivity"
             android:windowSoftInputMode="adjustPan">
@@ -77,7 +79,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.documentstatus.DocumentStatusActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".ui.vehicle.VehicleListActivity"
             android:screenOrientation="portrait" />

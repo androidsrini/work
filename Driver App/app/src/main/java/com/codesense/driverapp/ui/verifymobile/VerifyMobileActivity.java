@@ -116,6 +116,7 @@ public class VerifyMobileActivity extends BaseActivity {
         starter.putExtra(USER_ID_ARG, userID);
         starter.putExtra(PHONE_NUMBER_ARG, phoneNumber);
         starter.putExtra(IS_NEED_TO_CALL_SEND_OTP_ARG, isNeedToCallSendOtp);
+        starter.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(starter);
     }
 

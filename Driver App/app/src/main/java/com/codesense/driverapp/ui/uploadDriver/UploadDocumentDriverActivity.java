@@ -119,7 +119,6 @@ public class UploadDocumentDriverActivity extends DrawerActivity {
 
         initially(view);
         functionality();
-        driverViewModel.fetchVehiclesListAndDocumentStatusRequest();
     }
 
     private void initially(View view) {
@@ -148,9 +147,12 @@ public class UploadDocumentDriverActivity extends DrawerActivity {
 
         if ("edit".equalsIgnoreCase(from)){
             titleTextView.setText(getResources().getString(R.string.update_document_driver));
+            driverViewModel.fetchDocumentStatusDriverRequest(driverId);
+        }else{
+            driverViewModel.fetchVehiclesListAndDocumentStatusRequest();
         }
 
-        adapter = new UploadDocumentDriverAdapter(this, uploadDocumentActionInfos, screenWidth, screenHeight);
+        adapter = new UploadDocumentDriverAdapter(this, uploadDocumentActionInfos, screenWidth, screenHeight,from);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {
@@ -328,6 +330,7 @@ public class UploadDocumentDriverActivity extends DrawerActivity {
                 break;
         }
     }
+
 
     /**
      * This method to remove all selected files and update DocumentList UI.

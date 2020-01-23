@@ -199,7 +199,7 @@ public class AddDriverActivity extends DrawerActivity {
             if (null != arrayList && !arrayList.isEmpty())
                 selectedVehicleId = arrayList.get(position).getVehicleId();
         });
-        adapter = new UploadDocumentAdapter(this, uploadDocumentActionInfos, screenWidth, screenHeight);
+        adapter = new UploadDocumentAdapter(this, uploadDocumentActionInfos, screenWidth, screenHeight,null);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {

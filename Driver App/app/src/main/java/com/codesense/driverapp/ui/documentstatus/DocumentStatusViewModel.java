@@ -136,9 +136,9 @@ public class DocumentStatusViewModel extends ViewModel {
         }
     }
 
-    public void fetchDocumentStatusDriverRequest(){
+    public void fetchDocumentStatusDriverRequest(String driverId){
         if(null != requestHandler) {
-            disposables.add(requestHandler.fetchDocumentStatusDriverRequest(ApiUtility.getInstance().getApiKeyMetaData()).
+            disposables.add(requestHandler.fetchDocumentStatusDriver(ApiUtility.getInstance().getApiKeyMetaData(),driverId).
                     subscribeOn(Schedulers.io()).
                     observeOn(AndroidSchedulers.mainThread()).
                     doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.DRIVER_DOCUMENT_STATUS))).

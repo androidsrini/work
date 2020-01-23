@@ -370,7 +370,7 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
         if (null != intent) {
             vehiclesListItem = intent.getParcelableExtra(VEHICLES_LIST_ITEM_ARG);
         }
-        adapter = new UploadDocumentAdapter(this, uploadDocumentActionInfos, screenWidth, screenHeight);
+        adapter = new UploadDocumentAdapter(this, uploadDocumentActionInfos, screenWidth, screenHeight,null);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {

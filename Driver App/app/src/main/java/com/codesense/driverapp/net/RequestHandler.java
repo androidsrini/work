@@ -79,6 +79,13 @@ public class RequestHandler {
         param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
         return param;
     }
+ private HashMap<String, String> getUserIDRequestDriverParam(String driverId) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
+        param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
+        param.put(Constant.DRIVER_ID, driverId);
+        return param;
+    }
 
     /**
      * This method to create userId param value as HashMap.
@@ -437,6 +444,9 @@ public class RequestHandler {
 
     public Observable<JsonElement> fetchDocumentStatusDriverRequest(String apiKey) {
         return apiCallInterface.fetchDocumentStatusDriverRequest(apiKey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
+    }
+public Observable<JsonElement> fetchDocumentStatusDriver(String apiKey,String driverID) {
+        return apiCallInterface.fetchDocumentStatusDriverRequest(apiKey, appSharedPreference.getAccessTokenKey(), getUserIDRequestDriverParam(driverID));
     }
 
     public Observable<JsonElement> uploadDriverDocumentRequest(String api, List<DocumentsItem> documentsListItem, String driverId) {
