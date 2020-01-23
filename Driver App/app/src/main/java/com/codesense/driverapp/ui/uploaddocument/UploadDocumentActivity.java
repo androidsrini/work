@@ -345,7 +345,8 @@ public class UploadDocumentActivity extends DrawerActivity {
                         for(int i=0;i<availableVehiclesItems.size();i++){
                             if (availableVehiclesItems.get(i).getVehicleId().equalsIgnoreCase(documentStatusResponse.getVehicleDetailObject().getVehicleId())){
                                 position = i;
-
+                                mSelectedVehicle = position;
+                                vehicleSelectionFirstTime = false;
                             }
                         }
                         AvailableVehiclesItem selectedState = availableVehiclesItems.get(position);
@@ -674,6 +675,10 @@ public class UploadDocumentActivity extends DrawerActivity {
     }
 
     private void updateSelectedVehicleUI(AvailableVehiclesItem availableVehiclesItem) {
+        //Update select vehicle UI.
+        selectVehicleTextView.setText(availableVehiclesItem.getVehicleName());
+        selectVehicleTextView.setTextColor(getResources().getColor(R.color.secondary_color));
+        //Update vehicle UI
         String vehicleTypeId = availableVehiclesItem.getVehicleTypeId();
         if (!TextUtils.isEmpty(vehicleTypeId)) {
             for (int index = 0; index < vehicleTypesItems.size(); index++) {
