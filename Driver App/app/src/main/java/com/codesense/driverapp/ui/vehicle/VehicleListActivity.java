@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,12 +16,13 @@ import android.widget.Button;
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.data.VehicleListResponse;
 import com.codesense.driverapp.data.VehiclesListItem;
-import com.codesense.driverapp.di.utils.RecyclerTouchListener;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.net.ApiResponse;
+import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
+import com.codesense.driverapp.ui.documentstatus.DocumentStatusActivity;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.google.gson.Gson;
 
@@ -36,6 +38,7 @@ public class VehicleListActivity extends DrawerActivity implements View.OnClickL
     RecyclerView recyclerView;
     Button btnAddVehicle;
     VehicleListAdapter adapter;
+    AppCompatTextView tvNoVehicle;
     @Inject protected VehicleListViewModel vehicleListViewModel;
     @Inject protected RequestHandler requestHandler;
     @Inject protected Utility utility;
@@ -72,15 +75,20 @@ public class VehicleListActivity extends DrawerActivity implements View.OnClickL
                 utility.dismissDialog();
                 if (ServiceType.GET_OWNER_VEHICLES == serviceType) {
                     VehicleListResponse vehiclesListsResponse = new Gson().fromJson(apiResponse.data, VehicleListResponse.class);
-                    if (null != vehiclesListsResponse && null != vehiclesListsResponse.getVehiclesListItems()) {
+                    if (null != vehiclesListsResponse && null != vehiclesListsResponse.getVehiclesListItems() && vehiclesListsResponse.getVehiclesListItems().size()>0) {
                         //Clear all old values
                         if (!vehiclesItemList.isEmpty()) {
                             vehiclesItemList.clear();
                         }
                         vehiclesItemList.addAll(vehiclesListsResponse.getVehiclesListItems());
+                        recyclerView.setVisibility(View.VISIBLE);
+                        tvNoVehicle.setVisibility(View.GONE);
+                        adapter.notifyDataSetChanged();
+                    }else{
+                        recyclerView.setVisibility(View.GONE);
+                        tvNoVehicle.setVisibility(View.VISIBLE);
                     }
                     //notify adapter
-                    adapter.notifyDataSetChanged();
                 }
                 break;
             case ERROR:
@@ -98,12 +106,18 @@ public class VehicleListActivity extends DrawerActivity implements View.OnClickL
     }
 
     private void functionality() {
-        adapter = new VehicleListAdapter(this, vehiclesItemList, screenWidth, screenHeight);
+        tvNoVehicle = findViewById(R.id.tvNoVehicle);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
-        recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {
+        adapter = new VehicleListAdapter(this, vehiclesItemList, screenWidth, screenHeight, new VehicleListAdapter.OnItemActionListener() {
             @Override
-            public void onClick(View view, int position) {
+            public void onViewClick(int position) {
+                VehiclesListItem vehiclesListItem = vehiclesItemList.get(position);
+                DocumentStatusActivity.start(VehicleListActivity.this, Constant.VEHICLE_DOCUMENT_STATUS,vehiclesListItem);
+            }
+
+            @Override
+            public void onEditActionClick(int position) {
                 utility.showConformationDialog(VehicleListActivity.this,
                         getString(R.string.vehicle_edit_confirmation), (dialog, which) -> {
                             VehiclesListItem vehiclesListItem = vehiclesItemList.get(position);
@@ -112,11 +126,10 @@ public class VehicleListActivity extends DrawerActivity implements View.OnClickL
             }
 
             @Override
-            public void onLongClick(View view, int position) {
-                //Show vehicle edit screen
-                //vehiclesListItem.
+            public void onButtonClick(int position, boolean isChecked) {
             }
-        }));
+        });
+        recyclerView.setAdapter(adapter);
     }
 
     private void setDynamicValue() {

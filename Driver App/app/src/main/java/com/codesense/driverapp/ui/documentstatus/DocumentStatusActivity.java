@@ -23,13 +23,14 @@ import com.codesense.driverapp.data.DocumentsListStatusResponse;
 import com.codesense.driverapp.data.DriversListItem;
 import com.codesense.driverapp.data.VehicleDetailRequest;
 import com.codesense.driverapp.data.VehicleDetails;
+import com.codesense.driverapp.data.VehiclesListItem;
 import com.codesense.driverapp.di.utils.PermissionManager;
 import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.ApiResponse;
-import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.adddriver.AddDriverActivity;
+import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
@@ -47,27 +48,35 @@ import java.util.List;
 import javax.inject.Inject;
 
 import static com.codesense.driverapp.ui.adddriver.AddDriverActivity.DRIVERS_LIST_ITEM_ARG;
+import static com.codesense.driverapp.ui.addvehicle.AddVehicleActivity.VEHICLES_LIST_ITEM_ARG;
 
-public class  DocumentStatusActivity extends DrawerActivity implements View.OnClickListener {
+public class DocumentStatusActivity extends DrawerActivity implements View.OnClickListener {
 
     private static final int IMAGE_PICKER = 0x0001;
     private static final String SCREEN_ARG = "ScreenArg";
+    private static final String VEHICLESCREEN_ARG = "VehicleScreenArg";
     //Button btnUpdate;
     protected RecyclerView recyclerView;
     protected Button uploadContentButton;
     DocumentStatusAdapter adapter;
     List<DocumentsItem> arraylist;
-    @Inject protected AppSharedPreference appSharedPreference;
-    @Inject protected DocumentStatusViewModel documentStatusViewModel;
-    @Inject protected Utility utility;
-    @Inject protected PermissionManager permissionManager;
+    @Inject
+    protected AppSharedPreference appSharedPreference;
+    @Inject
+    protected DocumentStatusViewModel documentStatusViewModel;
+    @Inject
+    protected Utility utility;
+    @Inject
+    protected PermissionManager permissionManager;
     private DocumentsListItem selectedDocumetnsListItem;
     private int selectedItemPosition;
     private DocumentsListStatusResponse documentsListStatusResponse;
     DriversListItem driversListItem;
+    VehiclesListItem vehiclesListItem;
 
     /**
      * This method to start DocumentStatusActivity class.
+     *
      * @param context
      */
     public static void start(Context context, boolean isDriverStatusScreen, DriversListItem driversListItem) {
@@ -76,6 +85,14 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
         intent.putExtra(DRIVERS_LIST_ITEM_ARG, driversListItem);
         context.startActivity(intent);
     }
+
+    public static void start(Context context, boolean isVehicleStatusScreen, VehiclesListItem vehiclesListItem) {
+        Intent intent = new Intent(context, DocumentStatusActivity.class);
+        intent.putExtra(VEHICLESCREEN_ARG, isVehicleStatusScreen);
+        intent.putExtra(VEHICLES_LIST_ITEM_ARG, vehiclesListItem);
+        context.startActivity(intent);
+    }
+
 
     public static void start(Context context, boolean isDriverStatusScreen) {
         Intent intent = new Intent(context, DocumentStatusActivity.class);
@@ -94,13 +111,14 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
         titleTextView.setText(getResources().getString(R.string.document_status_title));
 
 
-        if (getIntent().getParcelableExtra(DRIVERS_LIST_ITEM_ARG)!=null) {
+        if (getIntent().getParcelableExtra(DRIVERS_LIST_ITEM_ARG) != null) {
             driversListItem = getIntent().getParcelableExtra(DRIVERS_LIST_ITEM_ARG);
+        } else if (getIntent().getParcelableExtra(VEHICLES_LIST_ITEM_ARG) != null) {
+            vehiclesListItem = getIntent().getParcelableExtra(VEHICLES_LIST_ITEM_ARG);
         }
         initially();
         setDynamicValue();
         functionality();
-
 
 
     }
@@ -123,20 +141,28 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
         if (isDriverDocumentStatusScreen()) {
             // fetch driver document status api
             documentStatusViewModel.fetchDocumentStatusDriverRequest(driversListItem.getDriverId());
-        } else if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
+        } else if (isVehicleDocumentStatusScreen()) {
+            documentStatusViewModel.fetchDocumentStatusVehicleRequest(vehiclesListItem.getVehicleId());
+        } else/* if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId())))*/ {
             documentStatusViewModel.fetchOwnerCumDriverStatusRequest();
-        }else {
+        }/*else {
             documentStatusViewModel.fetchNonDrivingPartnerStatusRequest();
-        }
+        }*/
     }
 
     /**
      * This method is used to find this is driver document screen or not
+     *
      * @return TRUE | FALSE if driver document screen return {@code true} otherwise {@code false}
      */
     private boolean isDriverDocumentStatusScreen() {
         Intent intent = getIntent();
         return null != intent && intent.getBooleanExtra(SCREEN_ARG, false);
+    }
+
+    private boolean isVehicleDocumentStatusScreen() {
+        Intent intent = getIntent();
+        return null != intent && intent.getBooleanExtra(VEHICLESCREEN_ARG, false);
     }
 
     private void handleApiResponse(ApiResponse apiResponse) {
@@ -149,10 +175,10 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
                 utility.dismissDialog();
                 if (ServiceType.OWNER_CUM_DRIVER_STATUS == serviceType ||
                         ServiceType.NON_DRIVING_PARTNER_STATUS == serviceType ||
-                        ServiceType.DRIVER_DOCUMENT_STATUS == serviceType) {
+                        ServiceType.DRIVER_DOCUMENT_STATUS == serviceType||
+                        ServiceType.VEHICLE_DOCUMENT_STATUS == serviceType) {
                     updateDocumentListUI(apiResponse);
-                }
-                else if (ServiceType.UPLOAD_DOCUEMNT == serviceType) {
+                } else if (ServiceType.UPLOAD_DOCUEMNT == serviceType) {
                     utility.showToastMsg("File are uploaded successfully");
                     clearAndUpdateDocumentListUI();
                 }
@@ -180,7 +206,7 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
                             utility.showToastMsg(apiResponse.getResponseMessage(count));
                             allAreSuccess = false;
                         }
-                    } while (++ count < jsonElements.length);
+                    } while (++count < jsonElements.length);
                     if (allAreSuccess) {
                         utility.showToastMsg("All file are uploaded successfully");
                     }
@@ -202,7 +228,7 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
                 DocumentStatusResponse documentStatusResponse = new Gson().fromJson(apiResponse.data, DocumentStatusResponse.class);
                 if (null != documentStatusResponse) {
                     documentStatusResponse.parseDocumentStatus(jsonObject);
-                    for (DocumentsItem documentsItem: documentStatusResponse.getDocuments()) {
+                    for (DocumentsItem documentsItem : documentStatusResponse.getDocuments()) {
                         documentsItem.parseDocumentStatus(jsonObject);
                     }
                 }
@@ -220,11 +246,12 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
         }
         adapter.notifyDataSetChanged();
     }
+
     /**
      * This method to remove all selected files and update DocumentList UI.
      */
     private void clearAndUpdateDocumentListUI() {
-        for (DocumentsItem documentsListItem: arraylist)
+        for (DocumentsItem documentsListItem : arraylist)
             documentsListItem.setFilePath(null);
         adapter.notifyDataSetChanged();
     }
@@ -241,7 +268,7 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
      * This method to show Image Galary from external storage.
      */
     private void showImageFromGalary() {
-        String [] storage = permissionManager.getStorageReadAndWrightPermission();
+        String[] storage = permissionManager.getStorageReadAndWrightPermission();
         //int totalPermission = storage.length;
         if (permissionManager.initPermissionDialog(this, storage)) {
             showImagePickerScreen();
@@ -269,7 +296,6 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
         //adapter.getSelectedFilesCount() > 0 ? Show update document UI button else Disable update document UI button.
         uploadContentButton.setVisibility(adapter.getSelectedFilesCount() > 0 ? View.VISIBLE : View.GONE);
     }*/
-
     private void setDynamicValue() {
         int topBottomSpace = (int) (screenHeight * 0.0089);
 
@@ -300,10 +326,13 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
                 utility.showToastMsg("Please select document");
             }*/
             if (isDriverDocumentStatusScreen()) {
-                startActivityForResult(AddDriverActivity.findStartIntent(DocumentStatusActivity.this,driversListItem), AddDriverActivity.RESULT);
+                startActivityForResult(AddDriverActivity.findStartIntent(DocumentStatusActivity.this, driversListItem), AddDriverActivity.RESULT);
                 //AddDriverActivity.start(DocumentStatusActivity.this);
-            } else {
-                startActivityForResult(UploadDocumentActivity.findIntent(DocumentStatusActivity.this,"edit"), UploadDocumentActivity.RESULT);
+            } else if (isVehicleDocumentStatusScreen()) {
+                startActivityForResult(AddVehicleActivity.findStartIntent(DocumentStatusActivity.this, vehiclesListItem), AddDriverActivity.RESULT);
+                //AddDriverActivity.start(DocumentStatusActivity.this);
+            }else {
+                startActivityForResult(UploadDocumentActivity.findIntent(DocumentStatusActivity.this, "edit"), UploadDocumentActivity.RESULT);
                 //UploadDocumentActivity.start(this);
             }
         }));
@@ -311,10 +340,11 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
 
     /**
      * This method to find any docuemnt are selected or not by user
+     *
      * @return boolean
      */
     private boolean isAnyItemDocumentSelected() {
-        for (DocumentsItem documentsListItem: arraylist) {
+        for (DocumentsItem documentsListItem : arraylist) {
             if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
                 return true;
             }
@@ -324,6 +354,7 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
 
     /**
      * This method to find selected document file list.
+     *
      * @return List DocumentsListItem.
      */
     private List<DocumentsItem> findSelectedDocumentList() {
@@ -334,12 +365,13 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
             if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
                 documentsListItems.add(documentsListItem);
             }
-        } while (++ count < this.arraylist.size());
+        } while (++count < this.arraylist.size());
         return documentsListItems;
     }
 
     /**
      * This method to update DocumetnsListItem and update adapter UI.
+     *
      * @param path image path
      */
     private void updateDocumentItem(@NonNull String path) {
@@ -362,8 +394,8 @@ public class  DocumentStatusActivity extends DrawerActivity implements View.OnCl
                 updateDocumentItem(filePath.get(0));
 //                updateUploadContentButtonUI();
             }
-        } else if (Activity.RESULT_OK == resultCode && (AddDriverActivity.RESULT  == requestCode ||
-                UploadDocumentActivity.RESULT == requestCode)) {
+        } else if (Activity.RESULT_OK == resultCode && (AddDriverActivity.RESULT == requestCode ||
+                UploadDocumentActivity.RESULT == requestCode || AddVehicleActivity.RESULT == requestCode)) {
             // fetch document status list and update UI
             if (data.getBooleanExtra(AddDriverActivity.IS_NEED_TO_UPDATE_STATUS_LIST_ARG, false)) {
                 fetchDataFromApi();

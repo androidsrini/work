@@ -69,4 +69,5 @@ public final class Constant {
     public static final int INACTIVE = 0;
     public static final boolean NON_DRIVER_DOCUMENT_STATUS = false;
     public static final boolean DRIVER_DOCUMENT_STATUS = true;
+    public static final boolean VEHICLE_DOCUMENT_STATUS = true;
 }

@@ -95,8 +95,8 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
             int topBottomSpace = (int) (height * 0.0089);
 
 
-            int imgIconWidth = (int) (width * 0.085);
-            int imgIconHeight = (int) (width * 0.085);
+            int imgIconWidth = (int) (width * 0.115);
+            int imgIconHeight = (int) (width * 0.115);
 
             int vehicleimgIconWidth = (int) (width * 0.085);
             int vehicleimgIconHeight = (int) (width * 0.085);

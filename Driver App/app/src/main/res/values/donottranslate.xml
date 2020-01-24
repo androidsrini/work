@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">DriverApp</string>
+    <string name="app_name">VAVA Drive</string>
     <string name="welcome_text_prefix">Welcome to </string>
     <string name="welcome_text_sufix">" "VAVA</string>
     <string name="driver_text">Driver app</string>
@@ -93,6 +93,7 @@
     <string name="name">Ravi</string>
     <string name="vehicle_no">TN 01 1234</string>
     <string name="add_vehicle_title">Add Vehicle</string>
+    <string name="update_vehicle_title">Update Vehicle</string>
     <string name="add_vehicle_driver_name">Driver Name</string>
     <string name="add_vehicle_driver_contact">Driver Contact Number</string>
     <string name="add_vehicle_driver_email">Driver Email Address</string>

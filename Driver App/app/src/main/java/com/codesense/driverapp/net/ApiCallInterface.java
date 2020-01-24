@@ -138,6 +138,8 @@ public interface ApiCallInterface {
                                                    @Part(Constant.VEHICLE_NUMBER_PARAM) RequestBody vehicleNumber,
                                                    @Part(Constant.VEHICLE_NAME_PARAM) RequestBody vehicleName);
 
+
+
     @Multipart
     @POST(WebserviceUrls.UPLOAD_DOCUMENTS)
     Observable<JsonElement> uploadDocumentsWithoutVehicleRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey,

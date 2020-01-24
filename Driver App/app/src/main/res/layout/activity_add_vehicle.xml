@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -138,6 +137,7 @@
                 android:imeOptions="actionNext"
                 android:singleLine="true"
                 android:textSize="18sp"
+                android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/vehicleNumberTextInputLayout"
                 />
 
@@ -169,7 +169,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:text="@string/upload_doc_text"
+        android:text="@string/verify_btn"
         android:textSize="21sp"
         android:textStyle="bold"
         android:layout_alignParentBottom="true"

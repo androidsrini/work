@@ -109,6 +109,7 @@ public class UploadDocumentActivity extends DrawerActivity {
     private int selectedDocumentsListPosition;
     private List<AvailableVehiclesItem> availableVehiclesItems;
     private boolean isDocumentAdded;
+    RelativeLayout rlVehicleDetails;
     String from;
 
 
@@ -147,23 +148,38 @@ public class UploadDocumentActivity extends DrawerActivity {
         if (intent != null) {
             from = intent.getStringExtra("from");
         }
+        initially();
+
         uploadDocumentViewModel.getApiResponseMutableLiveData().observe(this, this::handleApiResponse);
         if (from!=null &&from.equalsIgnoreCase("edit")) {
             uploadDocumentViewModel.fetchVehicleTypesRequest();
+            uploadContentButton.setVisibility(View.VISIBLE);
+            titleTextView.setText(getResources().getString(R.string.update_document_driver));
+
+/*
+
             if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
+*/
                 uploadDocumentViewModel.fetchOwnerCumDriverStatusRequest();
-            } else {
+           /* } else {
                 uploadDocumentViewModel.fetchNonDrivingPartnerStatusRequest();
-            }
+            }*/
         } else {
+/*
             if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
+*/
                 uploadDocumentViewModel.fetchDocumentStatusRequest();
-            } else {
+            /*} else {
                 uploadDocumentViewModel.fetchDocumentStatusDriverRequest();
-            }
+            }*/
+        }
+
+        if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))){
+            rlVehicleDetails.setVisibility(View.VISIBLE);
+        }else{
+            rlVehicleDetails.setVisibility(View.GONE);
         }
         updateCrashDetails();
-        initially();
         setDynamicValue();
         functionality();
         //Log.d(TAG, " User type: " + appSharedPreference.getUserType());
@@ -334,6 +350,14 @@ public class UploadDocumentActivity extends DrawerActivity {
                 if (null != documentStatusResponse && null != documentStatusResponse.getAvailableVehicles()
                         && !documentStatusResponse.getAvailableVehicles().isEmpty()) {
                     availableVehiclesItems.addAll(documentStatusResponse.getAvailableVehicles());
+                    if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))){
+                        selectVehicleRelativeLayout.setVisibility(View.GONE);
+                        selectVehicleDivider.setVisibility(View.GONE);
+                    }else{
+                        selectVehicleRelativeLayout.setVisibility(View.VISIBLE);
+                        selectVehicleDivider.setVisibility(View.VISIBLE);
+                    }
+
                 } else {
                     selectVehicleRelativeLayout.setVisibility(View.GONE);
                     selectVehicleDivider.setVisibility(View.GONE);
@@ -747,6 +771,7 @@ public class UploadDocumentActivity extends DrawerActivity {
     private void initially() {
         vehicleTypeArrowImageView = findViewById(R.id.vehicleTypeArrowImageView);
         tvRemaining = findViewById(R.id.tvRemaining);
+        rlVehicleDetails = findViewById(R.id.rlVehicleDetails);
         vehicleTypeRelativeLayout = findViewById(R.id.vehicleTypeRelativeLayout);
         etVehicleName = findViewById(R.id.etVehicleName);
         etVehicleNumber = findViewById(R.id.etVehicleNumber);

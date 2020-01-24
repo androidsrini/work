@@ -24,13 +24,17 @@ public class VehicleListAdapter extends RecyclerView.Adapter<VehicleListAdapter.
     private Activity activity;
     private int width;
     private int height;
+    private OnItemActionListener onItemActionListener;
+
 
     public VehicleListAdapter(Activity activity, List<VehiclesListItem> vehicleListModelList,
-                              int w, int h) {
+                              int w, int h,OnItemActionListener listener) {
         this.activity = activity;
         this.width = w;
         this.height = h;
         this.vehicleListModelList = vehicleListModelList;
+        this.onItemActionListener = listener;
+
     }
 
     @NonNull
@@ -92,8 +96,8 @@ public class VehicleListAdapter extends RecyclerView.Adapter<VehicleListAdapter.
             int topBottomSpace = (int) (height * 0.0089);
 
 
-            int imgIconWidth = (int) (width * 0.085);
-            int imgIconHeight = (int) (width * 0.085);
+            int imgIconWidth = (int) (width * 0.115);
+            int imgIconHeight = (int) (width * 0.115);
 
             int vehicleimgIconWidth = (int) (width * 0.085);
             int vehicleimgIconHeight = (int) (width * 0.085);
@@ -129,7 +133,31 @@ public class VehicleListAdapter extends RecyclerView.Adapter<VehicleListAdapter.
 
             activeSwitchCompat.setVisibility(View.GONE);
 
+            imgRightArrow.setOnClickListener((v)->{
+                if (null != onItemActionListener && -1 != getAdapterPosition()) {
+                    onItemActionListener.onEditActionClick(getAdapterPosition());
+                }
+            });
+
+            itemView.setOnClickListener((v)->{
+                if (null != onItemActionListener && -1 != getAdapterPosition()) {
+                    onItemActionListener.onViewClick(getAdapterPosition());
+                }
+            });
+
+            activeSwitchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (-1 != getAdapterPosition()) {
+                    onItemActionListener.onButtonClick(getAdapterPosition(), isChecked);
+                }
+            });
+
         }
+    }
+
+    public interface OnItemActionListener {
+        void onViewClick(int position);
+        void onEditActionClick(int position);
+        void onButtonClick(int position, boolean isChecked);
     }
 }
 

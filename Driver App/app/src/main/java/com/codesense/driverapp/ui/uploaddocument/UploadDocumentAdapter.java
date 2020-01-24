@@ -55,7 +55,7 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
 
         DocumentsItem uploadDocumentModel = uploadDocumentModelList.get(position);
         boolean isFileSelected = !TextUtils.isEmpty(uploadDocumentModel.getFilePath());
-        if (from==null && TextUtils.isEmpty(from)) {
+        if (from==null &&TextUtils.isEmpty(from) || !from.equalsIgnoreCase("edit")) {
             String status = isFileSelected ? activity.getString(R.string.document_status_completed)
                     : (null != uploadDocumentModel.getDocumentStatus()) ?
                     uploadDocumentModel.getDocumentStatus().getStatus() : activity.getString(R.string.recommended_next_step);

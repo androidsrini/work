@@ -139,6 +139,20 @@ public class AddVehicleViewModel extends ViewModel {
         }
     }
 
+    public void fetchVehicleTypesAndDocumentStatusVehicleRequestRequestEdit(String vehicleId) {
+        if (null != requestHandler) {
+            Observable<JsonElement> documentStatus = requestHandler.fetchDocumentStatusVehicle(ApiUtility.getInstance().getApiKeyMetaData(),vehicleId);
+            Observable<JsonElement> vehicleType = requestHandler.fetchVehicleTypesRequest(ApiUtility.getInstance().getApiKeyMetaData());
+            disposables.add(Observable.zip(documentStatus, vehicleType, MergedResponse::new).
+                    subscribeOn(Schedulers.io()).
+                    observeOn(AndroidSchedulers.mainThread()).
+                    doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.GET_DOCUMENTS_STATUS_VEHICLE_AND_VEHICLE_TYPES))).
+                    subscribe(result -> apiResponseMutableLiveData.setValue(ApiResponse.successMultiple(ServiceType.GET_DOCUMENTS_STATUS_VEHICLE_AND_VEHICLE_TYPES, result.jsonElementsResponse)),
+                            error -> {
+                                apiResponseMutableLiveData.setValue(ApiResponse.error(ServiceType.GET_DOCUMENTS_STATUS_VEHICLE_AND_VEHICLE_TYPES, error));
+                            }));
+        }
+    }
     /*public void fetchVehicleTypesRequest(){
         if(null != requestHandler) {
             disposables.add(requestHandler.fetchVehicleTypesRequest(ApiUtility.getInstance().getApiKeyMetaData()).

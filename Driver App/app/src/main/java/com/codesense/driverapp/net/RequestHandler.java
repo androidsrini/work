@@ -87,6 +87,13 @@ public class RequestHandler {
         return param;
     }
 
+    private HashMap<String, String> getUserIDRequestVehicleParam(String vehicleId) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
+        param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
+        param.put(Constant.VEHICLE_ID, vehicleId);
+        return param;
+    }
     /**
      * This method to create userId param value as HashMap.
      * @return HashMap;
@@ -268,23 +275,35 @@ public class RequestHandler {
     }
 
     private RequestBody getVehicleTypeId(VehicleDetailRequest vehicleDetailRequest) {
-        return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), vehicleDetailRequest.getVehicleTypeId());
+        if (!TextUtils.isEmpty(vehicleDetailRequest.getVehicleId())) {
+            return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), vehicleDetailRequest.getVehicleTypeId());
+        } else {
+            return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), "");
+        }
     }
 
     private RequestBody getVehicleId(VehicleDetailRequest vehicleDetailRequest) {
         if (!TextUtils.isEmpty(vehicleDetailRequest.getVehicleId())) {
             return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), vehicleDetailRequest.getVehicleId());
         } else {
-            return null;
+            return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), "");
         }
     }
 
     private RequestBody getVehicleNumber(VehicleDetailRequest vehicleDetailRequest) {
-        return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), vehicleDetailRequest.getVehicleNumber());
+        if (!TextUtils.isEmpty(vehicleDetailRequest.getVehicleId())) {
+            return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), vehicleDetailRequest.getVehicleNumber());
+        } else {
+            return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), "");
+        }
     }
 
     private RequestBody getVehicleName(VehicleDetailRequest vehicleDetailRequest) {
-        return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), vehicleDetailRequest.getVehicleName());
+        if (!TextUtils.isEmpty(vehicleDetailRequest.getVehicleId())) {
+            return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), vehicleDetailRequest.getVehicleName());
+        } else {
+            return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), "");
+        }
     }
 
     public RequestHandler(ApiCallInterface apiCallInterface, AppSharedPreference appSharedPreference) {
@@ -447,6 +466,9 @@ public class RequestHandler {
     }
 public Observable<JsonElement> fetchDocumentStatusDriver(String apiKey,String driverID) {
         return apiCallInterface.fetchDocumentStatusDriverRequest(apiKey, appSharedPreference.getAccessTokenKey(), getUserIDRequestDriverParam(driverID));
+    }
+public Observable<JsonElement> fetchDocumentStatusVehicle(String apiKey,String vehicleID) {
+        return apiCallInterface.fetchDocumentStatusVehicleRequest(apiKey, appSharedPreference.getAccessTokenKey(), getUserIDRequestVehicleParam(vehicleID));
     }
 
     public Observable<JsonElement> uploadDriverDocumentRequest(String api, List<DocumentsItem> documentsListItem, String driverId) {

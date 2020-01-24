@@ -44,6 +44,7 @@ import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentAdapter;
+import com.codesense.driverapp.ui.vehicle.VehicleListActivity;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.library.fileimagepicker.filepicker.FilePickerBuilder;
@@ -61,9 +62,12 @@ import io.reactivex.disposables.CompositeDisposable;
 
 public class AddVehicleActivity extends DrawerActivity implements View.OnClickListener {
 
-    private static final String VEHICLES_LIST_ITEM_ARG = "VehiclesListItemArg";
+    public static final String VEHICLES_LIST_ITEM_ARG = "VehiclesListItemArg";
+
     private static final int IMAGE_PICKER = 0x0001;
     private static final int FILE_PICKER = 0x0002;
+    public static final int RESULT = 0x0003;
+
     private static final String TAG = AddVehicleActivity.class.getSimpleName();
     ScrollView scrollView;
     //RelativeLayout vehicleTypeRelativeLayout;
@@ -123,6 +127,11 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
         context.startActivity(new Intent(context, AddVehicleActivity.class));
     }
 
+    public static Intent findStartIntent(Context context, VehiclesListItem driversListItem) {
+        Intent starter = new Intent(context, AddVehicleActivity.class);
+        starter.putExtra(VEHICLES_LIST_ITEM_ARG, driversListItem);
+        return starter;
+    }
     public static void start(Context context, VehiclesListItem vehiclesListItem) {
         Intent intent = new Intent(context, AddVehicleActivity.class);
         intent.putExtra(VEHICLES_LIST_ITEM_ARG, vehiclesListItem);
@@ -172,6 +181,7 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
                         utility.showToastMsg("All file are uploaded successfully");
                         clearAndUpdateDocumentListUI();
                         clear();
+                        VehicleListActivity.start(this);
                     } else {
                         utility.showToastMsg(apiResponse.getResponseMessage());
                     }
@@ -262,6 +272,7 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
                         }
                     } while (++ count < jsonElements.length);
                     if (allAreSuccess) {
+                        VehicleListActivity.start(this);
                         utility.showToastMsg("All file are uploaded successfully");
                     }
                     clearAndUpdateDocumentListUI();
@@ -372,6 +383,9 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
         }
         adapter = new UploadDocumentAdapter(this, uploadDocumentActionInfos, screenWidth, screenHeight,
                 isEditVehicle() ? "edit" : null);
+        if (isEditVehicle()){
+            titleTextView.setText(getResources().getString(R.string.update_vehicle_title));
+        }
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, recyclerView, new RecyclerTouchListener.ClickListener() {
@@ -403,7 +417,11 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
 
             }
         }));
-        addVehicleViewModel.fetchVehicleTypesAndDocumentStatusVehicleRequestRequest();
+        if (isEditVehicle()){
+            addVehicleViewModel.fetchVehicleTypesAndDocumentStatusVehicleRequestRequestEdit(vehiclesListItem.getVehicleId());
+        }else {
+            addVehicleViewModel.fetchVehicleTypesAndDocumentStatusVehicleRequestRequest();
+        }
     }
 
     /**
@@ -605,11 +623,11 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
         if (v.getId() == R.id.btnAddVehicle) {
             if (isValidVehicleFields()) {
                 if (isEditVehicle()) {
-                    utility.showConformationDialog(AddVehicleActivity.this,
+                   /* utility.showConformationDialog(AddVehicleActivity.this,
                             "Confirmation", (dialog, which) ->
-                            {
+                            {*/
                                 addVehicleViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
-                            });
+                           /* });*/
                 } else if (isValiedAllSelected()) {
                     addVehicleViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
                 }
