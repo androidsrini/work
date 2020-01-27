@@ -275,7 +275,7 @@ public class RequestHandler {
     }
 
     private RequestBody getVehicleTypeId(VehicleDetailRequest vehicleDetailRequest) {
-        if (!TextUtils.isEmpty(vehicleDetailRequest.getVehicleId())) {
+        if (!TextUtils.isEmpty(vehicleDetailRequest.getVehicleTypeId())) {
             return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), vehicleDetailRequest.getVehicleTypeId());
         } else {
             return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), "");
@@ -291,7 +291,7 @@ public class RequestHandler {
     }
 
     private RequestBody getVehicleNumber(VehicleDetailRequest vehicleDetailRequest) {
-        if (!TextUtils.isEmpty(vehicleDetailRequest.getVehicleId())) {
+        if (!TextUtils.isEmpty(vehicleDetailRequest.getVehicleNumber())) {
             return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), vehicleDetailRequest.getVehicleNumber());
         } else {
             return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), "");
@@ -299,7 +299,7 @@ public class RequestHandler {
     }
 
     private RequestBody getVehicleName(VehicleDetailRequest vehicleDetailRequest) {
-        if (!TextUtils.isEmpty(vehicleDetailRequest.getVehicleId())) {
+        if (!TextUtils.isEmpty(vehicleDetailRequest.getVehicleName())) {
             return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), vehicleDetailRequest.getVehicleName());
         } else {
             return RequestBody.create(MediaType.parse(Constant.TEXT_PLAIN), "");

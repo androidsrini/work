@@ -42,6 +42,7 @@ import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.ui.documentstatus.DocumentStatusActivity;
 import com.codesense.driverapp.ui.driver.DriverListActivity;
+import com.codesense.driverapp.ui.online.OnlineActivity;
 import com.codesense.driverapp.ui.referalprogram.ReferalProgramActivity;
 import com.codesense.driverapp.ui.signin.LoginActivity;
 import com.codesense.driverapp.ui.vehicle.VehicleListActivity;
@@ -92,6 +93,7 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
     private boolean isActivated;
     ImageView imgProfile;
     TextView UserName;
+    RelativeLayout headerViewLayout;
     TextView tvStatus;
 
     @Override
@@ -136,6 +138,7 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
         imgProfile = header.findViewById(R.id.imgProfile);
         UserName = header.findViewById(R.id.UserName);
         tvStatus = header.findViewById(R.id.tvStatus);
+        headerViewLayout = header.findViewById(R.id.headerViewLayout);
         int slideMenuLeftRightSpace = (int) (screenWidth * 0.037); //0.3
         int slideMenuWidth = (int) (screenWidth * 0.0864); //0.7
         int slideMenuHeight = (int) (screenWidth * 0.0864);
@@ -183,12 +186,35 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
             autoReloadEnableDisableSwitchCompat.setEnabled(true);
             if (appSharedPreference.getIsLive()==1){
                 autoReloadEnableDisableSwitchCompat.setChecked(true);
+                tvStatus.setText("Online");
             }else{
                 autoReloadEnableDisableSwitchCompat.setChecked(false);
+                tvStatus.setText("Offline");
             }
         }else{
             autoReloadEnableDisableSwitchCompat.setEnabled(false);
+            tvStatus.setText("Offline");
         }
+
+        if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
+            tvStatus.setVisibility(View.VISIBLE);
+            headerViewLayout.setPadding(0,0,0,0);
+
+        } else {
+            tvStatus.setVisibility(View.GONE);
+            headerViewLayout.setPadding(slideMenuLeftRightSpace,slideMenuLeftRightSpace*2,slideMenuLeftRightSpace*2,slideMenuLeftRightSpace*2);
+
+        }
+
+        if (appSharedPreference.getDisplayName()!=null){
+            UserName.setText(appSharedPreference.getDisplayName());
+        }
+        tvStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                OnlineActivity.start(DrawerActivity.this);
+            }
+        });
         loadMenu();
     }
 

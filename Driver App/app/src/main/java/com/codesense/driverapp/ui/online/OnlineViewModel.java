@@ -45,6 +45,10 @@ public class OnlineViewModel extends ViewModel {
                         error->apiResponseMutableLiveData.postValue(ApiResponse.error(ServiceType.UPDATE_VEHICLE_LIVE_LOCATION, error))));
     }
 
+    public MutableLiveData<ApiResponse> getApiResponseMutableLiveData() {
+        return apiResponseMutableLiveData;
+    }
+
     @Override
     protected void onCleared() {
         super.onCleared();

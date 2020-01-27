@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,6 @@ import android.widget.TextView;
 
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.data.VehiclesListItem;
-import com.codesense.driverapp.net.Constant;
 
 import java.util.List;
 
@@ -50,11 +50,17 @@ public class VehicleListAdapter extends RecyclerView.Adapter<VehicleListAdapter.
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
         VehiclesListItem vehiclesListItem = vehicleListModelList.get(position);
         viewHolder.tvVehicleNum.setText(vehiclesListItem.getVehicleNumber());
-        if (vehiclesListItem.getOwnerAsDriver().equals(String.valueOf(Constant.INVALID_STATUS))) {
+        if (TextUtils.isEmpty(vehiclesListItem.getDriverFirstName()) && TextUtils.isEmpty(vehiclesListItem.getDriverLastName())) {
             viewHolder.tvVehicleName.setText(activity.getString(R.string.not_mapped_status));
         } else {
             //Need to update owner name.
-            viewHolder.tvVehicleName.setText(vehiclesListItem.getVehicleName());
+            viewHolder.tvVehicleName.setText(vehiclesListItem.getDriverFirstName().concat(vehiclesListItem.getDriverLastName()));
+        }
+
+        if (vehiclesListItem.getVerificationStatus().equals("0")){
+           viewHolder.rlUserVehcleMain.setBackgroundResource(R.color.background_document_status);
+        }else{
+            viewHolder.rlUserVehcleMain.setBackgroundResource(R.color.background_document_status_enable);
         }
 //        VehicleListModel vehicleListModel = vehicleListModelList.get(position);
 //        String status = vehicleListModel.getVehicleStatus();

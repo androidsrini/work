@@ -52,6 +52,12 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
         viewHolder.tvVehicleNum.setText(driversListItem.getVehicleNumber());
         viewHolder.tvVehicleName.setText(driversListItem.getDriverFirstName().concat(driversListItem.getDriverLastName()));
         viewHolder.activeSwitchCompat.setChecked(parseInt(driversListItem.getDrivingActivationStatus()) == Constant.ACTIVE);
+
+        if (driversListItem.getVerificationStatus().equals("0")){
+            viewHolder.rlUserVehcleMain.setBackgroundResource(R.color.background_document_status);
+        }else{
+            viewHolder.rlUserVehcleMain.setBackgroundResource(R.color.background_document_status_enable);
+        }
     }
 
     @Override

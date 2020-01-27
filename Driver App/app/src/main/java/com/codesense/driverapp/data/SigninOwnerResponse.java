@@ -36,6 +36,8 @@ public class SigninOwnerResponse {
 
     @SerializedName("mobile_number")
     private String mobileNumber;
+@SerializedName("display_name")
+    private String displayName;
 
     @SerializedName("status")
     private int status;
@@ -47,6 +49,14 @@ public class SigninOwnerResponse {
     @SerializedName("live_status")
     private int liveStatus;
 
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
 
     public int getLiveStatus() {
         return liveStatus;

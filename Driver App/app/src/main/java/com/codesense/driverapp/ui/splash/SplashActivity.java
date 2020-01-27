@@ -26,6 +26,7 @@ import com.codesense.driverapp.ui.legalagreement.LegalAgreementActivity;
 import com.codesense.driverapp.ui.online.OnlineActivity;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
+import com.codesense.driverapp.ui.vehicle.VehicleListActivity;
 import com.codesense.driverapp.ui.verifymobile.VerifyMobileActivity;
 import com.google.gson.Gson;
 
@@ -125,8 +126,13 @@ public class SplashActivity extends BaseActivity {
                                 finish();
                             }
                         } else if (utility.parseInt(signupStatus.getIsActivated()) == 1){
-                            OnlineActivity.start(this);
-                            finish();
+                            if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
+                                OnlineActivity.start(this);
+                                finish();
+                            } else {
+                                VehicleListActivity.start(this);
+                                finish();
+                            }
                         }else {
                             UploadDocumentActivity.start(this);
                         }

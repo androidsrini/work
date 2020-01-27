@@ -16,54 +16,54 @@
         <!-- Screen Page Title Label -->
         <item>@drawable/documents_icon</item>
         <!-- sso configuration -->
-        <item>Guest</item>
+        <item>signin_default</item>
         <!-- Login non login configuration-->
         <!-- Olo Menu icon -->
     </array>
 
     <!--color-->
-    <array name="drawermenuitem_2">
+    <!--<array name="drawermenuitem_2">
         <item></item>
-        <!-- Section Title -->
+        &lt;!&ndash; Section Title &ndash;&gt;
         <item>Manage Vehicle</item>
-        <!-- Menu Label -->
+        &lt;!&ndash; Menu Label &ndash;&gt;
         <item>managevehicle</item>
-        <!-- Enums - This field not editable -->
+        &lt;!&ndash; Enums - This field not editable &ndash;&gt;
         <item></item>
-        <!-- URL -->
+        &lt;!&ndash; URL &ndash;&gt;
         <item></item>
-        <!-- Internal / External browser -->
+        &lt;!&ndash; Internal / External browser &ndash;&gt;
         <item></item>
-        <!-- video url / website url -->
+        &lt;!&ndash; video url / website url &ndash;&gt;
         <item>Manage Vehicle</item>
-        <!-- Screen Page Title Label -->
+        &lt;!&ndash; Screen Page Title Label &ndash;&gt;
         <item>@drawable/managevehicle</item>
-        <!-- sso configuration -->
+        &lt;!&ndash; sso configuration &ndash;&gt;
         <item>SignedIn</item>
-        <!-- Login non login configuration-->
-        <!-- Olo Menu icon -->
+        &lt;!&ndash; Login non login configuration&ndash;&gt;
+        &lt;!&ndash; Olo Menu icon &ndash;&gt;
     </array>
     <array name="drawermenuitem_3">
         <item></item>
-        <!-- Section Title -->
+        &lt;!&ndash; Section Title &ndash;&gt;
         <item>Manage Document</item>
-        <!-- Menu Label -->
+        &lt;!&ndash; Menu Label &ndash;&gt;
         <item>managedocument</item>
-        <!-- Enums - This field not editable -->
+        &lt;!&ndash; Enums - This field not editable &ndash;&gt;
         <item></item>
-        <!-- URL -->
+        &lt;!&ndash; URL &ndash;&gt;
         <item></item>
-        <!-- Internal / External browser -->
+        &lt;!&ndash; Internal / External browser &ndash;&gt;
         <item></item>
-        <!-- video url / website url -->
+        &lt;!&ndash; video url / website url &ndash;&gt;
         <item>Manage Document</item>
-        <!-- Screen Page Title Label -->
+        &lt;!&ndash; Screen Page Title Label &ndash;&gt;
         <item>@drawable/managedocuments</item>
-        <!-- sso configuration -->
+        &lt;!&ndash; sso configuration &ndash;&gt;
         <item>SignedIn</item>
-        <!-- Login non login configuration-->
-        <!-- Olo Menu icon -->
-    </array>
+        &lt;!&ndash; Login non login configuration&ndash;&gt;
+        &lt;!&ndash; Olo Menu icon &ndash;&gt;
+    </array>-->
     <array name="drawermenuitem_4">
         <item></item>
         <!-- Section Title -->
@@ -168,28 +168,28 @@
         <item>SignedIn</item>
         <!-- Login non login configuration-->
     </array>
-    <array name="drawermenuitem_9">
+    <!--<array name="drawermenuitem_9">
         <item></item>
-        <!-- Section Title -->
+        &lt;!&ndash; Section Title &ndash;&gt;
         <item>Check Status</item>
-        <!-- Menu Label -->
+        &lt;!&ndash; Menu Label &ndash;&gt;
         <item>checkstatus</item>
-        <!-- Enums - This field not editable -->
+        &lt;!&ndash; Enums - This field not editable &ndash;&gt;
         <item></item>
-        <!-- URL -->
+        &lt;!&ndash; URL &ndash;&gt;
         <item></item>
-        <!-- Internal / External browser -->
+        &lt;!&ndash; Internal / External browser &ndash;&gt;
         <item></item>
-        <!-- video url / website url -->
+        &lt;!&ndash; video url / website url &ndash;&gt;
         <item>Check Status</item>
-        <!-- Screen Page Title Label -->
+        &lt;!&ndash; Screen Page Title Label &ndash;&gt;
         <item>@drawable/documents_icon</item>
-        <!-- sso configuration -->
+        &lt;!&ndash; sso configuration &ndash;&gt;
         <item>signin_default</item>
-        <!-- Login non login configuration-->
-        <!-- Olo Menu icon -->
-    </array>
-    <array name="drawermenuitem_10">
+        &lt;!&ndash; Login non login configuration&ndash;&gt;
+        &lt;!&ndash; Olo Menu icon &ndash;&gt;
+    </array>-->
+    <array name="drawermenuitem_2">
         <item></item>
         <!-- Section Title -->
         <item>Add Vehicle</item>
@@ -210,7 +210,7 @@
         <!-- Login non login configuration-->
         <!-- Olo Menu icon -->
     </array>
-    <array name="drawermenuitem_11">
+    <array name="drawermenuitem_3">
         <item></item>
         <!-- Section Title -->
         <item>Add Driver</item>

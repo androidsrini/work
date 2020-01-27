@@ -34,6 +34,7 @@ import com.codesense.driverapp.ui.legalagreement.LegalAgreementActivity;
 import com.codesense.driverapp.ui.online.OnlineActivity;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
+import com.codesense.driverapp.ui.vehicle.VehicleListActivity;
 import com.codesense.driverapp.ui.verifymobile.VerifyMobileActivity;
 import com.google.gson.Gson;
 import com.product.annotationbuilder.ProductBindView;
@@ -251,8 +252,14 @@ public class LoginActivity extends BaseActivity {
                                 finish();
                             }
                         } else if (appSharedPreference.getIsActivate() == 1){
-                            OnlineActivity.start(this);
-                            finish();
+                            if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
+                                OnlineActivity.start(this);
+                                finish();
+                            } else {
+                                VehicleListActivity.start(this);
+                                finish();
+                            }
+
                         }else {
                             UploadDocumentActivity.start(this);
                         }
@@ -283,6 +290,7 @@ public class LoginActivity extends BaseActivity {
             appSharedPreference.saveIsActivate(signinOwnerResponse.getIs_activated());
             appSharedPreference.saveIsLive(signinOwnerResponse.getLiveStatus());
             appSharedPreference.saveIsAgreement(signinOwnerResponse.getAgreementAccept());
+            appSharedPreference.setDisplayName(signinOwnerResponse.getDisplayName());
         }
     }
 

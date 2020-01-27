@@ -33,6 +33,7 @@ import com.codesense.driverapp.R;
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
 import com.codesense.driverapp.ui.helper.LocationMonitoringService;
@@ -89,6 +90,8 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
         rlEndTrip = findViewById(R.id.rlEndTrip);
         titleTextView.setText(getResources().getString(R.string.online_text));
 
+        onlineViewModel.getApiResponseMutableLiveData().observe(this, this::apiResponseHandler);
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         assert mapFragment != null;
@@ -130,6 +133,8 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
             }
 
         });
+        updateSwitchUI(true);
+
         autoReloadEnableDisableSwitchCompat.setOnCheckedChangeListener((compoundButton, b) -> {
             appSharedPreference.setUserStatusOnline(b);
             //String status = b ? Constant.ONLINE_STATUS : Constant.OFFLINE_STATUS;
@@ -142,7 +147,6 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
                 }
             }
         });
-        updateSwitchUI(true);
     }
 
     @Override
@@ -159,11 +163,20 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
     }
 
     private void apiResponseHandler(ApiResponse apiResponse) {
+        ServiceType serviceType = apiResponse.getServiceType();
+
         switch (apiResponse.status) {
             case LOADING:
                 CrashlyticsHelper.d("Online status api loading");
                 break;
             case SUCCESS:
+                if (ServiceType.VEHICLE_LIVE_STATUS== serviceType){
+                    if (apiResponse.isValidResponse()){
+                        autoReloadEnableDisableSwitchCompat.setChecked(true);
+                    }else{
+                        autoReloadEnableDisableSwitchCompat.setChecked(false);
+                    }
+                }
                 CrashlyticsHelper.d("Online status api success" + apiResponse.data);
                 break;
             case ERROR:

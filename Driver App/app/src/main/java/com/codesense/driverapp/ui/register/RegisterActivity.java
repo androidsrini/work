@@ -448,7 +448,9 @@ public class RegisterActivity extends BaseActivity {
                         appSharedPreference.saveUserType(apiResponse.getResponseJsonObject().optString(Constant.USER_TYPE_RESPONSE));
                         appSharedPreference.saveUserID(apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE));
                         appSharedPreference.savePhoneNum(apiResponse.getResponseJsonObject().optString(Constant.MOBILE_NUMBER_PARAM));
+                        appSharedPreference.setDisplayName(apiResponse.getResponseJsonObject().optString(Constant.DISPLAY_NAME_PARAM));
                         appSharedPreference.saveAccessToken(apiResponse.getResponseJsonObject().optString(Constant.ACCESS_TOKEN_PARAM));
+                        appSharedPreference.setProfilePicture(apiResponse.getResponseJsonObject().optString(Constant.PROFILE_PARAM));
                         VerifyMobileActivity.start(this, apiResponse.getResponseJsonObject().optString(Constant.USER_ID_RESPONSE),
                                 getEtPhoneNumber(), VerifyMobileActivity.NEED_TO_CALL_SEND_OTP);
                     } else if (null != apiResponse.getResponseJsonObject()) {

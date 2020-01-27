@@ -17,7 +17,9 @@ public final class Constant {
     public static final String NAME_PARAM = "name";
     public static final String FIRST_NAME_PARAM = "first_name";
     public static final String LAST_NAME_PARAM = "last_name";
+    public static final String PROFILE_PARAM = "profile_picture";
     public static final String MOBILE_NUMBER_PARAM = "mobile_number";
+    public static final String DISPLAY_NAME_PARAM = "display_name";
     public static final String MOBILE_NUMBER_RESPONSE = "mobile_number";
     public static final String PASSWORD_PARAM = "password";
     public static final String COUNTRY_ID_PARAM = "country_id";

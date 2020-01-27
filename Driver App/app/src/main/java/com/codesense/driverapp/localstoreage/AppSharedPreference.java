@@ -29,6 +29,7 @@ public class AppSharedPreference {
     private static final String USER_STATUS = "UserStatus";
     private static final String COUNTRY_DIAL_CODE_KEY = "CountryDialCodeKey";
     private static final String EMAIL_ID_KEY = "EmailIdKey";
+    private static final String DISPLAY_NAME_KEY = "DisplayName";
     private static final String PROFILE_PICTURE_KEY = "ProfilePictureKey";
     private static final String SPEED_KEY = "SpeedKey";
     private static final String DEFAULT_VALUE = null;
@@ -206,6 +207,11 @@ public class AppSharedPreference {
         editor.putString(EMAIL_ID_KEY, emailId);
         editor.apply();
     }
+    public void setDisplayName(String name) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(DISPLAY_NAME_KEY, name);
+        editor.apply();
+    }
 
     public void setProfilePicture(String profilePicture) {
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -229,6 +235,9 @@ public class AppSharedPreference {
 
     public String getEmailId() {
         return sharedPreferences.getString(EMAIL_ID_KEY, null);
+    }
+    public String getDisplayName() {
+        return sharedPreferences.getString(DISPLAY_NAME_KEY, null);
     }
 
     public String getProfilePicture() {
