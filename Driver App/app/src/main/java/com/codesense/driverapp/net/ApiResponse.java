@@ -55,6 +55,7 @@ public class ApiResponse {
      * Api Open OTP Input for OTP Validation response status
      */
     public static final int OTP_VALIDATION = 3004;
+    public static final int FORGOT_OTP_VALIDATION = 3005;
 
     public final Status status;
 

@@ -30,6 +30,7 @@ import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
 import com.codesense.driverapp.R;
+import com.codesense.driverapp.data.SetOnlineStatusResponse;
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
@@ -48,6 +49,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
 
 import java.util.concurrent.TimeUnit;
 
@@ -135,8 +137,8 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
         });
         updateSwitchUI(true);
 
-        autoReloadEnableDisableSwitchCompat.setOnCheckedChangeListener((compoundButton, b) -> {
-            appSharedPreference.setUserStatusOnline(b);
+        /*autoReloadEnableDisableSwitchCompat.setOnCheckedChangeListener((compoundButton, b) -> {
+            appSharedPreference.setUserStatusOnline(autoReloadEnableDisableSwitchCompat.isChecked());
             //String status = b ? Constant.ONLINE_STATUS : Constant.OFFLINE_STATUS;
             onlineViewModel.updateLocationRequest(ApiUtility.getInstance().getApiKeyMetaData());
             if (utility.isOnline(this)) {
@@ -145,6 +147,16 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
                 } else {
                     stopLocation();
                 }
+            }
+        });*/
+
+        autoReloadEnableDisableSwitchCompat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                appSharedPreference.setUserStatusOnline(autoReloadEnableDisableSwitchCompat.isChecked());
+                //String status = b ? Constant.ONLINE_STATUS : Constant.OFFLINE_STATUS;
+                onlineViewModel.updateLocationRequest(ApiUtility.getInstance().getApiKeyMetaData());
+
             }
         });
     }
@@ -171,10 +183,35 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
                 break;
             case SUCCESS:
                 if (ServiceType.VEHICLE_LIVE_STATUS== serviceType){
+
+
                     if (apiResponse.isValidResponse()){
-                        autoReloadEnableDisableSwitchCompat.setChecked(true);
+                        SetOnlineStatusResponse setOnlineStatusResponse = new Gson().fromJson(apiResponse.data, SetOnlineStatusResponse.class);
+
+                        if (setOnlineStatusResponse.getMessage().contains("Offline")){
+                            autoReloadEnableDisableSwitchCompat.setChecked(false);
+                            tvStatus.setText("Offline");
+                            appSharedPreference.saveIsLive(0);
+                        }else {
+                            autoReloadEnableDisableSwitchCompat.setChecked(true);
+                            tvStatus.setText("Online");
+                            appSharedPreference.saveIsLive(1);
+                        }
+                        if (autoReloadEnableDisableSwitchCompat.isChecked()){
+                            refreshLocation();
+                        }else{
+                            stopLocation();
+                        }
                     }else{
+                        if (autoReloadEnableDisableSwitchCompat.isChecked()){
+                            refreshLocation();
+                        }else{
+                            stopLocation();
+                        }
                         autoReloadEnableDisableSwitchCompat.setChecked(false);
+                        tvStatus.setText("Offline");
+                        utility.showToastMsg(apiResponse.getResponseMessage());
+                        appSharedPreference.saveIsLive(0);
                     }
                 }
                 CrashlyticsHelper.d("Online status api success" + apiResponse.data);

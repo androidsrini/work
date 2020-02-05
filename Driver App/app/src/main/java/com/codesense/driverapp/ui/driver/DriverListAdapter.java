@@ -55,9 +55,17 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
 
         if (driversListItem.getVerificationStatus().equals("0")){
             viewHolder.rlUserVehcleMain.setBackgroundResource(R.color.background_document_status);
+            viewHolder.activeSwitchCompat.setEnabled(false);
         }else{
             viewHolder.rlUserVehcleMain.setBackgroundResource(R.color.background_document_status_enable);
+            viewHolder.activeSwitchCompat.setEnabled(true);
         }
+        if (driversListItem.getDrivingActivation().equalsIgnoreCase("0")){
+            viewHolder.activeSwitchCompat.setChecked(false);
+        }else{
+            viewHolder.activeSwitchCompat.setChecked(true);
+        }
+
     }
 
     @Override

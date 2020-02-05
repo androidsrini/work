@@ -72,7 +72,7 @@
     <string name="vehicle_registration">Vehicle Certification of Registration</string>
     <string name="vehicle_commerical_insurance">Vehicle Commercial Insurance</string>
     <string name="vehicle_permit">Vehicle Permit</string>
-    <string name="verify_btn">Verify</string>
+    <string name="verify_btn">Submit</string>
     <string name="document_status_title">Document Status</string>
     <string name="document_status_completed">Completed</string>
     <string name="document_verification_pending">Verification Pending</string>
@@ -86,7 +86,7 @@
     <!--Document Status-->
 
     <string name="docstatus_vehicle_commerical">Vehicle Commercial Insurance</string>
-    <string name="update_document_text">Verify</string>
+    <string name="update_document_text">Submit</string>
 
     <string name="vehicle_list_title">Vehicle</string>
     <string name="add_vehicle_text">Add Vehicle</string>
@@ -210,4 +210,12 @@
     <string name="vehicle_edit_confirmation">Are you sure you want edit this vehicle?</string>
     <string name="edit_confirmation">Are you sure want to edit vehicle. This will deactivate your vehicle upto verification?</string>
     <string name="drivers_label">Drivers</string>
+
+    <!--Forgot Password Text-->
+    <string name="forgot_main_text">Forgot Your Password?</string>
+    <string name="forgot_content_text">Please enter your mobile number to reset your Password.</string>
+    <string name="forgot_mobile_text">Enter your Mobile number</string>
+    <string name="forgot_btn_submit">Submit</string>
+    <string name="forgot_new_password_des">Please enter your new password to sign in</string>
+
 </resources>

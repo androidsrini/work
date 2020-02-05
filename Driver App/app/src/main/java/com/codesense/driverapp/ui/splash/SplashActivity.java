@@ -25,7 +25,6 @@ import com.codesense.driverapp.ui.launchscreen.LaunchScreenActivity;
 import com.codesense.driverapp.ui.legalagreement.LegalAgreementActivity;
 import com.codesense.driverapp.ui.online.OnlineActivity;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
-import com.codesense.driverapp.ui.uploaddocument.UploadDocumentActivity;
 import com.codesense.driverapp.ui.vehicle.VehicleListActivity;
 import com.codesense.driverapp.ui.verifymobile.VerifyMobileActivity;
 import com.google.gson.Gson;
@@ -134,7 +133,7 @@ public class SplashActivity extends BaseActivity {
                                 finish();
                             }
                         }else {
-                            UploadDocumentActivity.start(this);
+                            LaunchScreenActivity.start(this);
                         }
                         finish();
                     } else {

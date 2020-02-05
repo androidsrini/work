@@ -41,9 +41,9 @@ public class DriverListViewModel extends ViewModel {
         }
     }
 
-    public void postDrivingActivationRequest(int driverStatus, String vehicleId, String driverId){
+    public void postDrivingActivationRequest(int driverStatus, String vehicleId, String driverId,String driverType){
         if(null != requestHandler) {
-            disposables.add(requestHandler.postDrivingActivationRequest(ApiUtility.getInstance().getApiKeyMetaData(), driverStatus, vehicleId, driverId).
+            disposables.add(requestHandler.postDrivingActivationRequest(ApiUtility.getInstance().getApiKeyMetaData(), driverStatus, vehicleId, driverId,driverType).
                     subscribeOn(Schedulers.io()).
                     observeOn(AndroidSchedulers.mainThread()).
                     doOnSubscribe(d -> apiResponseMutableLiveData.setValue(ApiResponse.loading(ServiceType.DRIVING_ACTIVATION))).

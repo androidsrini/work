@@ -267,5 +267,13 @@ public class AppSharedPreference {
     public void clear() {
         sharedPreferences.edit().clear().apply();
     }
+    public void clear(Context context) {
+        SharedPreferences preferences =context.getSharedPreferences(context.getString(R.string.app_name), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();
+        editor.commit();
+    }
+
+
 
 }

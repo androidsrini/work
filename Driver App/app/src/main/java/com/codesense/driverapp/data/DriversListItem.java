@@ -9,6 +9,8 @@ public class DriversListItem implements Parcelable {
 
 	@SerializedName("driver_contact_number")
 	private String driverContactNumber;
+@SerializedName("driver_type")
+	private String driverType;
 
 	@SerializedName("driver_id")
 	private String driverId;
@@ -39,9 +41,28 @@ public class DriversListItem implements Parcelable {
 
 	@SerializedName("driving_activation_status")
 	private String drivingActivationStatus;
+@SerializedName("driving_activation")
+	private String drivingActivation;
 
 	public void setDriverContactNumber(String driverContactNumber){
 		this.driverContactNumber = driverContactNumber;
+	}
+
+
+	public String getDrivingActivation() {
+		return drivingActivation;
+	}
+
+	public void setDrivingActivation(String drivingActivation) {
+		this.drivingActivation = drivingActivation;
+	}
+
+	public String getDriverType() {
+		return driverType;
+	}
+
+	public void setDriverType(String driverType) {
+		this.driverType = driverType;
 	}
 
 	public String getDriverContactNumber(){

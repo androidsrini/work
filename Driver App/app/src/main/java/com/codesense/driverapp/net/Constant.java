@@ -38,8 +38,11 @@ public final class Constant {
     public static final String NON_DRIVING_PARTNER = "Non Driving Partner";
     public static final String OWNER_AGREEMENT_RESPONSE = "owner_agreement";
     public static final String OTP_PARAM = "otp";
+    public static final String NEW_PASSWORD_PARAM = "new_password";
+    public static final String VERIFICATION_CODE_PARAM = "verification_code";
     public static final String VEHICLE_TYPE_ID_PARAM = "vehicle_type_id";
     public static final String VEHICLE_NUMBER_PARAM = "vehicle_number";
+    public static final String CONTACT_NUMBER_PARAM = "contact_number";
     public static final String VEHICLE_NAME_PARAM = "vehicle_name";
     public static final String AGREEMENT_ACCEPT_REQUEST = "agreement_accept";
     public static final String MESSAGE_RESPONSE = "message";
@@ -50,6 +53,7 @@ public final class Constant {
     public static final String DRIVER_FIRST_NAME_PARAM = "driver_first_name" ;
     public static final String DRIVER_LAST_NAME_PARAM = "driver_last_name" ;
     public static final String DRIVER_ID = "driver_id" ;
+    public static final String DRIVER_TYPE = "driver_type" ;
     public static final String ONLINE_STATUS = "Online" ;
     public static final String OFFLINE_STATUS = "Offline" ;
     public static final String ONLINE_CODE = "1" ;

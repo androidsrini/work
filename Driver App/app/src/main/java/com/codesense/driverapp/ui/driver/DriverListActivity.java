@@ -67,7 +67,7 @@ public class DriverListActivity extends DrawerActivity {
                 //call active api here.
                 DriversListItem driversListItem = driversListItemList.get(position);
                 driverListViewModel.postDrivingActivationRequest(isChecked ? Constant.ACTIVE :
-                        Constant.INACTIVE, driversListItem.getVehicleId(), driversListItem.getDriverId());
+                        Constant.INACTIVE, driversListItem.getVehicleId(), driversListItem.getDriverId(),driversListItem.getDriverType());
             }
 
             @Override
@@ -115,6 +115,7 @@ public class DriverListActivity extends DrawerActivity {
                         utility.showToastMsg("Updated");
                     } else {
                         utility.showToastMsg(apiResponse.getResponseMessage());
+                        driverListAdapter.notifyDataSetChanged();
                     }
                 }
                 break;

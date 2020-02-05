@@ -94,7 +94,7 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
     ImageView imgProfile;
     TextView UserName;
     RelativeLayout headerViewLayout;
-    TextView tvStatus;
+    public TextView tvStatus;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -165,7 +165,7 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
         drawerSignOutRelativeLayout.setOnClickListener((v) -> {
             utility.showConformationDialog(this, "Are you sure you want logout?",
                     (DialogInterface.OnClickListener) (dialog, which) -> {
-                        appSharedPreference.clear();
+                        appSharedPreference.clear(this);
                         LoginActivity.start(this);
                         finish();
                         finishAffinity();

@@ -9,6 +9,7 @@ public class WebserviceUrls {
     public static final String SIGNIN_OWNER = "signin_owner";
     public static final String SEND_OTP = "send_otp";
     public static final String VERIFY_OTP = "verify_otp";
+    public static final String GET_VERIFICATION_CODE = "get_verification_code";
     public static final String OWNER_TYPES = "owner_types";
     public static final String GET_OWNER_AGREEMENT = "get_owner_agreement";
     public static final String ACCEPT_LEGAL_AGREEMENT = "owner_registation/legal_agreement";
@@ -46,6 +47,8 @@ public class WebserviceUrls {
     public static final String GET_DRIVERS_LIST = "get_drivers_list";
     public static final String DRIVING_ACTIVATION = "driving_activation";
     public static final String DRIVER_DETAILS = "driver_details";
+    public static final String FORGOT_PASSWORD = "forgot_password";
+    public static final String CHANGE_PASSWORD = "change_password";
     //public static final String UPDATE_DRIVER_DOCUMENTS = "driver_details";
 
 }

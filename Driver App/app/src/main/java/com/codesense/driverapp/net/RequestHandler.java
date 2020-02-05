@@ -55,6 +55,23 @@ public class RequestHandler {
         return param;
     }
 
+    private HashMap<String, String> getVerifyOTPForgotRequestParam(String otp) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
+        param.put(Constant.OTP_PARAM, otp);
+        param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
+        return param;
+    }
+
+    private HashMap<String, String> changePasswordParam(String verification_code,String password) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
+        param.put(Constant.VERIFICATION_CODE_PARAM, verification_code);
+        param.put(Constant.NEW_PASSWORD_PARAM, password);
+        param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
+        return param;
+    }
+
     /**
      * This method will create sigin in api request as hashmap
      * @param emailId
@@ -98,12 +115,13 @@ public class RequestHandler {
      * This method to create userId param value as HashMap.
      * @return HashMap;
      */
-    private HashMap<String, String> postdrivingActivationRequestParam(int driverStatus, String vehicleId, String driverId) {
+    private HashMap<String, String> postdrivingActivationRequestParam(int driverStatus, String vehicleId, String driverId,String driverType) {
         HashMap<String, String> param = new HashMap<>();
         param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
         param.put(Constant.DRIVING_STATUS, String.valueOf(driverStatus));
         param.put(Constant.VEHICLE_ID, vehicleId);
         param.put(Constant.DRIVER_ID, driverId);
+        param.put(Constant.DRIVER_TYPE, driverType);
         param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
         return param;
     }
@@ -113,6 +131,14 @@ public class RequestHandler {
         param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
         param.put(Constant.DRIVER_ID, driverId);
         param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
+        return param;
+    }
+
+    private HashMap<String, String> forgotRequest(String contactNo) {
+        HashMap<String, String> param = new HashMap<>();
+//        param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
+        param.put(Constant.CONTACT_NUMBER_PARAM, contactNo);
+//        param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
         return param;
     }
 
@@ -489,15 +515,26 @@ public Observable<JsonElement> fetchDocumentStatusVehicle(String apiKey,String v
         return apiCallInterface.getDriversListRequest(api, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
     }
 
-    public Observable<JsonElement> postDrivingActivationRequest(String api, int driverStatus, String vehicleId, String driverId) {
-        return apiCallInterface.postDrivingActivationRequest(api, appSharedPreference.getAccessTokenKey(), postdrivingActivationRequestParam(driverStatus, vehicleId, driverId));
+    public Observable<JsonElement> postDrivingActivationRequest(String api, int driverStatus, String vehicleId, String driverId,String driverType) {
+        return apiCallInterface.postDrivingActivationRequest(api, appSharedPreference.getAccessTokenKey(), postdrivingActivationRequestParam(driverStatus, vehicleId, driverId,driverType));
     }
 
     public Observable<JsonElement> fetchDriverDetailsRequest(String api, String driverId) {
         return apiCallInterface.fetchDriverDetailsRequest(api, appSharedPreference.getAccessTokenKey(), driverDetailsRequestParam(driverId));
     }
 
+    public Observable<JsonElement> sendForgotPasswordRequest(String api, String contactNumber) {
+        return apiCallInterface.sendForgot(api, appSharedPreference.getAccessTokenKey(), forgotRequest(contactNumber));
+    }
+
     public Observable<JsonElement> editVehicleDriverRequest(String api, AddDriverRequest addDriverRequest) {
         return apiCallInterface.editVehicleDriverRequest(api, appSharedPreference.getAccessTokenKey(), getEditDriverRequestParam(addDriverRequest));
+    }
+
+    public Observable<JsonElement> verifyOTPForgotRequest(String apiKey, String otp) {
+        return apiCallInterface.verifyOTPForgotRequest(apiKey, appSharedPreference.getAccessTokenKey(), getVerifyOTPForgotRequestParam(otp));
+    }
+    public Observable<JsonElement> changePasswordRequest(String apiKey, String verficationCode,String password) {
+        return apiCallInterface.changePasswordRequest(apiKey, appSharedPreference.getAccessTokenKey(), changePasswordParam(verficationCode,password));
     }
 }
