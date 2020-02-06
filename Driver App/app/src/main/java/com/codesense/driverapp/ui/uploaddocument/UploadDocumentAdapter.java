@@ -73,9 +73,11 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
                 viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFilePath()));
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
                 // To show unselected image and content
-                viewHolder.selectedImage.setVisibility(View.VISIBLE);
-                Glide.with(viewHolder.selectedImage.getContext()).load(Constant.FILE_PREFIX + uploadDocumentModel.getFilePath())
-                        .into(viewHolder.selectedImage);
+                if (isImageFile(uploadDocumentModel.getFilePath())) {
+                    viewHolder.selectedImage.setVisibility(View.VISIBLE);
+                    Glide.with(viewHolder.selectedImage.getContext()).load(Constant.FILE_PREFIX + uploadDocumentModel.getFilePath())
+                            .into(viewHolder.selectedImage);
+                }
             }
         }else{
             String status=null;
@@ -105,12 +107,24 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
                 viewHolder.documentFileNameTextView.setVisibility(View.VISIBLE);
                 viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFilePath()));
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
-                viewHolder.selectedImage.setVisibility(View.VISIBLE);
-                Glide.with(viewHolder.selectedImage.getContext()).load(Constant.FILE_PREFIX + uploadDocumentModel.getFilePath())
-                        .into(viewHolder.selectedImage);
+                if (isImageFile(uploadDocumentModel.getFilePath())) {
+                    viewHolder.selectedImage.setVisibility(View.VISIBLE);
+                    Glide.with(viewHolder.selectedImage.getContext()).load(Constant.FILE_PREFIX + uploadDocumentModel.getFilePath())
+                            .into(viewHolder.selectedImage);
+                }
                 // To s
             }
         }
+    }
+
+    private boolean isImageFile(String fileName) {
+        if (TextUtils.isEmpty(fileName)) {
+            return false;
+        }
+        String array[] = fileName.split("\\.");
+        String extance = array[array.length -1];
+        return !TextUtils.isEmpty(extance) && (extance.equalsIgnoreCase("jpg")
+                ||extance.equalsIgnoreCase("jpeg") || extance.equalsIgnoreCase("png"));
     }
 
     @Override

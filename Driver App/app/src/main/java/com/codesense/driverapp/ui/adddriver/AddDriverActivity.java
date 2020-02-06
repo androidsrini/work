@@ -163,6 +163,7 @@ public class AddDriverActivity extends DrawerActivity {
     }
 
     private void functionality() {
+        recyclerView.setVisibility(View.VISIBLE);
         Intent intent = getIntent();
         if (null != intent) {
             driversListItem = intent.getParcelableExtra(DRIVERS_LIST_ITEM_ARG);
