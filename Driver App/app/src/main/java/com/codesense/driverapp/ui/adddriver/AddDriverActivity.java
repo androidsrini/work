@@ -45,6 +45,7 @@ import com.codesense.driverapp.localstoreage.DatabaseClient;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
+import com.codesense.driverapp.ui.camera.CameraActivity;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.uploadDriver.UploadDocumentDriverActivity;
 import com.codesense.driverapp.ui.uploaddocument.UploadDocumentAdapter;
@@ -218,8 +219,18 @@ public class AddDriverActivity extends DrawerActivity {
                                     //updateUploadContentButtonUI();
                                 });
                     } else {
-                        String[] supportFormat = selectedDocumetnsListItem.getSuportedFormats().toArray(new String[0]);
-                        showImageFromGalary(supportFormat, utility.parseDouble(selectedDocumetnsListItem.getMaxSize()));
+                        utility.showListDialog(AddDriverActivity.this, utility.selectSourceOption(), "Select Source", (dialog, which) -> {
+                            if (which == 0) {
+                                //CameraActivity.start(UploadDocumentActivity.this);
+                                startActivityForResult(new Intent(AddDriverActivity.this, CameraActivity.class),
+                                        CameraActivity.REQUEST_CAMERA_ACTIVITY);
+                            } else {
+                                String[] supportFormat = selectedDocumetnsListItem.getSuportedFormats().toArray(new String[0]);
+                                showImageFromGalary(supportFormat, utility.parseDouble(selectedDocumetnsListItem.getMaxSize()));
+                            }
+                        });
+                        /*String[] supportFormat = selectedDocumetnsListItem.getSuportedFormats().toArray(new String[0]);
+                        showImageFromGalary(supportFormat, utility.parseDouble(selectedDocumetnsListItem.getMaxSize()));*/
                     }
                 } else {
                     utility.showToastMsg("Not allowed to update this");
@@ -742,6 +753,13 @@ public class AddDriverActivity extends DrawerActivity {
             if (null != filePath && !filePath.isEmpty()) {
                 Log.d(TAG, " The image file path:" + filePath);
                 updateDocumentItem(filePath.get(0));
+            }
+        } else if (requestCode == CameraActivity.REQUEST_CAMERA_ACTIVITY && resultCode == Activity.RESULT_OK) {
+            String filePath = data.getStringExtra(CameraActivity.CAPTURE_CAMERA_IMAGE);
+            if (null != filePath && !filePath.isEmpty()) {
+                Log.d(TAG, " The image file path:" + filePath);
+                updateDocumentItem(filePath);
+                //updateUploadContentButtonUI();
             }
         } else {
             utility.showToastMsg("File not found");

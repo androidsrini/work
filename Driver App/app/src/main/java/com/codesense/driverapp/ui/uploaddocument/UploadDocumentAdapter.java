@@ -67,11 +67,15 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
                 //To show selected image UI
                 viewHolder.documentFileNameTextView.setVisibility(View.GONE);
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.right_only_bg);
+                viewHolder.selectedImage.setVisibility(View.GONE);
             } else {
                 viewHolder.documentFileNameTextView.setVisibility(View.VISIBLE);
                 viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFilePath()));
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
                 // To show unselected image and content
+                viewHolder.selectedImage.setVisibility(View.VISIBLE);
+                Glide.with(viewHolder.selectedImage.getContext()).load(Constant.FILE_PREFIX + uploadDocumentModel.getFilePath())
+                        .into(viewHolder.selectedImage);
             }
         }else{
             String status=null;
@@ -102,7 +106,7 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
                 viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFilePath()));
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
                 viewHolder.selectedImage.setVisibility(View.VISIBLE);
-                Glide.with(viewHolder.selectedImage.getContext()).load("file://" + uploadDocumentModel.getFilePath())
+                Glide.with(viewHolder.selectedImage.getContext()).load(Constant.FILE_PREFIX + uploadDocumentModel.getFilePath())
                         .into(viewHolder.selectedImage);
                 // To s
             }
