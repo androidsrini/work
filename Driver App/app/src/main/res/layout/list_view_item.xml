@@ -17,6 +17,13 @@ android:padding="5dp"    >
         android:layout_height="wrap_content"
         android:background="@color/light_blue_color">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center_vertical"
+            android:layout_toStartOf="@+id/selected_image">
+
         <TextView
             android:id="@+id/tvDriverText"
             android:layout_width="wrap_content"
@@ -46,8 +53,19 @@ android:padding="5dp"    >
             android:layout_below="@+id/documentFileNameTextView"
             app:layout_constraintLeft_toLeftOf="parent" />
 
+        </LinearLayout>
+
         <!-- Default background image -->
         <!--android:src="@drawable/right_only_bg"-->
+
+        <ImageView
+            android:id="@+id/selected_image"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_toStartOf="@+id/imgRightArrow"
+            android:layout_margin="10dp"
+            android:visibility="gone"
+            />
 
         <ImageView
             android:id="@+id/imgRightArrow"

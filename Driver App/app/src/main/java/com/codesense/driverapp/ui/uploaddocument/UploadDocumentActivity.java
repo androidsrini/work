@@ -42,6 +42,7 @@ import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.Constant;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
+import com.codesense.driverapp.ui.camera.CameraActivity;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
 import com.codesense.driverapp.ui.online.OnlineActivity;
@@ -459,8 +460,16 @@ public class UploadDocumentActivity extends DrawerActivity {
                                     updateUploadContentButtonUI();
                                 });
                     } else {
-                        String[] supportFormat = selectedDocumetnsListItem.getSuportedFormats().toArray(new String[0]);
-                        showImageFromGalary(supportFormat, utility.parseDouble(selectedDocumetnsListItem.getMaxSize()));
+                        utility.showListDialog(UploadDocumentActivity.this, utility.selectSourceOption(), "Select Source", (dialog, which) -> {
+                            if (which == 0) {
+                                //CameraActivity.start(UploadDocumentActivity.this);
+                                startActivityForResult(new Intent(UploadDocumentActivity.this, CameraActivity.class),
+                                        CameraActivity.REQUEST_CAMERA_ACTIVITY);
+                            } else {
+                                String[] supportFormat = selectedDocumetnsListItem.getSuportedFormats().toArray(new String[0]);
+                                showImageFromGalary(supportFormat, utility.parseDouble(selectedDocumetnsListItem.getMaxSize()));
+                            }
+                        });
                     }
                 } else {
                     utility.showToastMsg("Not allowed to update this");
@@ -882,6 +891,13 @@ public class UploadDocumentActivity extends DrawerActivity {
             if (null != filePath && !filePath.isEmpty()) {
                 Log.d(TAG, " The image file path:" + filePath);
                 updateDocumentItem(filePath.get(0));
+                updateUploadContentButtonUI();
+            }
+        } else if (requestCode == CameraActivity.REQUEST_CAMERA_ACTIVITY && resultCode == Activity.RESULT_OK) {
+            String filePath = data.getStringExtra(CameraActivity.CAPTURE_CAMERA_IMAGE);
+            if (null != filePath && !filePath.isEmpty()) {
+                Log.d(TAG, " The image file path:" + filePath);
+                updateDocumentItem(filePath);
                 updateUploadContentButtonUI();
             }
         } else {

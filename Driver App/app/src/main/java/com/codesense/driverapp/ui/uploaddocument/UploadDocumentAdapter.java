@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.data.DocumentsItem;
 import com.codesense.driverapp.net.Constant;
@@ -93,12 +94,16 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
             }
             if (!isFileSelected) {
                 //To show selected image UI
+                viewHolder.selectedImage.setVisibility(View.GONE);
                 viewHolder.documentFileNameTextView.setVisibility(View.GONE);
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.right_only_bg);
             } else {
                 viewHolder.documentFileNameTextView.setVisibility(View.VISIBLE);
                 viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFilePath()));
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
+                viewHolder.selectedImage.setVisibility(View.VISIBLE);
+                Glide.with(viewHolder.selectedImage.getContext()).load("file://" + uploadDocumentModel.getFilePath())
+                        .into(viewHolder.selectedImage);
                 // To s
             }
         }
@@ -126,7 +131,7 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private RelativeLayout rlDriveLicense,rlMain;
-        private ImageView imgRightArrow;
+        private ImageView imgRightArrow, selectedImage;
         private TextView tvDriverText, tvDriverdesc ,documentFileNameTextView;
         //int position;
 
@@ -139,6 +144,7 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
             tvDriverdesc = view.findViewById(R.id.tvDriverdesc);
             imgRightArrow = view.findViewById(R.id.imgRightArrow);
             documentFileNameTextView = view.findViewById(R.id.documentFileNameTextView);
+            selectedImage = view.findViewById(R.id.selected_image);
 
             int topBottomSpace = (int) (height * 0.0089);
             int imgIconWidth = (int) (width * 0.085);

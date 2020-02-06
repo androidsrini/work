@@ -277,4 +277,22 @@ public class Utility {
         }
         return stringBuilder.toString();
     }
+
+    public String[] selectSourceOption() {
+        return new String[]{"Camera", "Photo Library"};
+    }
+
+    public void showListDialog(Context context, String[] list, String title, DialogInterface.OnClickListener onClickListener) {
+        //String[] colors = {"red", "green", "blue", "black"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(title);
+        builder.setItems(list, (onClickListener != null) ? onClickListener : new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // the user clicked on colors[which]
+                dialog.dismiss();
+            }
+        });
+        builder.show();
+    }
 }
