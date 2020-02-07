@@ -39,6 +39,7 @@ import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.adddriver.AddDriverActivity;
 import com.codesense.driverapp.ui.adddriver.DriverViewModel;
+import com.codesense.driverapp.ui.camera.CameraActivity;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.driver.DriverListActivity;
 import com.google.gson.Gson;
@@ -131,6 +132,9 @@ public class UploadDocumentDriverActivity extends DrawerActivity {
         changePasswordCheckedTextView = view.findViewById(R.id.change_password_checkedTextView);
         passwordContainerLinearLayout = view.findViewById(R.id.password_container_linearLayout);
         driverViewModel.getApiResponseMutableLiveData().observe(this, this::apiResponseHandler);
+
+        appSharedPreference.saveAccessToken(appSharedPreference.getAccessTokenKey());
+
     }
 
     private boolean isEditDriver() {
@@ -165,17 +169,27 @@ public class UploadDocumentDriverActivity extends DrawerActivity {
 */
                     selectedDocumetnsListItem = uploadDocumentActionInfos.get(position);
                     String filePath = uploadDocumentActionInfos.get(position).getFilePath();
-                    if (!TextUtils.isEmpty(filePath)) {
-                        utility.showConformationDialog(UploadDocumentDriverActivity.this,
-                                "Are you sure you want to delete this file", (DialogInterface.OnClickListener) (dialog, which) -> {
-                                    uploadDocumentActionInfos.get(position).setFilePath(null);
-                                    adapter.notifyDataSetChanged();
-                                    //updateUploadContentButtonUI();
-                                });
-                    } else {
+                if (!TextUtils.isEmpty(filePath)) {
+                    utility.showConformationDialog(UploadDocumentDriverActivity.this,
+                            "Are you sure you want to delete this file", (DialogInterface.OnClickListener) (dialog, which) -> {
+                                uploadDocumentActionInfos.get(position).setFilePath(null);
+                                adapter.notifyDataSetChanged();
+                            });
+                } else {
+                    utility.showListDialog(UploadDocumentDriverActivity.this, utility.selectSourceOption(), "Select Source", (dialog, which) -> {
+                        if (which == 0) {
+                            //CameraActivity.start(UploadDocumentActivity.this);
+                            startActivityForResult(new Intent(UploadDocumentDriverActivity.this, CameraActivity.class),
+                                    CameraActivity.REQUEST_CAMERA_ACTIVITY);
+                        } else {
+                            String[] supportFormat = selectedDocumetnsListItem.getSuportedFormats().toArray(new String[0]);
+                            showImageFromGalary(supportFormat, utility.parseDouble(selectedDocumetnsListItem.getMaxSize()));
+                        }
+                    });
+                }/*else {
                         String[] supportFormat = selectedDocumetnsListItem.getSuportedFormats().toArray(new String[0]);
                         showImageFromGalary(supportFormat, utility.parseDouble(selectedDocumetnsListItem.getMaxSize()));
-                    }
+                    }*/
                 /*} else {
                     utility.showToastMsg("Not allowed to update this");
                 }*/
@@ -276,9 +290,7 @@ public class UploadDocumentDriverActivity extends DrawerActivity {
                 /*if (apiResponse.isValidResponse()) {
                     vehicleAppSpinnerViewGroup.setVisibility(View.VISIBLE);
                 }*/
-                switch (serviceType) {
-
-                    case UPDATE_DRIVER_DOCUMENTS:
+               if (ServiceType.UPDATE_DRIVER_DOCUMENTS == serviceType){
                         if (apiResponse.isValidResponse()) {
                             currentPosition = -1;
                             DriverListActivity.start(this);
@@ -370,7 +382,14 @@ public class UploadDocumentDriverActivity extends DrawerActivity {
                 Log.d(TAG, " The image file path:" + filePath);
                 updateDocumentItem(filePath.get(0));
             }
-        } else {
+        }else if (requestCode == CameraActivity.REQUEST_CAMERA_ACTIVITY && resultCode == Activity.RESULT_OK) {
+            String filePath = data.getStringExtra(CameraActivity.CAPTURE_CAMERA_IMAGE);
+            if (null != filePath && !filePath.isEmpty()) {
+                Log.d(TAG, " The image file path:" + filePath);
+                updateDocumentItem(filePath);
+                //updateUploadContentButtonUI();
+            }
+        }  else {
             utility.showToastMsg("File not found");
         }
     }

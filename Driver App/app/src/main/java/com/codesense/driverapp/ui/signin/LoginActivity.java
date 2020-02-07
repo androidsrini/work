@@ -330,10 +330,11 @@ public class LoginActivity extends BaseActivity {
                         updateVerifyPassword(apiResponse);
                     } else if (serviceType == ServiceType.CHANGE_PASSWORD) {
                         if (apiResponse.isValidResponse()) {
+                            appSharedPreference.clear();
+                            appSharedPreference.saveUserID("");
                             ChangePasswordResponse changePasswordResponse = new Gson().fromJson(apiResponse.data, ChangePasswordResponse.class);
                             utility.showToastMsg(changePasswordResponse.getMessage());
                             bottomSheetDialog.dismiss();
-                            appSharedPreference.clear();
                         }
                     }
                 } else {

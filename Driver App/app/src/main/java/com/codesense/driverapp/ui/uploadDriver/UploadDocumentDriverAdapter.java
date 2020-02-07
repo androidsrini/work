@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.data.DocumentsItem;
 import com.codesense.driverapp.net.Constant;
@@ -66,10 +67,17 @@ public class UploadDocumentDriverAdapter extends RecyclerView.Adapter<UploadDocu
                 //To show selected image UI
                 viewHolder.documentFileNameTextView.setVisibility(View.GONE);
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.right_only_bg);
+                viewHolder.selectedImage.setVisibility(View.GONE);
+
             } else {
                 viewHolder.documentFileNameTextView.setVisibility(View.VISIBLE);
                 viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFilePath()));
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
+                if (isImageFile(uploadDocumentModel.getFilePath())) {
+                    viewHolder.selectedImage.setVisibility(View.VISIBLE);
+                    Glide.with(viewHolder.selectedImage.getContext()).load(Constant.FILE_PREFIX + uploadDocumentModel.getFilePath())
+                            .into(viewHolder.selectedImage);
+                }
                 // To show unselected image and content
             }
         }else{
@@ -101,9 +109,28 @@ public class UploadDocumentDriverAdapter extends RecyclerView.Adapter<UploadDocu
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
                 // To s
             }
+
+            if (!isFileSelected) {
+                if (uploadDocumentModel.getDocumentStatus().getFile() != null && !TextUtils.isEmpty(uploadDocumentModel.getDocumentStatus().getFile())) {
+                    Glide.with(viewHolder.selectedImage.getContext()).load(uploadDocumentModel.getDocumentStatus().getFile())
+                            .into(viewHolder.selectedImage);
+                    viewHolder.selectedImage.setVisibility(View.VISIBLE);
+                } else {
+                    viewHolder.selectedImage.setVisibility(View.GONE);
+                }
+            }
         }
     }
 
+    private boolean isImageFile(String fileName) {
+        if (TextUtils.isEmpty(fileName)) {
+            return false;
+        }
+        String array[] = fileName.split("\\.");
+        String extance = array[array.length -1];
+        return !TextUtils.isEmpty(extance) && (extance.equalsIgnoreCase("jpg")
+                ||extance.equalsIgnoreCase("jpeg") || extance.equalsIgnoreCase("png"));
+    }
     @Override
     public int getItemCount() {
         return uploadDocumentModelList.size();
@@ -126,7 +153,7 @@ public class UploadDocumentDriverAdapter extends RecyclerView.Adapter<UploadDocu
     public class ViewHolder extends RecyclerView.ViewHolder {
 
         private RelativeLayout rlDriveLicense,rlMain;
-        private ImageView imgRightArrow;
+        private ImageView imgRightArrow,selectedImage;
         private TextView tvDriverText, tvDriverdesc ,documentFileNameTextView;
         //int position;
 
@@ -139,6 +166,8 @@ public class UploadDocumentDriverAdapter extends RecyclerView.Adapter<UploadDocu
             tvDriverdesc = view.findViewById(R.id.tvDriverdesc);
             imgRightArrow = view.findViewById(R.id.imgRightArrow);
             documentFileNameTextView = view.findViewById(R.id.documentFileNameTextView);
+            selectedImage = view.findViewById(R.id.selected_image);
+
 
             int topBottomSpace = (int) (height * 0.0089);
             int imgIconWidth = (int) (width * 0.085);

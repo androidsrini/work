@@ -79,6 +79,7 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
                             .into(viewHolder.selectedImage);
                 }
             }
+
         }else{
             String status=null;
             if (null != uploadDocumentModel.getDocumentStatus()) {
@@ -112,8 +113,18 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
                     Glide.with(viewHolder.selectedImage.getContext()).load(Constant.FILE_PREFIX + uploadDocumentModel.getFilePath())
                             .into(viewHolder.selectedImage);
                 }
-                // To s
             }
+
+            if (!isFileSelected) {
+                if (uploadDocumentModel.getDocumentStatus().getFile() != null && !TextUtils.isEmpty(uploadDocumentModel.getDocumentStatus().getFile())) {
+                    Glide.with(viewHolder.selectedImage.getContext()).load(uploadDocumentModel.getDocumentStatus().getFile())
+                            .into(viewHolder.selectedImage);
+                    viewHolder.selectedImage.setVisibility(View.VISIBLE);
+                } else {
+                    viewHolder.selectedImage.setVisibility(View.GONE);
+                }
+            }
+
         }
     }
 
