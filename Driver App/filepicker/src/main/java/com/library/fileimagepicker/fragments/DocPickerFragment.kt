@@ -20,6 +20,7 @@ import com.library.fileimagepicker.utils.TabLayoutHelper
 
 class DocPickerFragment : BaseFragment() {
 
+    private var currentPagePosition = 0
     lateinit var tabLayout: TabLayout
 
     lateinit var viewPager: ViewPager
@@ -125,6 +126,20 @@ class DocPickerFragment : BaseFragment() {
 
         val mTabLayoutHelper = TabLayoutHelper(tabLayout, viewPager)
         mTabLayoutHelper.isAutoAdjustTabModeEnabled = true
+        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+            override fun onPageScrollStateChanged(p0: Int) {
+
+            }
+
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+                currentPagePosition = p0;
+            }
+
+            override fun onPageSelected(p0: Int) {
+                currentPagePosition = p0;
+            }
+
+        })
     }
 
     companion object {
