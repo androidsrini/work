@@ -56,7 +56,7 @@ public class UploadDocumentArrayAdapter<DocumentsItem> extends ArrayAdapter {
     /*public int getSelectedFilesCount() {
         int  count = 0;
         for (DocumentsItem documentsListItem: documentsItemList) {
-            if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+            if (!TextUtils.isEmpty(documentsListItem.getFileName())) {
                 count ++;
             }
         }

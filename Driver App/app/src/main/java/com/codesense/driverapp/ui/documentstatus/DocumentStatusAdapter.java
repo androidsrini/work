@@ -70,7 +70,7 @@ public class DocumentStatusAdapter extends RecyclerView.Adapter<DocumentStatusAd
             viewHolder.rlDriverMain.setBackgroundResource(R.color.background_document_status);
         }
         /*if (isFileSelected) {
-            viewHolder.tvVehicleStatusText.setText(findFileName(uploadDocumentModel.getFilePath()));
+            viewHolder.tvVehicleStatusText.setText(findFileName(uploadDocumentModel.getFileName()));
             viewHolder.imgRightArrow.setBackgroundResource(0);
             viewHolder.imgRightArrow.setBackgroundResource(R.drawable.ic_file_upload);
         } else {
@@ -89,7 +89,7 @@ public class DocumentStatusAdapter extends RecyclerView.Adapter<DocumentStatusAd
     public int getSelectedFilesCount() {
         int count = 0;
         for (DocumentsItem documentsListItem: uploadDocumentModelList) {
-            if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+            if (!TextUtils.isEmpty(documentsListItem.getFileName())) {
                 count ++;
             }
         }

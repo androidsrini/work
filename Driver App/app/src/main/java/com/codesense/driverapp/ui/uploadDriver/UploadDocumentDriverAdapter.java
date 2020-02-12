@@ -54,7 +54,7 @@ public class UploadDocumentDriverAdapter extends RecyclerView.Adapter<UploadDocu
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
 
         DocumentsItem uploadDocumentModel = uploadDocumentModelList.get(position);
-        boolean isFileSelected = !TextUtils.isEmpty(uploadDocumentModel.getFilePath());
+        boolean isFileSelected = !TextUtils.isEmpty(uploadDocumentModel.getFileName());
         if (!from.equalsIgnoreCase("edit")) {
             String status = isFileSelected ? activity.getString(R.string.document_status_completed)
                     : (null != uploadDocumentModel.getDocumentStatus()) ?
@@ -68,7 +68,7 @@ public class UploadDocumentDriverAdapter extends RecyclerView.Adapter<UploadDocu
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.right_only_bg);
             } else {
                 viewHolder.documentFileNameTextView.setVisibility(View.VISIBLE);
-                viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFilePath()));
+                viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFileName()));
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
                 // To show unselected image and content
             }
@@ -97,7 +97,7 @@ public class UploadDocumentDriverAdapter extends RecyclerView.Adapter<UploadDocu
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.right_only_bg);
             } else {
                 viewHolder.documentFileNameTextView.setVisibility(View.VISIBLE);
-                viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFilePath()));
+                viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFileName()));
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
                 // To s
             }
@@ -116,7 +116,7 @@ public class UploadDocumentDriverAdapter extends RecyclerView.Adapter<UploadDocu
     public int getSelectedFilesCount() {
         int  count = 0;
         for (DocumentsItem documentsListItem: uploadDocumentModelList) {
-            if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+            if (!TextUtils.isEmpty(documentsListItem.getFileName())) {
                 count ++;
             }
         }

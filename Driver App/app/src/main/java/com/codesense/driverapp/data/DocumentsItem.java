@@ -1,5 +1,6 @@
 package com.codesense.driverapp.data;
 
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
@@ -25,17 +26,35 @@ public class DocumentsItem {
     @SerializedName("field_name")
     private String fieldName;
 
+    private Uri selectedFileUri;
+
+    public boolean isImageFile() {
+        return isImageFile;
+    }
+
+    private boolean isImageFile;
     private DocumentStatus documentStatus;
+    private String fileName;
 
-    public String getFilePath() {
-        return filePath;
+    public Uri getSelectedFileUri() {
+        return selectedFileUri;
     }
 
-    public void setFilePath(String filePath) {
-        this.filePath = filePath;
+    public void setImageFile(boolean imageFile) {
+        isImageFile = imageFile;
     }
 
-    private String filePath;
+    public void setSelectedFileUri(Uri selectedFileUri) {
+        this.selectedFileUri = selectedFileUri;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
 
     public String getName() {
         return name;

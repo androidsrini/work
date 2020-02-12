@@ -66,6 +66,7 @@ public final class Constant {
     public static final String VEHICLE_ID = "vehicle_id" ;
     public static final String DRIVING_STATUS = "driving_status" ;
     public static final String FILE_PREFIX = "file://" ;
+    public static final String CONTENT_PREFIX = "content://" ;
     public static final int OWNER_CUM_DRIVER_TYPE = 1;
     public static final int NON_DRIVING_PARTNER_TYPE = 2;
     public static final int VERIFIED_STATUS = 1;

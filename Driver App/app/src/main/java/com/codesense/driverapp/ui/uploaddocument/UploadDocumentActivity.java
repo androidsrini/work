@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,6 +28,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.codesense.driverapp.BuildConfig;
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.data.AvailableVehiclesItem;
 import com.codesense.driverapp.data.DocumentStatus;
@@ -45,17 +47,19 @@ import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
 import com.codesense.driverapp.ui.camera.CameraActivity;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
+import com.codesense.driverapp.ui.helper.Utils;
 import com.codesense.driverapp.ui.online.OnlineActivity;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.library.fileimagepicker.filepicker.FilePickerBuilder;
-import com.library.fileimagepicker.filepicker.FilePickerConst;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -392,7 +396,32 @@ public class UploadDocumentActivity extends DrawerActivity {
      */
     private void updateDocumentItem(@NonNull String path) {
         if (null != selectedDocumetnsListItem) {
-            selectedDocumetnsListItem.setFilePath(path);
+            selectedDocumetnsListItem.setFileName(path);
+            adapter.notifyItemChanged(selectedDocumentsListPosition);
+        }
+    }
+
+    private void updateDocumentItem(@NonNull Uri uri) {
+        if (null != selectedDocumetnsListItem) {
+            String[] types = {"jpeg", "JPEG", "jpg", "JPG", "png", "png"};
+            String extension = getContentResolver().getType(uri);
+            String name = Utils.getFileName(this, uri);
+            boolean isImageFile = false;
+            if (!TextUtils.isEmpty(extension)) {
+                isImageFile = !extension.contains(types[0]) ?
+                        !extension.contains(types[1]) ? !extension.contains(types[2]) ?
+                                !extension.contains(types[3]) ? !extension.contains(types[4]) ?
+                                        extension.contains(types[5]) : true : true: true: true: true;
+            } else {
+                String[] array = name.split("\\.");
+                if (array.length > 1) {
+                    String fileExe = array[array.length - 1];
+                    isImageFile = Arrays.asList(types).contains(fileExe);
+                }
+            }
+            selectedDocumetnsListItem.setFileName(name);
+            selectedDocumetnsListItem.setSelectedFileUri(uri);
+            selectedDocumetnsListItem.setImageFile(isImageFile);
             adapter.notifyItemChanged(selectedDocumentsListPosition);
         }
     }
@@ -451,11 +480,13 @@ public class UploadDocumentActivity extends DrawerActivity {
                 DocumentStatus documentStatus = uploadDocumentActionInfos.get(position).getDocumentStatus();
                 if (documentStatus.getAllowUpdate() != 0) {
                     selectedDocumetnsListItem = uploadDocumentActionInfos.get(position);
-                    String filePath = uploadDocumentActionInfos.get(position).getFilePath();
+                    String filePath = uploadDocumentActionInfos.get(position).getFileName();
                     if (!TextUtils.isEmpty(filePath)) {
                         utility.showConformationDialog(UploadDocumentActivity.this,
                                 "Are you sure you want to delete this file", (DialogInterface.OnClickListener) (dialog, which) -> {
-                                    uploadDocumentActionInfos.get(position).setFilePath(null);
+                                    uploadDocumentActionInfos.get(position).setFileName(null);
+                                    uploadDocumentActionInfos.get(position).setSelectedFileUri(null);
+                                    uploadDocumentActionInfos.get(position).setImageFile(false);
                                     adapter.notifyDataSetChanged();
                                     updateUploadContentButtonUI();
                                 });
@@ -465,11 +496,15 @@ public class UploadDocumentActivity extends DrawerActivity {
                                 //CameraActivity.start(UploadDocumentActivity.this);
                                 startActivityForResult(new Intent(UploadDocumentActivity.this, CameraActivity.class),
                                         CameraActivity.REQUEST_CAMERA_ACTIVITY);
-                            } else {
-                                String[] supportFormat = selectedDocumetnsListItem.getSuportedFormats().toArray(new String[0]);
-                                showImageFromGalary(supportFormat, utility.parseDouble(selectedDocumetnsListItem.getMaxSize()));
+                            } else if (which == 1) {
+                                //String[] supportFormat = selectedDocumetnsListItem.getSuportedFormats().toArray(new String[0]);
+                                //showImageFromGalary(supportFormat, utility.parseDouble(selectedDocumetnsListItem.getMaxSize()));
+                                pickImage();
+                            } else if (which == 2) {
+                                pickFile();
                             }
                         });
+                        /**/
                     }
                 } else {
                     utility.showToastMsg("Not allowed to update this");
@@ -526,7 +561,7 @@ public class UploadDocumentActivity extends DrawerActivity {
         int count = 0;
         do {
             DocumentsItem documentsListItem = uploadDocumentActionInfos.get(count);
-            if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+            if (!TextUtils.isEmpty(documentsListItem.getFileName())) {
                 documentsListItems.add(documentsListItem);
             }
         } while (++count < this.uploadDocumentActionInfos.size());
@@ -540,7 +575,7 @@ public class UploadDocumentActivity extends DrawerActivity {
      */
     private boolean isAnyItemDocumentSelected() {
         for (DocumentsItem documentsListItem : uploadDocumentActionInfos) {
-            if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+            if (!TextUtils.isEmpty(documentsListItem.getFileName())) {
                 return true;
             }
         }
@@ -551,7 +586,7 @@ public class UploadDocumentActivity extends DrawerActivity {
         boolean isValied = false;
         for (DocumentsItem documentsListItem : uploadDocumentActionInfos) {
             if (documentsListItem.getIsMandatory() == 1 && documentsListItem.getDocumentStatus().getAllowUpdate() == 1) {
-                if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+                if (!TextUtils.isEmpty(documentsListItem.getFileName())) {
                     isValied = true;
                 } else {
                     utility.showToastMsg("Select " + documentsListItem.getName());
@@ -866,7 +901,7 @@ public class UploadDocumentActivity extends DrawerActivity {
      */
     private void clearAndUpdateDocumentListUI() {
         for (DocumentsItem documentsListItem : uploadDocumentActionInfos)
-            documentsListItem.setFilePath(null);
+            documentsListItem.setFileName(null);
         adapter.notifyDataSetChanged();
     }
 
@@ -880,10 +915,60 @@ public class UploadDocumentActivity extends DrawerActivity {
         selectVehicleTextView.setText(null);
     }
 
+    private void pickImage() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        String[] mimeType = {"image/*"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeType);
+        startActivityForResult(intent, FILE_PICKER);
+    }
+
+    private void pickFile() {
+        Intent intent = new Intent();
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/pdf");
+        String[] mimeType = {"application/pdf"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeType);
+        startActivityForResult(intent, FILE_PICKER);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == IMAGE_PICKER || requestCode == FILE_PICKER && resultCode == Activity.RESULT_OK) {
+        if (requestCode == FILE_PICKER && resultCode == Activity.RESULT_OK) {
+            //data.getData return the content URI for the selected Image
+            Uri uri = data.getData();
+            if (null != uri) {
+                if (BuildConfig.DEBUG) Log.d(TAG, " The image file path:" + uri);
+                updateDocumentItem(uri);
+                updateUploadContentButtonUI();
+            }
+            /*if (selectedImage.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+                getContentResolver().openInputStream(selectedImage);
+            }
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+            // Get the cursor
+            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            // Move to first row
+            cursor.moveToFirst();
+            //Get the column index of MediaStore.Images.Media.DATA
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            //Gets the String value in the column
+            String imgDecodableString = cursor.getString(columnIndex);
+            cursor.close();*/
+            // Set the Image in ImageView after decoding the String
+            Log.d(TAG, " The file selection output: " + uri + " ,data: " + data.getData());
+        } else if (requestCode == CameraActivity.REQUEST_CAMERA_ACTIVITY && resultCode == Activity.RESULT_OK) {
+            String filePath = data.getStringExtra(CameraActivity.CAPTURE_CAMERA_IMAGE);
+            if (null != filePath && !filePath.isEmpty()) {
+                Log.d(TAG, " The image file path:" + filePath);
+                updateDocumentItem(Uri.fromFile(new File(filePath)));
+                updateUploadContentButtonUI();
+            }
+        } else {
+            utility.showToastMsg("File not found");
+        }
+        /*else if (requestCode == IMAGE_PICKER || requestCode == FILE_PICKER && resultCode == Activity.RESULT_OK) {
             List<String> filePath = data.getStringArrayListExtra(requestCode == IMAGE_PICKER ?
                     FilePickerConst.KEY_SELECTED_MEDIA : FilePickerConst.KEY_SELECTED_DOCS);
             //Bitmap selectedImage = BitmapFactory.decodeFile(filePath);
@@ -893,16 +978,7 @@ public class UploadDocumentActivity extends DrawerActivity {
                 updateDocumentItem(filePath.get(0));
                 updateUploadContentButtonUI();
             }
-        } else if (requestCode == CameraActivity.REQUEST_CAMERA_ACTIVITY && resultCode == Activity.RESULT_OK) {
-            String filePath = data.getStringExtra(CameraActivity.CAPTURE_CAMERA_IMAGE);
-            if (null != filePath && !filePath.isEmpty()) {
-                Log.d(TAG, " The image file path:" + filePath);
-                updateDocumentItem(filePath);
-                updateUploadContentButtonUI();
-            }
-        } else {
-            utility.showToastMsg("File not found");
-        }
+        }*/
     }
 
     @Override
