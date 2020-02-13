@@ -218,4 +218,10 @@
     <string name="forgot_btn_submit">Submit</string>
     <string name="forgot_new_password_des">Please enter your new password to sign in</string>
 
+<!--    Client-->
+    <string name="api_key">AIzaSyAQcBRbd9d2mX5XCAjOBXO3wX8Uw17mSNk</string>
+
+<!--    <string name="api_key">AIzaSyAuo9b45x7mXBqCtDDEwCxPYirpUyOB2oY</string>-->
+
+
 </resources>

@@ -10,8 +10,8 @@ android {
         applicationId "com.codesense.driverapp"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 3
-        versionName "1.03"
+        versionCode 4
+        versionName "1.04"
         testInstrumentationRunner "android.test.runner.AndroidJUnitRunner"
         //multiDexEnabled true
     }
