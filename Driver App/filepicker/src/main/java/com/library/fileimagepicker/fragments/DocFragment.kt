@@ -2,12 +2,14 @@ package com.library.fileimagepicker.filepicker.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.*
 import android.support.v7.widget.SearchView
+import android.view.*
 import android.widget.TextView
 import com.library.fileimagepicker.R
+import com.library.fileimagepicker.adapters.DocumentPhotoGridAdapter
 import com.library.fileimagepicker.adapters.FileAdapterListener
 import com.library.fileimagepicker.adapters.FileListAdapter
 import com.library.fileimagepicker.filepicker.FilePickerConst
@@ -23,9 +25,14 @@ class DocFragment : BaseFragment(), FileAdapterListener {
     private var mListener: DocFragmentListener? = null
     private var selectAllItem: MenuItem? = null
     private var fileListAdapter: FileListAdapter? = null
+    private var documentPhotoGridAdapter: DocumentPhotoGridAdapter? = null
+    private var imageTypeArray = arrayOf("JPG", "PNG", "JPEG")
 
     val fileType: FileType?
         get() = arguments?.getParcelable(BaseFragment.Companion.FILE_TYPE)
+
+    var isImageFileType: Boolean = false
+        get() = imageTypeArray.contains(fileType!!.title)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -77,7 +84,6 @@ class DocFragment : BaseFragment(), FileAdapterListener {
     private fun initView(view: View) {
         recyclerView = view.findViewById(R.id.recyclerview)
         emptyView = view.findViewById(R.id.empty_view)
-        recyclerView.layoutManager = LinearLayoutManager(activity)
         recyclerView.visibility = View.GONE
     }
 
@@ -88,15 +94,30 @@ class DocFragment : BaseFragment(), FileAdapterListener {
                 emptyView.visibility = View.GONE
 
                 context?.let {
-                    fileListAdapter = recyclerView.adapter as? FileListAdapter
-                    if (fileListAdapter == null) {
-                        fileListAdapter = FileListAdapter(it, dirs, PickerManager.selectedFiles,
-                                this)
+                    if (recyclerView.adapter is FileListAdapter || !isImageFileType) {
+                        fileListAdapter = recyclerView.adapter as? FileListAdapter
+                        if (fileListAdapter == null) {
+                            fileListAdapter = FileListAdapter(it, dirs, PickerManager.selectedFiles,
+                                    this)
 
-                        recyclerView.adapter = fileListAdapter
-                    } else {
-                        fileListAdapter?.setData(dirs)
-                        fileListAdapter?.notifyDataSetChanged()
+                            recyclerView.adapter = fileListAdapter
+                        } else {
+                            fileListAdapter?.setData(dirs)
+                            fileListAdapter?.notifyDataSetChanged()
+                        }
+                        recyclerView.layoutManager = LinearLayoutManager(activity)
+                    } else if (recyclerView.adapter is DocumentPhotoGridAdapter || isImageFileType) {
+                        documentPhotoGridAdapter = recyclerView.adapter as? DocumentPhotoGridAdapter
+                        if (documentPhotoGridAdapter == null) {
+                            documentPhotoGridAdapter = DocumentPhotoGridAdapter(it, dirs, PickerManager.selectedFiles,
+                                    this)
+
+                            recyclerView.adapter = documentPhotoGridAdapter
+                        } else {
+                            documentPhotoGridAdapter?.setData(dirs)
+                            documentPhotoGridAdapter?.notifyDataSetChanged()
+                        }
+                        recyclerView.layoutManager = GridLayoutManager(activity, 3)
                     }
                     onItemSelected()
                 }

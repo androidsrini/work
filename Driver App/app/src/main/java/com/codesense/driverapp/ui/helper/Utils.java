@@ -1,10 +1,19 @@
 package com.codesense.driverapp.ui.helper;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.TypedArray;
+import android.database.Cursor;
+import android.net.Uri;
 import android.preference.PreferenceManager;
+import android.provider.OpenableColumns;
 
+import com.codesense.driverapp.base.BaseApplication;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -80,5 +89,53 @@ public class Utils {
         SharedPreferences sharedPrefs = PreferenceManager
                 .getDefaultSharedPreferences(context);
         return sharedPrefs.getString(key, null);
+    }
+
+    public static String getFileName(Context context, Uri uri) {
+        String result = null;
+        if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
+            Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * This method is used to convert uri to byte array
+     * it will use application context
+     * @param uri
+     * @return
+     */
+    public static byte[] convertUri(Uri uri) {
+        if (null == uri)
+            return null;
+        InputStream inputStream = null;
+        try {
+            inputStream = BaseApplication.getBaseApplication().getContentResolver().openInputStream(uri);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            int bufferSize = 1024;
+            byte[] buffer = new byte[bufferSize];
+            int read = 0;
+            while ((read = inputStream.read(buffer)) != -1) {
+                byteArrayOutputStream.write(buffer, 0, read);
+            }
+            return byteArrayOutputStream.toByteArray();
+        } catch (NullPointerException | IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

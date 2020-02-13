@@ -168,11 +168,11 @@ public class UploadDocumentDriverActivity extends DrawerActivity {
                 if (documentStatus.getAllowUpdate() != 0) {
 */
                     selectedDocumetnsListItem = uploadDocumentActionInfos.get(position);
-                    String filePath = uploadDocumentActionInfos.get(position).getFilePath();
+                    String filePath = uploadDocumentActionInfos.get(position).getFileName();
                 if (!TextUtils.isEmpty(filePath)) {
                     utility.showConformationDialog(UploadDocumentDriverActivity.this,
                             "Are you sure you want to delete this file", (DialogInterface.OnClickListener) (dialog, which) -> {
-                                uploadDocumentActionInfos.get(position).setFilePath(null);
+                                uploadDocumentActionInfos.get(position).setFileName(null);
                                 adapter.notifyDataSetChanged();
                             });
                 } else {
@@ -187,6 +187,16 @@ public class UploadDocumentDriverActivity extends DrawerActivity {
                         }
                     });
                 }/*else {
+                    String filePath = uploadDocumentActionInfos.get(position).getFileName();
+                    if (!TextUtils.isEmpty(filePath)) {
+                        utility.showConformationDialog(UploadDocumentDriverActivity.this,
+                                "Are you sure you want to delete this file", (DialogInterface.OnClickListener) (dialog, which) -> {
+                                    uploadDocumentActionInfos.get(position).setFileName(null);
+                                    adapter.notifyDataSetChanged();
+                                    //updateUploadContentButtonUI();
+                                });
+                    } else {
+>>>>>>> 8e22bbe2acaf43c1895cfb5ac80bd0560d7cdac5
                         String[] supportFormat = selectedDocumetnsListItem.getSuportedFormats().toArray(new String[0]);
                         showImageFromGalary(supportFormat, utility.parseDouble(selectedDocumetnsListItem.getMaxSize()));
                     }*/
@@ -215,7 +225,7 @@ public class UploadDocumentDriverActivity extends DrawerActivity {
         int count = 0;
         do {
             DocumentsItem documentsListItem = uploadDocumentActionInfos.get(count);
-            if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+            if (!TextUtils.isEmpty(documentsListItem.getFileName())) {
                 documentsListItems.add(documentsListItem);
             }
         } while (++count < this.uploadDocumentActionInfos.size());
@@ -226,7 +236,7 @@ public class UploadDocumentDriverActivity extends DrawerActivity {
         boolean isValied = false;
         for (DocumentsItem documentsListItem : uploadDocumentActionInfos) {
             if (documentsListItem.getIsMandatory() == 1 && documentsListItem.getDocumentStatus().getAllowUpdate() == 1) {
-                if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+                if (!TextUtils.isEmpty(documentsListItem.getFileName())) {
                     isValied = true;
                 } else {
                     utility.showToastMsg("Select " + documentsListItem.getName());
@@ -349,7 +359,7 @@ public class UploadDocumentDriverActivity extends DrawerActivity {
      */
     private void clearAndUpdateDocumentListUI() {
         for (DocumentsItem documentsListItem : uploadDocumentActionInfos)
-            documentsListItem.setFilePath(null);
+            documentsListItem.setFileName(null);
         adapter.notifyDataSetChanged();
     }
 
@@ -396,7 +406,7 @@ public class UploadDocumentDriverActivity extends DrawerActivity {
 
     private void updateDocumentItem(@NonNull String path) {
         if (null != selectedDocumetnsListItem) {
-            selectedDocumetnsListItem.setFilePath(path);
+            selectedDocumetnsListItem.setFileName(path);
             adapter.notifyItemChanged(selectedDocumentsListPosition);
         }
     }

@@ -1,5 +1,7 @@
 package com.codesense.driverapp.data;
 
+import android.net.Uri;
+
 import com.google.gson.annotations.SerializedName;
 
 public class DocumentsListItem{
@@ -21,6 +23,35 @@ public class DocumentsListItem{
 
 	public void setFilePath(String filePath) {
 		this.filePath = filePath;
+	}
+
+	private Uri selectedFileUri;
+
+	public boolean isImageFile() {
+		return isImageFile;
+	}
+
+	private boolean isImageFile;
+	private String fileName;
+
+	public Uri getSelectedFileUri() {
+		return selectedFileUri;
+	}
+
+	public void setImageFile(boolean imageFile) {
+		isImageFile = imageFile;
+	}
+
+	public void setSelectedFileUri(Uri selectedFileUri) {
+		this.selectedFileUri = selectedFileUri;
+	}
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 	public void setDocumentStatus(DocumentStatus documentStatus){

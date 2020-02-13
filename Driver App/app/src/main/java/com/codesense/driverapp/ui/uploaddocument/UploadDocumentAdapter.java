@@ -55,7 +55,7 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
 
         DocumentsItem uploadDocumentModel = uploadDocumentModelList.get(position);
-        boolean isFileSelected = !TextUtils.isEmpty(uploadDocumentModel.getFilePath());
+        boolean isFileSelected = !TextUtils.isEmpty(uploadDocumentModel.getFileName());
         if (from==null &&TextUtils.isEmpty(from) || !from.equalsIgnoreCase("edit")) {
             String status = isFileSelected ? activity.getString(R.string.document_status_completed)
                     : (null != uploadDocumentModel.getDocumentStatus()) ?
@@ -63,21 +63,41 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
             String title = uploadDocumentModel.getName();
             viewHolder.tvDriverText.setText(status);
             viewHolder.tvDriverdesc.setText(title);
-            if (!isFileSelected) {
+           /* if (!isFileSelected) {
                 //To show selected image UI
                 viewHolder.documentFileNameTextView.setVisibility(View.GONE);
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.right_only_bg);
                 viewHolder.selectedImage.setVisibility(View.GONE);
             } else {
                 viewHolder.documentFileNameTextView.setVisibility(View.VISIBLE);
-                viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFilePath()));
+                //viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFileName()));
+                viewHolder.documentFileNameTextView.setText(uploadDocumentModel.getFileName());
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
                 // To show unselected image and content
+                viewHolder.selectedImage.setVisibility(View.VISIBLE);
+                if (uploadDocumentModel.isImageFile()) {
+                    Glide.with(viewHolder.selectedImage.getContext()).load(uploadDocumentModel.getSelectedFileUri())
+                            .into(viewHolder.selectedImage);
+                } else {
+                    viewHolder.selectedImage.setVisibility(View.GONE);
+                }
+            }*/
+            if (!isFileSelected) {
+                //To show selected image UI
+                viewHolder.documentFileNameTextView.setVisibility(View.GONE);
+                viewHolder.imgRightArrow.setBackgroundResource(R.drawable.right_only_bg);
+                viewHolder.selectedImage.setVisibility(View.GONE);
+
+            } else {
+                viewHolder.documentFileNameTextView.setVisibility(View.VISIBLE);
+                viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFileName()));
+                viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
                 if (isImageFile(uploadDocumentModel.getFilePath())) {
                     viewHolder.selectedImage.setVisibility(View.VISIBLE);
                     Glide.with(viewHolder.selectedImage.getContext()).load(Constant.FILE_PREFIX + uploadDocumentModel.getFilePath())
                             .into(viewHolder.selectedImage);
                 }
+                // To show unselected image and content
             }
 
         }else{
@@ -99,20 +119,50 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
                 viewHolder.rlMain.setBackgroundResource(R.color.background_document_status);
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.right_only_bg);
             }
-            if (!isFileSelected) {
+            /*if (!isFileSelected) {
                 //To show selected image UI
                 viewHolder.selectedImage.setVisibility(View.GONE);
                 viewHolder.documentFileNameTextView.setVisibility(View.GONE);
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.right_only_bg);
             } else {
                 viewHolder.documentFileNameTextView.setVisibility(View.VISIBLE);
-                viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFilePath()));
+                //viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFileName()));
+                viewHolder.documentFileNameTextView.setText(uploadDocumentModel.getFileName());
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
-                if (isImageFile(uploadDocumentModel.getFilePath())) {
+                if (uploadDocumentModel.isImageFile()) {
                     viewHolder.selectedImage.setVisibility(View.VISIBLE);
-                    Glide.with(viewHolder.selectedImage.getContext()).load(Constant.FILE_PREFIX + uploadDocumentModel.getFilePath())
+                    Glide.with(viewHolder.selectedImage.getContext()).load(uploadDocumentModel.getSelectedFileUri())
+                            .into(viewHolder.selectedImage);
+                } else {
+                    viewHolder.selectedImage.setVisibility(View.GONE);
+                }
+            }
+
+            if (!isFileSelected) {
+                if (uploadDocumentModel.getDocumentStatus().getFile() != null && !TextUtils.isEmpty(uploadDocumentModel.getDocumentStatus().getFile())) {
+                    Glide.with(viewHolder.selectedImage.getContext()).load(uploadDocumentModel.getDocumentStatus().getFile())
+                            .into(viewHolder.selectedImage);
+                    viewHolder.selectedImage.setVisibility(View.VISIBLE);
+                } else {
+                    viewHolder.selectedImage.setVisibility(View.GONE);
+                }
+            }*/
+            if (!isFileSelected) {
+                //To show selected image UI
+                viewHolder.documentFileNameTextView.setVisibility(View.GONE);
+                viewHolder.imgRightArrow.setBackgroundResource(R.drawable.right_only_bg);
+                viewHolder.selectedImage.setVisibility(View.GONE);
+
+            } else {
+                viewHolder.documentFileNameTextView.setVisibility(View.VISIBLE);
+                viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFileName()));
+                viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
+                if (isImageFile(uploadDocumentModel.getFileName())) {
+                    viewHolder.selectedImage.setVisibility(View.VISIBLE);
+                    Glide.with(viewHolder.selectedImage.getContext()).load(Constant.FILE_PREFIX + uploadDocumentModel.getFileName())
                             .into(viewHolder.selectedImage);
                 }
+                // To s
             }
 
             if (!isFileSelected) {
@@ -150,7 +200,7 @@ public class UploadDocumentAdapter extends RecyclerView.Adapter<UploadDocumentAd
     public int getSelectedFilesCount() {
         int  count = 0;
         for (DocumentsItem documentsListItem: uploadDocumentModelList) {
-            if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+            if (!TextUtils.isEmpty(documentsListItem.getFileName())) {
                 count ++;
             }
         }

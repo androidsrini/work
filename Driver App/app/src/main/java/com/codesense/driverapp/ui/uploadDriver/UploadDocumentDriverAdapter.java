@@ -55,7 +55,7 @@ public class UploadDocumentDriverAdapter extends RecyclerView.Adapter<UploadDocu
     public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
 
         DocumentsItem uploadDocumentModel = uploadDocumentModelList.get(position);
-        boolean isFileSelected = !TextUtils.isEmpty(uploadDocumentModel.getFilePath());
+        boolean isFileSelected = !TextUtils.isEmpty(uploadDocumentModel.getFileName());
         if (!from.equalsIgnoreCase("edit")) {
             String status = isFileSelected ? activity.getString(R.string.document_status_completed)
                     : (null != uploadDocumentModel.getDocumentStatus()) ?
@@ -71,7 +71,7 @@ public class UploadDocumentDriverAdapter extends RecyclerView.Adapter<UploadDocu
 
             } else {
                 viewHolder.documentFileNameTextView.setVisibility(View.VISIBLE);
-                viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFilePath()));
+                viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFileName()));
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
                 if (isImageFile(uploadDocumentModel.getFilePath())) {
                     viewHolder.selectedImage.setVisibility(View.VISIBLE);
@@ -103,10 +103,17 @@ public class UploadDocumentDriverAdapter extends RecyclerView.Adapter<UploadDocu
                 //To show selected image UI
                 viewHolder.documentFileNameTextView.setVisibility(View.GONE);
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.right_only_bg);
+                viewHolder.selectedImage.setVisibility(View.GONE);
+
             } else {
                 viewHolder.documentFileNameTextView.setVisibility(View.VISIBLE);
-                viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFilePath()));
+                viewHolder.documentFileNameTextView.setText(findFileName(uploadDocumentModel.getFileName()));
                 viewHolder.imgRightArrow.setBackgroundResource(R.drawable.tick_bg_icon);
+                if (isImageFile(uploadDocumentModel.getFileName())) {
+                    viewHolder.selectedImage.setVisibility(View.VISIBLE);
+                    Glide.with(viewHolder.selectedImage.getContext()).load(Constant.FILE_PREFIX + uploadDocumentModel.getFileName())
+                            .into(viewHolder.selectedImage);
+                }
                 // To s
             }
 
@@ -143,7 +150,7 @@ public class UploadDocumentDriverAdapter extends RecyclerView.Adapter<UploadDocu
     public int getSelectedFilesCount() {
         int  count = 0;
         for (DocumentsItem documentsListItem: uploadDocumentModelList) {
-            if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+            if (!TextUtils.isEmpty(documentsListItem.getFileName())) {
                 count ++;
             }
         }

@@ -279,7 +279,7 @@ public class Utility {
     }
 
     public String[] selectSourceOption() {
-        return new String[]{"Camera", "Photo Library"};
+        return new String[]{"Camera", "Photo Library", "File Library"};
     }
 
     public void showListDialog(Context context, String[] list, String title, DialogInterface.OnClickListener onClickListener) {

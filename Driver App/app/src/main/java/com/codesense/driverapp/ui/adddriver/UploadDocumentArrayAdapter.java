@@ -8,12 +8,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.codesense.driverapp.R;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class UploadDocumentArrayAdapter<DocumentsItem> extends ArrayAdapter {
 
@@ -56,7 +56,7 @@ public class UploadDocumentArrayAdapter<DocumentsItem> extends ArrayAdapter {
     /*public int getSelectedFilesCount() {
         int  count = 0;
         for (DocumentsItem documentsListItem: documentsItemList) {
-            if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+            if (!TextUtils.isEmpty(documentsListItem.getFileName())) {
                 count ++;
             }
         }

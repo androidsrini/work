@@ -8,6 +8,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -45,6 +46,7 @@ import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
 import com.codesense.driverapp.ui.camera.CameraActivity;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
+import com.codesense.driverapp.ui.helper.Utils;
 import com.codesense.driverapp.ui.online.OnlineActivity;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.Gson;
@@ -56,6 +58,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -113,6 +116,7 @@ public class UploadDocumentActivity extends DrawerActivity {
     RelativeLayout rlVehicleDetails;
     String from;
 
+    String vehicleId;
 
     /**
      * This method to start UploadDocumentActivity class
@@ -152,7 +156,7 @@ public class UploadDocumentActivity extends DrawerActivity {
         initially();
 
         uploadDocumentViewModel.getApiResponseMutableLiveData().observe(this, this::handleApiResponse);
-        if (from!=null &&from.equalsIgnoreCase("edit")) {
+        if (from != null && from.equalsIgnoreCase("edit")) {
             uploadDocumentViewModel.fetchVehicleTypesRequest();
             uploadContentButton.setVisibility(View.VISIBLE);
             titleTextView.setText(getResources().getString(R.string.update_document_driver));
@@ -161,7 +165,7 @@ public class UploadDocumentActivity extends DrawerActivity {
 
             if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
 */
-                uploadDocumentViewModel.fetchOwnerCumDriverStatusRequest();
+            uploadDocumentViewModel.fetchOwnerCumDriverStatusRequest();
            /* } else {
                 uploadDocumentViewModel.fetchNonDrivingPartnerStatusRequest();
             }*/
@@ -169,15 +173,15 @@ public class UploadDocumentActivity extends DrawerActivity {
 /*
             if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
 */
-                uploadDocumentViewModel.fetchDocumentStatusRequest();
+            uploadDocumentViewModel.fetchDocumentStatusRequest();
             /*} else {
                 uploadDocumentViewModel.fetchDocumentStatusDriverRequest();
             }*/
         }
 
-        if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))){
+        if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
             rlVehicleDetails.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             rlVehicleDetails.setVisibility(View.GONE);
         }
         updateCrashDetails();
@@ -239,7 +243,10 @@ public class UploadDocumentActivity extends DrawerActivity {
                             AddVehicleActivity.start(this);
                         }
                     }
+                } else {
+                    utility.showToastMsg(apiResponse.getResponseMessage());
                 }
+
                 break;
             case SUCCESS_MULTIPLE:
                 utility.dismissDialog();
@@ -351,10 +358,10 @@ public class UploadDocumentActivity extends DrawerActivity {
                 if (null != documentStatusResponse && null != documentStatusResponse.getAvailableVehicles()
                         && !documentStatusResponse.getAvailableVehicles().isEmpty()) {
                     availableVehiclesItems.addAll(documentStatusResponse.getAvailableVehicles());
-                    if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))){
+                    if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
                         selectVehicleRelativeLayout.setVisibility(View.GONE);
                         selectVehicleDivider.setVisibility(View.GONE);
-                    }else{
+                    } else {
                         selectVehicleRelativeLayout.setVisibility(View.VISIBLE);
                         selectVehicleDivider.setVisibility(View.VISIBLE);
                     }
@@ -364,18 +371,18 @@ public class UploadDocumentActivity extends DrawerActivity {
                     selectVehicleDivider.setVisibility(View.GONE);
                 }
                 uploadDocumentActionInfos.addAll(documentStatusResponse.getDocuments());
-                if (from!=null &&from.equalsIgnoreCase("edit")) {
+                if (from != null && from.equalsIgnoreCase("edit")) {
                     if (documentStatusResponse.getVehicleDetailObject() != null) {
-                        int position=-1;
-                        for(int i=0;i<availableVehiclesItems.size();i++){
-                            if (availableVehiclesItems.get(i).getVehicleId().equalsIgnoreCase(documentStatusResponse.getVehicleDetailObject().getVehicleId())){
-                                position = i;
-                                mSelectedVehicle = position;
-                                vehicleSelectionFirstTime = false;
+                            /*int position = -1;
+                            for (int i = 0; i < availableVehiclesItems.size(); i++) {
+                                if (availableVehiclesItems.get(i).getVehicleId().equalsIgnoreCase(documentStatusResponse.getVehicleDetailObject().getVehicleId())) {
+                                    position = i;
+                                    mSelectedVehicle = position;
+                                    vehicleSelectionFirstTime = false;
+                                }
                             }
-                        }
-                        AvailableVehiclesItem selectedState = availableVehiclesItems.get(position);
-                        updateSelectedVehicleUI(selectedState);
+                            AvailableVehiclesItem selectedState = availableVehiclesItems.get(position);*/
+                        updateSelectedVehicleUI(documentStatusResponse);
                     }
                 }
             } catch (JSONException e) {
@@ -392,7 +399,32 @@ public class UploadDocumentActivity extends DrawerActivity {
      */
     private void updateDocumentItem(@NonNull String path) {
         if (null != selectedDocumetnsListItem) {
-            selectedDocumetnsListItem.setFilePath(path);
+            selectedDocumetnsListItem.setFileName(path);
+            adapter.notifyItemChanged(selectedDocumentsListPosition);
+        }
+    }
+
+    private void updateDocumentItem(@NonNull Uri uri) {
+        if (null != selectedDocumetnsListItem) {
+            String[] types = {"jpeg", "JPEG", "jpg", "JPG", "png", "png"};
+            String extension = getContentResolver().getType(uri);
+            String name = Utils.getFileName(this, uri);
+            boolean isImageFile = false;
+            if (!TextUtils.isEmpty(extension)) {
+                isImageFile = !extension.contains(types[0]) ?
+                        !extension.contains(types[1]) ? !extension.contains(types[2]) ?
+                                !extension.contains(types[3]) ? !extension.contains(types[4]) ?
+                                        extension.contains(types[5]) : true : true : true : true : true;
+            } else {
+                String[] array = name.split("\\.");
+                if (array.length > 1) {
+                    String fileExe = array[array.length - 1];
+                    isImageFile = Arrays.asList(types).contains(fileExe);
+                }
+            }
+            selectedDocumetnsListItem.setFileName(name);
+            selectedDocumetnsListItem.setSelectedFileUri(uri);
+            selectedDocumetnsListItem.setImageFile(isImageFile);
             adapter.notifyItemChanged(selectedDocumentsListPosition);
         }
     }
@@ -407,6 +439,7 @@ public class UploadDocumentActivity extends DrawerActivity {
         vehicleDetailRequest.setVehicleTypeId(getVehicleTypeId());
         vehicleDetailRequest.setVehicleName(getEtVehicleName());
         vehicleDetailRequest.setVehicleNumber(getEtVehicleNumber());
+        vehicleDetailRequest.setVehicleId(vehicleId);
         if (mSelectedVehicle >= 0) {
             AvailableVehiclesItem availableVehiclesItem = availableVehiclesItems.get(mSelectedVehicle);
             vehicleDetailRequest.setVehicleId(availableVehiclesItem.getVehicleId());
@@ -421,9 +454,9 @@ public class UploadDocumentActivity extends DrawerActivity {
         uploadContentButton.setOnClickListener(((view) -> {
             if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
                 if (isValidAllFields()) {
-                    if (from!=null &&from.equalsIgnoreCase("edit")) {
-                            uploadDocumentViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
-                    }else{
+                    if (from != null && from.equalsIgnoreCase("edit")) {
+                        uploadDocumentViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
+                    } else {
                         if (isValiedAllSelected()) {
                             uploadDocumentViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
                         }
@@ -432,9 +465,9 @@ public class UploadDocumentActivity extends DrawerActivity {
                     utility.showToastMsg("Please select document");
                 }*/
             } else {
-                if (from!=null &&from.equalsIgnoreCase("edit")) {
+                if (from != null && from.equalsIgnoreCase("edit")) {
                     uploadDocumentViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
-                }else {
+                } else {
                     if (isValiedAllSelected()) {
                         uploadDocumentViewModel.uploadDocumentRequest(findSelectedDocumentList(), createVehicleDetailRequestObject());
                     }
@@ -451,11 +484,13 @@ public class UploadDocumentActivity extends DrawerActivity {
                 DocumentStatus documentStatus = uploadDocumentActionInfos.get(position).getDocumentStatus();
                 if (documentStatus.getAllowUpdate() != 0) {
                     selectedDocumetnsListItem = uploadDocumentActionInfos.get(position);
-                    String filePath = uploadDocumentActionInfos.get(position).getFilePath();
+                    String filePath = uploadDocumentActionInfos.get(position).getFileName();
                     if (!TextUtils.isEmpty(filePath)) {
                         utility.showConformationDialog(UploadDocumentActivity.this,
                                 "Are you sure you want to delete this file", (DialogInterface.OnClickListener) (dialog, which) -> {
-                                    uploadDocumentActionInfos.get(position).setFilePath(null);
+                                    uploadDocumentActionInfos.get(position).setFileName(null);
+                                    uploadDocumentActionInfos.get(position).setSelectedFileUri(null);
+                                    uploadDocumentActionInfos.get(position).setImageFile(false);
                                     adapter.notifyDataSetChanged();
                                     updateUploadContentButtonUI();
                                 });
@@ -470,6 +505,7 @@ public class UploadDocumentActivity extends DrawerActivity {
                                 showImageFromGalary(supportFormat, utility.parseDouble(selectedDocumetnsListItem.getMaxSize()));
                             }
                         });
+                        /**/
                     }
                 } else {
                     utility.showToastMsg("Not allowed to update this");
@@ -482,7 +518,7 @@ public class UploadDocumentActivity extends DrawerActivity {
             }
         }));
         vehicleTypeRelativeLayout.setOnClickListener(v -> {
-            showListPopupScreen(vehicleTypeRelativeLayout, vehicleTypeTextView, vehicleTypesItems,-1);
+            showListPopupScreen(vehicleTypeRelativeLayout, vehicleTypeTextView, vehicleTypesItems, -1);
         });
 
         selectVehicleRelativeLayout.setOnClickListener(this::showAvailableVehiclePopupScreen);
@@ -526,7 +562,7 @@ public class UploadDocumentActivity extends DrawerActivity {
         int count = 0;
         do {
             DocumentsItem documentsListItem = uploadDocumentActionInfos.get(count);
-            if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+            if (!TextUtils.isEmpty(documentsListItem.getFileName())) {
                 documentsListItems.add(documentsListItem);
             }
         } while (++count < this.uploadDocumentActionInfos.size());
@@ -540,7 +576,7 @@ public class UploadDocumentActivity extends DrawerActivity {
      */
     private boolean isAnyItemDocumentSelected() {
         for (DocumentsItem documentsListItem : uploadDocumentActionInfos) {
-            if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+            if (!TextUtils.isEmpty(documentsListItem.getFileName())) {
                 return true;
             }
         }
@@ -551,7 +587,7 @@ public class UploadDocumentActivity extends DrawerActivity {
         boolean isValied = false;
         for (DocumentsItem documentsListItem : uploadDocumentActionInfos) {
             if (documentsListItem.getIsMandatory() == 1 && documentsListItem.getDocumentStatus().getAllowUpdate() == 1) {
-                if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+                if (!TextUtils.isEmpty(documentsListItem.getFileName())) {
                     isValied = true;
                 } else {
                     utility.showToastMsg("Select " + documentsListItem.getName());
@@ -573,6 +609,7 @@ public class UploadDocumentActivity extends DrawerActivity {
             showImagePickerScreen(supportedFileType, fileSize);
         }
     }
+
 
     private void showImagePickerScreen(String[] supportedFileType, double fileSize) {
         if (0 == supportedFileType.length) {
@@ -603,7 +640,6 @@ public class UploadDocumentActivity extends DrawerActivity {
                     .pickFile(this, FILE_PICKER);
         }
     }
-
     /**
      * This method will return VehicleType based on user selection.
      *
@@ -653,7 +689,7 @@ public class UploadDocumentActivity extends DrawerActivity {
      * @param updateNameTextView
      * @param list
      */
-    private void showListPopupScreen(View view, final TextView updateNameTextView, final List<VehicleTypesItem> list,int ids) {
+    private void showListPopupScreen(View view, final TextView updateNameTextView, final List<VehicleTypesItem> list, int ids) {
         View customView = LayoutInflater.from(this).inflate(R.layout.spinner_pop_up_screen, null);
         int leftRightSpace = (int) (screenWidth * 0.0153);
         //int topBottomSpace = (int) (screenHeight * 0.0089);
@@ -661,7 +697,7 @@ public class UploadDocumentActivity extends DrawerActivity {
 
         popupWindow = new PopupWindow(customView, leftRightSpace * 58, ViewGroup.LayoutParams.WRAP_CONTENT);
 
-       final ListView listView = customView.findViewById(R.id.listItemListView);
+        final ListView listView = customView.findViewById(R.id.listItemListView);
 
         ArrayAdapter<VehicleTypesItem> dataAdapter = new ArrayAdapter<VehicleTypesItem>(this, R.layout.spinner_dropdown_textview, list) {
 
@@ -725,6 +761,29 @@ public class UploadDocumentActivity extends DrawerActivity {
         etVehicleName.setText(availableVehiclesItem.getVehicleName());
         etVehicleNumber.setText(availableVehiclesItem.getVehicleNumber());
     }
+
+    private void updateSelectedVehicleUI(DocumentStatusResponse documentStatusResponse) {
+        //Update select vehicle UI.
+        selectVehicleTextView.setText(documentStatusResponse.getVehicleDetailObject().getVehicleName());
+        selectVehicleTextView.setTextColor(getResources().getColor(R.color.secondary_color));
+        selectVehicleTextView.setVisibility(View.GONE);
+        String vehicleTypeId = documentStatusResponse.getVehicleDetailObject().getVehicleTypeId();
+        if (!TextUtils.isEmpty(vehicleTypeId)) {
+            for (int index = 0; index < vehicleTypesItems.size(); index++) {
+                VehicleTypesItem vehicleTypesItem = vehicleTypesItems.get(index);
+                if (vehicleTypesItem.getVehicleTypeId().compareTo(vehicleTypeId) == 0) {
+                    vehicleTypeTextView.setText(vehicleTypesItem.getVehicleType());
+                    mSelectedItemType = index;
+                    break;
+                }
+            }
+        }
+
+        vehicleId = documentStatusResponse.getVehicleDetailObject().getVehicleId();
+        etVehicleName.setText(documentStatusResponse.getVehicleDetailObject().getVehicleName());
+        etVehicleNumber.setText(documentStatusResponse.getVehicleDetailObject().getVehicleNumber());
+    }
+
 
     /**
      * This method to show available vehicle list popup
@@ -866,7 +925,7 @@ public class UploadDocumentActivity extends DrawerActivity {
      */
     private void clearAndUpdateDocumentListUI() {
         for (DocumentsItem documentsListItem : uploadDocumentActionInfos)
-            documentsListItem.setFilePath(null);
+            documentsListItem.setFileName(null);
         adapter.notifyDataSetChanged();
     }
 
@@ -880,10 +939,60 @@ public class UploadDocumentActivity extends DrawerActivity {
         selectVehicleTextView.setText(null);
     }
 
+    private void pickImage() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        String[] mimeType = {"image/*"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeType);
+        startActivityForResult(intent, FILE_PICKER);
+    }
+
+    private void pickFile() {
+        Intent intent = new Intent();
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("application/pdf");
+        String[] mimeType = {"application/pdf"};
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeType);
+        startActivityForResult(intent, FILE_PICKER);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == IMAGE_PICKER || requestCode == FILE_PICKER && resultCode == Activity.RESULT_OK) {
+        /*if (requestCode == FILE_PICKER && resultCode == Activity.RESULT_OK) {
+            //data.getData return the content URI for the selected Image
+            Uri uri = data.getData();
+            if (null != uri) {
+                if (BuildConfig.DEBUG) Log.d(TAG, " The image file path:" + uri);
+                updateDocumentItem(uri);
+                updateUploadContentButtonUI();
+            }
+            *//*if (selectedImage.getScheme().equals(ContentResolver.SCHEME_CONTENT)) {
+                getContentResolver().openInputStream(selectedImage);
+            }
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+            // Get the cursor
+            Cursor cursor = getContentResolver().query(selectedImage, filePathColumn, null, null, null);
+            // Move to first row
+            cursor.moveToFirst();
+            //Get the column index of MediaStore.Images.Media.DATA
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            //Gets the String value in the column
+            String imgDecodableString = cursor.getString(columnIndex);
+            cursor.close();*//*
+            // Set the Image in ImageView after decoding the String
+            Log.d(TAG, " The file selection output: " + uri + " ,data: " + data.getData());
+        } else if (requestCode == CameraActivity.REQUEST_CAMERA_ACTIVITY && resultCode == Activity.RESULT_OK) {
+            String filePath = data.getStringExtra(CameraActivity.CAPTURE_CAMERA_IMAGE);
+            if (null != filePath && !filePath.isEmpty()) {
+                Log.d(TAG, " The image file path:" + filePath);
+                updateDocumentItem(Uri.fromFile(new File(filePath)));
+                updateUploadContentButtonUI();
+            }
+        } else {
+            utility.showToastMsg("File not found");
+        }
+        *//*else if (requestCode == IMAGE_PICKER || requestCode == FILE_PICKER && resultCode == Activity.RESULT_OK) {
             List<String> filePath = data.getStringArrayListExtra(requestCode == IMAGE_PICKER ?
                     FilePickerConst.KEY_SELECTED_MEDIA : FilePickerConst.KEY_SELECTED_DOCS);
             //Bitmap selectedImage = BitmapFactory.decodeFile(filePath);
@@ -893,14 +1002,23 @@ public class UploadDocumentActivity extends DrawerActivity {
                 updateDocumentItem(filePath.get(0));
                 updateUploadContentButtonUI();
             }
-        } else if (requestCode == CameraActivity.REQUEST_CAMERA_ACTIVITY && resultCode == Activity.RESULT_OK) {
+        }*/
+
+        if (requestCode == IMAGE_PICKER || requestCode == FILE_PICKER && resultCode == Activity.RESULT_OK) {
+            List<String> filePath = data.getStringArrayListExtra(requestCode == IMAGE_PICKER ?
+                    FilePickerConst.KEY_SELECTED_MEDIA : FilePickerConst.KEY_SELECTED_DOCS);
+            if (null != filePath && !filePath.isEmpty()) {
+                Log.d(TAG, " The image file path:" + filePath);
+                updateDocumentItem(filePath.get(0));
+            }
+        }else if (requestCode == CameraActivity.REQUEST_CAMERA_ACTIVITY && resultCode == Activity.RESULT_OK) {
             String filePath = data.getStringExtra(CameraActivity.CAPTURE_CAMERA_IMAGE);
             if (null != filePath && !filePath.isEmpty()) {
                 Log.d(TAG, " The image file path:" + filePath);
                 updateDocumentItem(filePath);
-                updateUploadContentButtonUI();
+                //updateUploadContentButtonUI();
             }
-        } else {
+        }  else {
             utility.showToastMsg("File not found");
         }
     }

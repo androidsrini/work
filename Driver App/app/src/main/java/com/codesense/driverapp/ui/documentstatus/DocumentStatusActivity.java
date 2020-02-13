@@ -252,7 +252,7 @@ public class DocumentStatusActivity extends DrawerActivity implements View.OnCli
      */
     private void clearAndUpdateDocumentListUI() {
         for (DocumentsItem documentsListItem : arraylist)
-            documentsListItem.setFilePath(null);
+            documentsListItem.setFileName(null);
         adapter.notifyDataSetChanged();
     }
 
@@ -345,7 +345,7 @@ public class DocumentStatusActivity extends DrawerActivity implements View.OnCli
      */
     private boolean isAnyItemDocumentSelected() {
         for (DocumentsItem documentsListItem : arraylist) {
-            if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+            if (!TextUtils.isEmpty(documentsListItem.getFileName())) {
                 return true;
             }
         }
@@ -362,7 +362,7 @@ public class DocumentStatusActivity extends DrawerActivity implements View.OnCli
         int count = 0;
         do {
             DocumentsItem documentsListItem = arraylist.get(count);
-            if (!TextUtils.isEmpty(documentsListItem.getFilePath())) {
+            if (!TextUtils.isEmpty(documentsListItem.getFileName())) {
                 documentsListItems.add(documentsListItem);
             }
         } while (++count < this.arraylist.size());

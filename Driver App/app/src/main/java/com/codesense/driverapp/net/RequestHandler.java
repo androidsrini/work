@@ -9,6 +9,7 @@ import com.codesense.driverapp.data.DocumentsListItem;
 import com.codesense.driverapp.data.VehicleDetailRequest;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.request.RegisterNewUser;
+import com.codesense.driverapp.ui.helper.Utils;
 import com.google.gson.JsonElement;
 
 import java.io.File;
@@ -258,15 +259,27 @@ public class RequestHandler {
         MultipartBody.Part[] parts = new MultipartBody.Part[documentsListItem.size()];
         for (int index=0; index<documentsListItem.size(); index++) {
             DocumentsItem documentsItem = documentsListItem.get(index);
-            File file = new File(documentsItem.getFilePath());
+            File file = new File(documentsItem.getFileName());
+//            byte[] bytes = Utils.convertUri(documentsItem.getSelectedFileUri());
             RequestBody requestFile = RequestBody.create(MediaType.parse(Constant.MULTIPART_FORM_DATA), file);
-            parts[index] = MultipartBody.Part.createFormData(documentsItem.getFieldName(), file.getName(), requestFile);
+            parts[index] = MultipartBody.Part.createFormData(documentsItem.getFieldName(), documentsItem.getFileName(), requestFile);
+        }
+        return parts;
+    }
+    private MultipartBody.Part[] getUploadDocumentItemFileRequestDriver(List<DocumentsItem> documentsListItem) {
+        MultipartBody.Part[] parts = new MultipartBody.Part[documentsListItem.size()];
+        for (int index=0; index<documentsListItem.size(); index++) {
+            DocumentsItem documentsItem = documentsListItem.get(index);
+            File file = new File(documentsItem.getFileName());
+//            byte[] bytes = Utils.convertUri(documentsItem.getSelectedFileUri());
+            RequestBody requestFile = RequestBody.create(MediaType.parse(Constant.MULTIPART_FORM_DATA), file);
+            parts[index] = MultipartBody.Part.createFormData(documentsItem.getFieldName(), documentsItem.getFileName(), requestFile);
         }
         return parts;
     }
 
     private MultipartBody.Part getUploadDocumentItemFileRequest(DocumentsItem documentsListItem) {
-        File file = new File(documentsListItem.getFilePath());
+        File file = new File(documentsListItem.getFileName());
         RequestBody requestFile = RequestBody.create(MediaType.parse(Constant.MULTIPART_FORM_DATA), file);
         return MultipartBody.Part.createFormData(documentsListItem.getFieldName(), file.getName(), requestFile);
     }
@@ -281,9 +294,10 @@ public class RequestHandler {
         MultipartBody.Part[] parts = new MultipartBody.Part[documentsListItem.size()];
         for (int index=0; index<documentsListItem.size(); index++) {
             DocumentsListItem documentsListItem1 = documentsListItem.get(index);
-            File file = new File(documentsListItem1.getFilePath());
-            RequestBody requestFile = RequestBody.create(MediaType.parse(Constant.MULTIPART_FORM_DATA), file);
-            parts[index] = MultipartBody.Part.createFormData(documentsListItem1.getName(), file.getName(), requestFile);
+            //File file = new File(documentsListItem1.getFilePath());
+            byte[] bytes = Utils.convertUri(documentsListItem1.getSelectedFileUri());
+            RequestBody requestFile = RequestBody.create(MediaType.parse(Constant.MULTIPART_FORM_DATA), bytes);
+            parts[index] = MultipartBody.Part.createFormData(documentsListItem1.getName(), documentsListItem1.getFileName(), requestFile);
         }
         return parts;
     }
@@ -499,7 +513,7 @@ public Observable<JsonElement> fetchDocumentStatusVehicle(String apiKey,String v
 
     public Observable<JsonElement> uploadDriverDocumentRequest(String api, List<DocumentsItem> documentsListItem, String driverId) {
         return apiCallInterface.uploadDriverDocumentRequest(api, appSharedPreference.getAccessTokenKey(),
-                getUploadDocumentItemFileRequest(documentsListItem), getUploadDocumentUserID(),
+                getUploadDocumentItemFileRequestDriver(documentsListItem), getUploadDocumentUserID(),
                 getDriverId(driverId));
     }
 
