@@ -150,6 +150,9 @@
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".ui.online.OnlineActivity$LocationUpdateBroadcastReceiver"
+            android:exported="true"
+            />
 
         <service android:name=".ui.helper.LocationMonitoringService" />
         <service
@@ -159,6 +162,8 @@
                 <action android:name="localstoreage.LocationService" />
             </intent-filter>
         </service>
+        <service android:name=".service.LocationUpdateService"
+            android:process=":remote" />
 
         <uses-library
             android:name="org.apache.http.legacy"
