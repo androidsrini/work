@@ -291,11 +291,36 @@ public interface ApiCallInterface {
     @POST(WebserviceUrls.GET_VERIFICATION_CODE)
     @FormUrlEncoded
     Observable<JsonElement> verifyOTPForgotRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
-                                             @FieldMap HashMap<String, String> params);
- @POST(WebserviceUrls.CHANGE_PASSWORD)
+                                                   @FieldMap HashMap<String, String> params);
+
+    @POST(WebserviceUrls.CHANGE_PASSWORD)
     @FormUrlEncoded
     Observable<JsonElement> changePasswordRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
+                                                  @FieldMap HashMap<String, String> params);
+
+    @POST(WebserviceUrls.ARRIVED_TRIP)
+    @FormUrlEncoded
+    Observable<JsonElement> arrivedTripRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
+                                               @FieldMap HashMap<String, String> params);
+@POST(WebserviceUrls.ACCEPT_TRIP)
+    @FormUrlEncoded
+    Observable<JsonElement> acceptTripRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
+                                              @FieldMap HashMap<String, String> params);
+
+    @POST(WebserviceUrls.CANCEL_TRIP)
+    @FormUrlEncoded
+    Observable<JsonElement> cancelTripRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
+                                              @FieldMap HashMap<String, String> params);
+
+    @POST(WebserviceUrls.START_TRIP)
+    @FormUrlEncoded
+    Observable<JsonElement> startTripRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
                                              @FieldMap HashMap<String, String> params);
+
+    @POST(WebserviceUrls.COMPLETE_TRIP)
+    @FormUrlEncoded
+    Observable<JsonElement> completeTripRequest(@Header(Constant.API_AUTH_KEY_PARAM) String apiKey, @Header(Constant.ACCESS_TOKEN_PARAM) String accessToken,
+                                                @FieldMap HashMap<String, String> params);
 
     /*@POST(WebserviceUrls.GET_DOCUMENTS_STATUS_DRIVER)
     @FormUrlEncoded

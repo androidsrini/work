@@ -6,11 +6,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.FloatingActionButton;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -408,10 +408,10 @@ public class VerifyMobileActivity extends BaseActivity {
 
 
     private void clearClipboard() {
-        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipboardManager clipboard = (ClipboardManager) getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
         // you can set an empty string or set to null, same result
         //android.content.ClipData clip = android.content.ClipData.newPlainText("", "");
-        android.content.ClipData clip = android.content.ClipData.newPlainText(null, null);
+        ClipData clip = ClipData.newPlainText(null, null);
         clipboard.setPrimaryClip(clip);
 
     }

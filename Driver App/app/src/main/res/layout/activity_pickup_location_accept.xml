@@ -42,12 +42,14 @@
                     android:text="Address"
                     android:layout_marginTop="10dp"
                     android:textColor="@color/background_color"
-                    android:textSize="23sp" />
+                    android:textSize="16sp" />
+
 
                 <RelativeLayout
                     android:id="@+id/rlTrans"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/tvAddress"
                     android:background="@drawable/map_location"
                     android:layout_centerInParent="true">
 
@@ -96,7 +98,7 @@
                     android:layout_gravity="center"
                     android:text="Coimbatore, TamilNadu, India"
                     android:textColor="@color/background_color"
-                    android:textSize="20sp" />
+                    android:textSize="16sp" />
 
             </RelativeLayout>
 
@@ -173,12 +175,23 @@
                         android:textColor="@color/background_color"
                         android:textSize="23sp"
                         android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/userPhoneNum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toEndOf="@+id/imgProfile"
+                        android:text="Vijay"
+                        android:layout_below="@+id/UserName"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textColor="@color/background_color"
+                        android:textSize="23sp"
+                        android:textStyle="bold" />
 
                     <RatingBar
                         android:id="@+id/ratingBar"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/UserName"
+                        android:layout_below="@+id/userPhoneNum"
                         android:layout_toEndOf="@+id/imgProfile"
                         android:numStars="5"
                         android:layout_marginTop="5dp"

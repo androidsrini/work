@@ -1,7 +1,7 @@
 package com.library.fileimagepicker.filepicker.utils
 
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import com.library.fileimagepicker.R
 import com.library.fileimagepicker.filepicker.fragments.BaseFragment
 
@@ -65,7 +65,7 @@ object FragmentUtil {
                 .commit()
     }
 
-    fun getFragmentByTag(appCompatActivity: AppCompatActivity, tag: String): Fragment? {
+    fun getFragmentByTag(appCompatActivity: AppCompatActivity, tag: String): androidx.fragment.app.Fragment? {
         return appCompatActivity.supportFragmentManager.findFragmentByTag(tag)
     }
 

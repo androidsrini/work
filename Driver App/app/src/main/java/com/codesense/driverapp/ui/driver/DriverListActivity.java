@@ -3,8 +3,8 @@ package com.codesense.driverapp.ui.driver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.RecyclerView;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -19,6 +19,7 @@ import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.adddriver.AddDriverActivity;
 import com.codesense.driverapp.ui.documentstatus.DocumentStatusActivity;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
+import com.codesense.driverapp.ui.helper.Utils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -66,6 +67,7 @@ public class DriverListActivity extends DrawerActivity {
             public void onButtonClick(int position, boolean isChecked) {
                 //call active api here.
                 DriversListItem driversListItem = driversListItemList.get(position);
+                Utils.saveStringToPrefs(DriverListActivity.this,"vehicleId",driversListItem.getVehicleId());
                 driverListViewModel.postDrivingActivationRequest(isChecked ? Constant.ACTIVE :
                         Constant.INACTIVE, driversListItem.getVehicleId(), driversListItem.getDriverId(),driversListItem.getDriverType());
             }

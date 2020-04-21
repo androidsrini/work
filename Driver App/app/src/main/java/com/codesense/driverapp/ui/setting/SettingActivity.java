@@ -2,8 +2,8 @@ package com.codesense.driverapp.ui.setting;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
-import com.product.annotationbuilder.ProductBindView;
 
 public class SettingActivity extends DrawerActivity {
 

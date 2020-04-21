@@ -1,6 +1,8 @@
 package com.codesense.driverapp.base;
 
 
+import android.content.Context;
+
 import com.codesense.driverapp.di.component.ApplicationComponent;
 import com.codesense.driverapp.di.component.DaggerApplicationComponent;
 import com.codesense.driverapp.di.module.NetworkModule;
@@ -16,6 +18,7 @@ import io.fabric.sdk.android.Fabric;
 public class BaseApplication extends DaggerApplication {
 
     private static BaseApplication baseApplication;
+    ApplicationComponent component;
 
     @Override
     public void onCreate() {
@@ -27,7 +30,7 @@ public class BaseApplication extends DaggerApplication {
     @Override
     protected AndroidInjector<? extends DaggerApplication> applicationInjector() {
 
-        ApplicationComponent component = DaggerApplicationComponent.builder()
+        component = DaggerApplicationComponent.builder()
                 .networkModule(new NetworkModule(this))
                 .build();
         component.inject(this);
@@ -37,5 +40,11 @@ public class BaseApplication extends DaggerApplication {
 
     public static BaseApplication getBaseApplication() {
         return baseApplication;
+    }
+
+
+
+    public ApplicationComponent getAppComponent(Context context) {
+        return ((BaseApplication) context.getApplicationContext()).component;
     }
 }

@@ -29,6 +29,7 @@ public class AppSharedPreference {
     private static final String USER_STATUS = "UserStatus";
     private static final String COUNTRY_DIAL_CODE_KEY = "CountryDialCodeKey";
     private static final String EMAIL_ID_KEY = "EmailIdKey";
+    private static final String Vehicle_ID_KEY = "VehicleIdKey";
     private static final String DISPLAY_NAME_KEY = "DisplayName";
     private static final String PROFILE_PICTURE_KEY = "ProfilePictureKey";
     private static final String SPEED_KEY = "SpeedKey";
@@ -67,8 +68,16 @@ public class AppSharedPreference {
         editor.putString(MOBILE_NUMBER_KEY, mobileNum);
         editor.apply();
     }
+public void saveVehicleId(String vehicleId) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(Vehicle_ID_KEY, vehicleId);
+        editor.apply();
+    }
 
 
+    public String getVehicleID() {
+        return sharedPreferences.getString(Vehicle_ID_KEY, DEFAULT_VALUE);
+    }
     public String getUserID() {
         return sharedPreferences.getString(USER_ID_KEY, DEFAULT_VALUE);
     }
@@ -273,7 +282,16 @@ public class AppSharedPreference {
         editor.clear();
         editor.commit();
     }
+    public  void saveStringToPrefs(Context context, String key,
+                                         String value) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
 
+    public  String getStringToPrefs(Context context, String key) {
+        return sharedPreferences.getString(key, null);
+    }
 
 
 }

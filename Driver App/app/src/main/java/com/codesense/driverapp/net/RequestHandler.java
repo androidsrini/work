@@ -64,7 +64,7 @@ public class RequestHandler {
         return param;
     }
 
-    private HashMap<String, String> changePasswordParam(String verification_code,String password) {
+    private HashMap<String, String> changePasswordParam(String verification_code, String password) {
         HashMap<String, String> param = new HashMap<>();
         param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
         param.put(Constant.VERIFICATION_CODE_PARAM, verification_code);
@@ -73,8 +73,53 @@ public class RequestHandler {
         return param;
     }
 
+    private HashMap<String, String> acceptTripParam(String booking_id, String vehicleId, String lat, String lng) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
+        param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
+        param.put(Constant.BOOKING_ID, booking_id);
+        param.put(Constant.VEHICLE_ID, vehicleId);
+        param.put(Constant.LATITUDE_PARAM, lat);
+        param.put(Constant.LONGITUDE_PARAM, lng);
+        return param;
+    }
+
+    private HashMap<String, String> cancelTripParam(String booking_id, String vehicleId) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
+        param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
+        param.put(Constant.BOOKING_ID, booking_id);
+        param.put(Constant.VEHICLE_ID, vehicleId);
+        return param;
+    }
+
+    private HashMap<String, String> startTripParam(String booking_id, String vehicleId, String confirmationCode) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
+        param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
+        param.put(Constant.BOOKING_ID, booking_id);
+        param.put(Constant.VEHICLE_ID, vehicleId);
+        param.put(Constant.CONFIRMATION_CODE, confirmationCode);
+        return param;
+    }
+
+    private HashMap<String, String> completeTripParam(String booking_id, String vehicleId, String totalKM, String totalFare, String lat, String lng, List<HashMap<String, String>> waypoint) {
+        HashMap<String, String> param = new HashMap<>();
+        param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
+        param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
+        param.put(Constant.BOOKING_ID, booking_id);
+        param.put(Constant.VEHICLE_ID, vehicleId);
+        param.put(Constant.TOTAL_KM, totalKM);
+        param.put(Constant.TOTAL_FARE, totalFare);
+        param.put(Constant.LATITUDE, lat);
+        param.put(Constant.LONGITUDE, lng);
+        param.put(Constant.WAYPOINTS, waypoint.toString());
+        return param;
+    }
+
     /**
      * This method will create sigin in api request as hashmap
+     *
      * @param emailId
      * @param password
      * @return HashMap.
@@ -89,6 +134,7 @@ public class RequestHandler {
 
     /**
      * This method to create userId param value as HashMap.
+     *
      * @return HashMap;
      */
     private HashMap<String, String> getUserIDRequestParam() {
@@ -97,7 +143,8 @@ public class RequestHandler {
         param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
         return param;
     }
- private HashMap<String, String> getUserIDRequestDriverParam(String driverId) {
+
+    private HashMap<String, String> getUserIDRequestDriverParam(String driverId) {
         HashMap<String, String> param = new HashMap<>();
         param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
         param.put(Constant.USER_TYPE_REQUEST, appSharedPreference.getUserType());
@@ -112,11 +159,13 @@ public class RequestHandler {
         param.put(Constant.VEHICLE_ID, vehicleId);
         return param;
     }
+
     /**
      * This method to create userId param value as HashMap.
+     *
      * @return HashMap;
      */
-    private HashMap<String, String> postdrivingActivationRequestParam(int driverStatus, String vehicleId, String driverId,String driverType) {
+    private HashMap<String, String> postdrivingActivationRequestParam(int driverStatus, String vehicleId, String driverId, String driverType) {
         HashMap<String, String> param = new HashMap<>();
         param.put(Constant.USER_ID_PARAM, appSharedPreference.getUserID());
         param.put(Constant.DRIVING_STATUS, String.valueOf(driverStatus));
@@ -145,6 +194,7 @@ public class RequestHandler {
 
     /**
      * This method to create Agreement Accept request.
+     *
      * @param agreementAccept
      * @return HashMap
      */
@@ -165,6 +215,7 @@ public class RequestHandler {
 
     /**
      * This method to create Owner type request.
+     *
      * @param ownerType
      * @return HashMap
      */
@@ -257,7 +308,7 @@ public class RequestHandler {
 
     private MultipartBody.Part[] getUploadDocumentItemFileRequest(List<DocumentsItem> documentsListItem) {
         MultipartBody.Part[] parts = new MultipartBody.Part[documentsListItem.size()];
-        for (int index=0; index<documentsListItem.size(); index++) {
+        for (int index = 0; index < documentsListItem.size(); index++) {
             DocumentsItem documentsItem = documentsListItem.get(index);
             File file = new File(documentsItem.getFileName());
 //            byte[] bytes = Utils.convertUri(documentsItem.getSelectedFileUri());
@@ -266,9 +317,10 @@ public class RequestHandler {
         }
         return parts;
     }
+
     private MultipartBody.Part[] getUploadDocumentItemFileRequestDriver(List<DocumentsItem> documentsListItem) {
         MultipartBody.Part[] parts = new MultipartBody.Part[documentsListItem.size()];
-        for (int index=0; index<documentsListItem.size(); index++) {
+        for (int index = 0; index < documentsListItem.size(); index++) {
             DocumentsItem documentsItem = documentsListItem.get(index);
             File file = new File(documentsItem.getFileName());
 //            byte[] bytes = Utils.convertUri(documentsItem.getSelectedFileUri());
@@ -292,7 +344,7 @@ public class RequestHandler {
 
     private MultipartBody.Part[] getUploadDocumentFileRequest(List<DocumentsListItem> documentsListItem) {
         MultipartBody.Part[] parts = new MultipartBody.Part[documentsListItem.size()];
-        for (int index=0; index<documentsListItem.size(); index++) {
+        for (int index = 0; index < documentsListItem.size(); index++) {
             DocumentsListItem documentsListItem1 = documentsListItem.get(index);
             //File file = new File(documentsListItem1.getFilePath());
             byte[] bytes = Utils.convertUri(documentsListItem1.getSelectedFileUri());
@@ -504,10 +556,12 @@ public class RequestHandler {
     public Observable<JsonElement> fetchDocumentStatusDriverRequest(String apiKey) {
         return apiCallInterface.fetchDocumentStatusDriverRequest(apiKey, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
     }
-public Observable<JsonElement> fetchDocumentStatusDriver(String apiKey,String driverID) {
+
+    public Observable<JsonElement> fetchDocumentStatusDriver(String apiKey, String driverID) {
         return apiCallInterface.fetchDocumentStatusDriverRequest(apiKey, appSharedPreference.getAccessTokenKey(), getUserIDRequestDriverParam(driverID));
     }
-public Observable<JsonElement> fetchDocumentStatusVehicle(String apiKey,String vehicleID) {
+
+    public Observable<JsonElement> fetchDocumentStatusVehicle(String apiKey, String vehicleID) {
         return apiCallInterface.fetchDocumentStatusVehicleRequest(apiKey, appSharedPreference.getAccessTokenKey(), getUserIDRequestVehicleParam(vehicleID));
     }
 
@@ -529,8 +583,8 @@ public Observable<JsonElement> fetchDocumentStatusVehicle(String apiKey,String v
         return apiCallInterface.getDriversListRequest(api, appSharedPreference.getAccessTokenKey(), getUserIDRequestParam());
     }
 
-    public Observable<JsonElement> postDrivingActivationRequest(String api, int driverStatus, String vehicleId, String driverId,String driverType) {
-        return apiCallInterface.postDrivingActivationRequest(api, appSharedPreference.getAccessTokenKey(), postdrivingActivationRequestParam(driverStatus, vehicleId, driverId,driverType));
+    public Observable<JsonElement> postDrivingActivationRequest(String api, int driverStatus, String vehicleId, String driverId, String driverType) {
+        return apiCallInterface.postDrivingActivationRequest(api, appSharedPreference.getAccessTokenKey(), postdrivingActivationRequestParam(driverStatus, vehicleId, driverId, driverType));
     }
 
     public Observable<JsonElement> fetchDriverDetailsRequest(String api, String driverId) {
@@ -548,7 +602,28 @@ public Observable<JsonElement> fetchDocumentStatusVehicle(String apiKey,String v
     public Observable<JsonElement> verifyOTPForgotRequest(String apiKey, String otp) {
         return apiCallInterface.verifyOTPForgotRequest(apiKey, appSharedPreference.getAccessTokenKey(), getVerifyOTPForgotRequestParam(otp));
     }
-    public Observable<JsonElement> changePasswordRequest(String apiKey, String verficationCode,String password) {
-        return apiCallInterface.changePasswordRequest(apiKey, appSharedPreference.getAccessTokenKey(), changePasswordParam(verficationCode,password));
+
+    public Observable<JsonElement> changePasswordRequest(String apiKey, String verficationCode, String password) {
+        return apiCallInterface.changePasswordRequest(apiKey, appSharedPreference.getAccessTokenKey(), changePasswordParam(verficationCode, password));
+    }
+
+    public Observable<JsonElement> arrivedRequest(String apiKey, String bookingId, String vehicleId, String lat, String lng) {
+        return apiCallInterface.arrivedTripRequest(apiKey, appSharedPreference.getAccessTokenKey(), acceptTripParam(bookingId, vehicleId, lat, lng));
+    }
+
+    public Observable<JsonElement> acceptRequest(String apiKey, String bookingId, String vehicleId, String lat, String lng) {
+        return apiCallInterface.acceptTripRequest(apiKey, appSharedPreference.getAccessTokenKey(), acceptTripParam(bookingId, vehicleId, lat, lng));
+    }
+
+    public Observable<JsonElement> cancelRequest(String apiKey, String bookingId, String vehicleId) {
+        return apiCallInterface.cancelTripRequest(apiKey, appSharedPreference.getAccessTokenKey(), cancelTripParam(bookingId, vehicleId));
+    }
+
+    public Observable<JsonElement> startRequest(String apiKey, String bookingId, String vehicleId, String confirmationCode) {
+        return apiCallInterface.startTripRequest(apiKey, appSharedPreference.getAccessTokenKey(), startTripParam(bookingId, vehicleId, confirmationCode));
+    }
+
+    public Observable<JsonElement> completeRequest(String apiKey, String booking_id, String vehicleId, String totalKM, String totalFare, String lat, String lng, List<HashMap<String, String>> waypoint) {
+        return apiCallInterface.completeTripRequest(apiKey, appSharedPreference.getAccessTokenKey(), completeTripParam(booking_id, vehicleId, totalKM, totalFare, lat, lng, waypoint));
     }
 }

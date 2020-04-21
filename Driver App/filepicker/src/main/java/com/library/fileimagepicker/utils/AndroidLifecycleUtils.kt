@@ -3,10 +3,10 @@ package com.library.fileimagepicker.filepicker.utils
 import android.app.Activity
 import android.content.Context
 import android.os.Build
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 
 object AndroidLifecycleUtils {
-    fun canLoadImage(fragment: Fragment?): Boolean {
+    fun canLoadImage(fragment: androidx.fragment.app.Fragment?): Boolean {
         if (fragment == null) {
             return true
         }

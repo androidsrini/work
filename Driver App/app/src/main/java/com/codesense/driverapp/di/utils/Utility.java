@@ -4,9 +4,11 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.location.Address;
+import android.location.Geocoder;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.annotation.UiThread;
+import androidx.annotation.UiThread;
 import android.util.Base64;
 import android.util.Patterns;
 import android.view.View;
@@ -27,6 +29,8 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.SecureRandom;
+import java.util.List;
+import java.util.Locale;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -295,4 +299,28 @@ public class Utility {
         });
         builder.show();
     }
+
+    public String getCompleteAddressString(Context activity, double LATITUDE, double LONGITUDE) {
+        String strAdd = "";
+        Geocoder geocoder = new Geocoder(activity, Locale.getDefault());
+        try {
+            List<Address> addresses = geocoder.getFromLocation(LATITUDE, LONGITUDE, 1);
+            if (addresses != null) {
+                Address returnedAddress = addresses.get(0);
+                StringBuilder strReturnedAddress = new StringBuilder("");
+
+                for (int i = 0; i <= returnedAddress.getMaxAddressLineIndex(); i++) {
+                    strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("\n");
+                }
+                strAdd = strReturnedAddress.toString();
+            } else {
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return strAdd;
+    }
+
+
+
 }

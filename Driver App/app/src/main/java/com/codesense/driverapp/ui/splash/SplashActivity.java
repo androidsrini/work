@@ -21,6 +21,7 @@ import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
 import com.codesense.driverapp.ui.documentstatus.DocumentStatusActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
+import com.codesense.driverapp.ui.helper.Utils;
 import com.codesense.driverapp.ui.launchscreen.LaunchScreenActivity;
 import com.codesense.driverapp.ui.legalagreement.LegalAgreementActivity;
 import com.codesense.driverapp.ui.online.OnlineActivity;
@@ -126,6 +127,7 @@ public class SplashActivity extends BaseActivity {
                             }
                         } else if (utility.parseInt(signupStatus.getIsActivated()) == 1){
                             if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {
+                                Utils.saveStringToPrefs(SplashActivity.this,"vehicleId",signupStatus.getVehicleId());
                                 OnlineActivity.start(this);
                                 finish();
                             } else {

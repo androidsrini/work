@@ -5,10 +5,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.support.annotation.DrawableRes
-import android.support.annotation.IntegerRes
-import android.support.v4.app.Fragment
-import android.support.v4.content.ContextCompat
+import androidx.annotation.DrawableRes
+import androidx.annotation.IntegerRes
+import androidx.fragment.app.Fragment
+import androidx.core.content.ContextCompat
 import android.widget.Toast
 import com.library.fileimagepicker.R
 import com.library.fileimagepicker.models.FileType
@@ -122,7 +122,7 @@ class FilePickerBuilder {
         start(context, FilePickerConst.REQUEST_CODE_PHOTO)
     }
 
-    fun pickPhoto(context: Fragment) {
+    fun pickPhoto(context: androidx.fragment.app.Fragment) {
         mPickerOptionsBundle.putInt(FilePickerConst.EXTRA_PICKER_TYPE, FilePickerConst.MEDIA_PICKER)
         start(context, FilePickerConst.REQUEST_CODE_PHOTO)
     }
@@ -132,7 +132,7 @@ class FilePickerBuilder {
         start(context, FilePickerConst.REQUEST_CODE_DOC)
     }
 
-    fun pickFile(context: Fragment) {
+    fun pickFile(context: androidx.fragment.app.Fragment) {
         mPickerOptionsBundle.putInt(FilePickerConst.EXTRA_PICKER_TYPE, FilePickerConst.DOC_PICKER)
         start(context, FilePickerConst.REQUEST_CODE_DOC)
     }
@@ -142,7 +142,7 @@ class FilePickerBuilder {
         start(context, requestCode)
     }
 
-    fun pickPhoto(context: Fragment, requestCode: Int) {
+    fun pickPhoto(context: androidx.fragment.app.Fragment, requestCode: Int) {
         mPickerOptionsBundle.putInt(FilePickerConst.EXTRA_PICKER_TYPE, FilePickerConst.MEDIA_PICKER)
         start(context, requestCode)
     }
@@ -152,7 +152,7 @@ class FilePickerBuilder {
         start(context, requestCode)
     }
 
-    fun pickFile(context: Fragment, requestCode: Int) {
+    fun pickFile(context: androidx.fragment.app.Fragment, requestCode: Int) {
         mPickerOptionsBundle.putInt(FilePickerConst.EXTRA_PICKER_TYPE, FilePickerConst.DOC_PICKER)
         start(context, requestCode)
     }
@@ -175,7 +175,7 @@ class FilePickerBuilder {
         context.startActivityForResult(intent, requestCode)
     }
 
-    private fun start(fragment: Fragment, requestCode: Int) {
+    private fun start(fragment: androidx.fragment.app.Fragment, requestCode: Int) {
         fragment.context?.let {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 if (ContextCompat.checkSelfPermission(it,

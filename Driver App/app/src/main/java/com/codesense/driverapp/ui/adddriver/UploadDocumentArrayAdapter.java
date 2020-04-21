@@ -22,7 +22,7 @@ public class UploadDocumentArrayAdapter<DocumentsItem> extends ArrayAdapter {
     private int height;
     private Context context;
 
-    public UploadDocumentArrayAdapter(@NonNull @android.support.annotation.NonNull Context context, int w, int h, List<DocumentsItem> documentsItems) {
+    public UploadDocumentArrayAdapter(@NonNull Context context, int w, int h, List<DocumentsItem> documentsItems) {
         super(context, 0);
         this.context = context;
         this.documentsItemList = documentsItems;
@@ -31,7 +31,6 @@ public class UploadDocumentArrayAdapter<DocumentsItem> extends ArrayAdapter {
     }
 
     @Nullable
-    @android.support.annotation.Nullable
     @Override
     public DocumentsItem getItem(int position) {
         return documentsItemList.get(position);
@@ -43,9 +42,8 @@ public class UploadDocumentArrayAdapter<DocumentsItem> extends ArrayAdapter {
     }
 
     @NonNull
-    @android.support.annotation.NonNull
     @Override
-    public View getView(int position, @Nullable @android.support.annotation.Nullable View convertView, @NonNull @android.support.annotation.NonNull ViewGroup parent) {
+    public View getView(int position, @Nullable  View convertView, @NonNull ViewGroup parent) {
         return super.getView(position, convertView, parent);
     }
 

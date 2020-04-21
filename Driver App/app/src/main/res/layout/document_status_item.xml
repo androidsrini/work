@@ -8,7 +8,7 @@
     android:layout_margin="@dimen/margin_10"
     android:background="@color/background_document_status">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rlDriverVehicle"
         app:layout_constraintVertical_weight="1"
         android:layout_width="match_parent"
@@ -60,7 +60,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>
 

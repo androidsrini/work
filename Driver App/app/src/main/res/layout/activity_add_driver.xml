@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout android:id="@+id/addDriverDetailsParentConstrainLayout"
+<androidx.constraintlayout.widget.ConstraintLayout android:id="@+id/addDriverDetailsParentConstrainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/margin_16"
@@ -18,7 +18,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         >
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/driverFirstNameTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -36,9 +36,9 @@
             android:imeOptions="actionNext"
             android:inputType="textAutoCorrect"
             />
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/driverLastNameTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -58,12 +58,12 @@
             android:imeOptions="actionNext"
             android:inputType="textAutoCorrect"
             />
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/driverContNumTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -82,7 +82,7 @@
             android:imeOptions="actionNext"
             android:inputType="phone"
             />
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!--<View
         android:id="@+id/view4"
@@ -93,7 +93,7 @@
         android:layout_below="@+id/etVehicleNumber"
         app:layout_constraintTop_toBottomOf="@+id/etDriverContNum" />-->
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/driverEmailTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -111,7 +111,7 @@
             android:hint="@string/add_vehicle_driver_email"
             android:imeOptions="actionNext"
             />
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!--<View
         android:id="@+id/view5"
@@ -147,7 +147,7 @@
         app:layout_constraintTop_toBottomOf="@+id/change_password_checkedTextView"
         app:layout_constraintHorizontal_bias="0.0">
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/driverPasswordTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -166,7 +166,7 @@
             android:imeOptions="actionNext"
             />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!--<View
         android:id="@+id/view6"
@@ -177,7 +177,7 @@
         android:layout_below="@+id/etVehicleNumber"
         app:layout_constraintTop_toBottomOf="@+id/etDriverPassword" />-->
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/driverConTextInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -198,7 +198,7 @@
             android:imeOptions="actionNext"
             android:inputType="textPassword"
             />
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
     <AutoCompleteTextView
@@ -211,7 +211,7 @@
 
 
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/invite_code_textInputLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -226,7 +226,7 @@
             android:hint="@string/invite_text"
             />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
 
     <com.codesense.driverapp.di.utils.AppSpinnerViewGroup
@@ -239,7 +239,7 @@
         android:padding="3dp"
         app:layout_constraintTop_toBottomOf="@+id/invite_code_textInputLayout"
         />
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -264,4 +264,4 @@
         android:textColor="@color/secondary_color"
         android:background="@drawable/button_primary_full_filled" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

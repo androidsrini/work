@@ -141,7 +141,7 @@
         app:layout_constraintTop_toBottomOf="@+id/etVehicleNumber" />
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -152,6 +152,6 @@
         android:id="@+id/uploadContentButton"
         android:text="@string/update_document_text"
         style="@style/appButtonProperty"
-        android:visibility="gone"/>
+        android:visibility="visible"/>
 
 </RelativeLayout>

@@ -24,6 +24,8 @@ public class SigninOwnerResponse {
 
     @SerializedName("user_id")
     private String userId;
+ @SerializedName("vehicle_id")
+    private String vehicleId;
 
     @SerializedName("owner_type_id")
     private int ownerTypeId;
@@ -176,6 +178,15 @@ public class SigninOwnerResponse {
 
     public void setIs_activated(int is_activated) {
         this.is_activated = is_activated;
+    }
+
+
+    public String getVehicleId() {
+        return vehicleId;
+    }
+
+    public void setVehicleId(String vehicleId) {
+        this.vehicleId = vehicleId;
     }
 
     @Override

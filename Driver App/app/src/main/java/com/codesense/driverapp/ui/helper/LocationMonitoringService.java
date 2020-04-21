@@ -1,30 +1,60 @@
 package com.codesense.driverapp.ui.helper;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
+import androidx.lifecycle.MutableLiveData;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.codesense.driverapp.R;
+import com.codesense.driverapp.base.BaseApplication;
+import com.codesense.driverapp.data.DropLocationData;
+import com.codesense.driverapp.data.UpdateVehicleResponse;
+import com.codesense.driverapp.di.utils.ApiUtility;
+import com.codesense.driverapp.di.utils.Utility;
 import com.codesense.driverapp.localstoreage.AppSharedPreference;
+import com.codesense.driverapp.net.ApiResponse;
+import com.codesense.driverapp.net.RequestHandler;
+import com.codesense.driverapp.net.ServiceType;
+import com.codesense.driverapp.ui.online.OnlineActivity;
+import com.codesense.driverapp.ui.pickuplocationaccept.PickUpLocationAcceptActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
+import java.util.List;
+
+import javax.inject.Inject;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * This class to access location lat and long values in background
+ *
  * @link https://stackoverflow.com/questions/36321661/how-can-i-use-fused-location-provider-inside-a-service-class
  */
 public class LocationMonitoringService extends Service implements
@@ -43,8 +73,16 @@ public class LocationMonitoringService extends Service implements
     private static final long MEDIUM_INTERVAL = 1000 * 30 * 60;
     AppSharedPreference appSharedPreference;
 
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
+    @Inject
+    RequestHandler requestHandler;
+    private MutableLiveData<ApiResponse> apiResponseMutableLiveData = new MutableLiveData<>();
+    @Inject
+    Utility utility;
+
     /**
      * This method to find location permission enabled or not
+     *
      * @return boolean
      */
     private boolean hasLocationPermissionEnabled() {
@@ -57,8 +95,9 @@ public class LocationMonitoringService extends Service implements
      */
     private void createLocationRequest() {
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(MEDIUM_INTERVAL);
-        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        mLocationRequest.setInterval(2000);
+        mLocationRequest.setFastestInterval(2000);
+        mLocationRequest.setSmallestDisplacement(1);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
     }
 
@@ -67,13 +106,26 @@ public class LocationMonitoringService extends Service implements
      * it will call while create new object for this service class
      */
     private void startLocationUpdates() {
-        if (mGoogleApiClient != null) {
+
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                        mLocationRequest, this);
+
+            }
+        } else {
+            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+                    mLocationRequest, this);
+        }
+        /*if (mGoogleApiClient != null) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+
             Log.d(TAG, "Location update started ..............: ");
-        }
+        }*/
     }
 
     /**
@@ -92,23 +144,36 @@ public class LocationMonitoringService extends Service implements
     /**
      * This method to find speed per seconds and update the values in preferences.
      * convert Meters/Second to  kmph-1   then you need to multipl the  Meters/Second answer from 3.6
-     * @link http://mycodingworld1.blogspot.com/2015/12/calculate-speed-from-gps-location.html
+     *
      * @param speed
+     * @link http://mycodingworld1.blogspot.com/2015/12/calculate-speed-from-gps-location.html
      */
     private void updateSpeed(float speed) {
         float nSpeed = speed * 3.6f;
         //Convert meters/second to miles/hour
-        nSpeed = nSpeed * 2.2369362920544f/3.6f;
+        nSpeed = nSpeed * 2.2369362920544f / 3.6f;
         appSharedPreference.setSpeed(nSpeed);
-        showToast("speed: " + nSpeed);
+//        showToast("speed: " + nSpeed);
     }
 
     private void showToast(String msg) {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
+    public void updateVehicleLiveLocationRequest(String apikey, String userType, String latitude,
+                                                 String longitude, float speed) {
+        compositeDisposable.add(requestHandler.updateVehicleLiveLocationRequest(apikey, userType, latitude,
+                longitude, speed)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(d -> apiResponseHandler(ApiResponse.loading(ServiceType.UPDATE_VEHICLE_LIVE_LOCATION)))
+                .subscribe(result -> apiResponseHandler(ApiResponse.success(ServiceType.UPDATE_VEHICLE_LIVE_LOCATION, result)),
+                        error -> apiResponseHandler(ApiResponse.error(ServiceType.UPDATE_VEHICLE_LIVE_LOCATION, error))));
+    }
+
     /**
      * This callback method will call when create object.
+     *
      * @link https://stackoverflow.com/questions/29343922/googleapiclient-is-throwing-googleapiclient-is-not-connected-yet-after-onconne
      */
     @Override
@@ -117,6 +182,7 @@ public class LocationMonitoringService extends Service implements
         if (null == appSharedPreference) {
             appSharedPreference = new AppSharedPreference(getApplicationContext());
         }
+        ((BaseApplication) getApplication()).getAppComponent(getApplicationContext()).inject(this);
         createLocationRequest();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -184,6 +250,9 @@ public class LocationMonitoringService extends Service implements
             appSharedPreference.setLastLocationLatitude(String.valueOf(location.getLatitude()));
             appSharedPreference.setLastLocationLong(String.valueOf(location.getLongitude()));
             sendMessageToUI(String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()));
+            if (appSharedPreference.getIsActivate() == 1) {
+                updateVehicleLiveLocationRequest(ApiUtility.getInstance().getApiKeyMetaData(), appSharedPreference.getUserType(), String.valueOf(location.getLatitude()), String.valueOf(location.getLongitude()), appSharedPreference.getSpeed());
+            }
         }
     }
 
@@ -232,5 +301,91 @@ public class LocationMonitoringService extends Service implements
             stopLocationUpdates();
         }
         CrashlyticsHelper.d(TAG, "Service Stopped!");
+    }
+
+
+    private void generateNotification(Context context, @androidx.annotation.NonNull String message, String title) {
+        long when = System.currentTimeMillis();
+        PendingIntent pendingIntentEmpty = PendingIntent.getActivity(context,
+                0, new Intent(), 0);
+        String CHANNEL_ID = "my_channel_02";
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID);
+        builder.setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.icon));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder.setSmallIcon(R.mipmap.icon);
+            builder.setColor(context.getResources().getColor(R.color.primary_color));
+        } else {
+            builder.setSmallIcon(R.mipmap.icon);
+        }
+
+        builder.setContentText(message)
+                .setContentTitle(title != null ? title : context.getString(R.string.app_name))
+                .setDefaults(Notification.DEFAULT_SOUND)
+                .setWhen(when)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntentEmpty);
+
+        Intent notifyIntent = new Intent(context, OnlineActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                context, 0, notifyIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+        builder.setContentIntent(pendingIntent);
+
+        String sAppName = context.getResources().getString(R.string.app_name);
+
+        NotificationManager notificationManager = (NotificationManager) context
+                .getSystemService(Context.NOTIFICATION_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, sAppName, importance);
+            notificationChannel.enableLights(true);
+            notificationChannel.setLightColor(Color.RED);
+            assert notificationManager != null;
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+        if (notificationManager != null)
+            notificationManager.notify(0, builder.build());
+
+    }
+
+
+    private void apiResponseHandler(ApiResponse apiResponse) {
+        ServiceType serviceType = apiResponse.getServiceType();
+
+        switch (apiResponse.status) {
+            case LOADING:
+                break;
+            case SUCCESS:
+                if (ServiceType.UPDATE_VEHICLE_LIVE_LOCATION == serviceType) {
+
+                    if (apiResponse.isValidResponse()) {
+                        UpdateVehicleResponse updateVehicleResponse = new Gson().fromJson(apiResponse.data, UpdateVehicleResponse.class);
+                        if (Utils.getIntegerToPrefs(getApplicationContext(), "acceptDrive") == 0 && Utils.getStringToPrefs(getApplicationContext(), "showAccept").equalsIgnoreCase("false")) {
+                            if (updateVehicleResponse.getAvaliableTripDataList().size() > 0) {
+                                if (Utils.getStringToPrefs(getApplicationContext(),"cancelbookingId")!=null && Utils.getStringToPrefs(getApplicationContext(),"cancelbookingId").equalsIgnoreCase(updateVehicleResponse.getAvaliableTripDataList().get(0).getBooking_id()) ) {
+                                    Log.e("SameBookingId",updateVehicleResponse.getAvaliableTripDataList().get(0).getBooking_id());
+                                }else{
+                                    Intent i = new Intent(getApplicationContext(), PickUpLocationAcceptActivity.class);
+
+                                    i.putExtra("picklocation", utility.getCompleteAddressString(this, Double.parseDouble(updateVehicleResponse.getAvaliableTripDataList().get(0).getPickup_lat()), Double.parseDouble(updateVehicleResponse.getAvaliableTripDataList().get(0).getPickup_lng())));
+                                    i.putExtra("customerNum", updateVehicleResponse.getAvaliableTripDataList().get(0).getCustomer_contact());
+                                    i.putExtra("customerName", updateVehicleResponse.getAvaliableTripDataList().get(0).getCustomer_name());
+                                    i.putExtra("bookingId", updateVehicleResponse.getAvaliableTripDataList().get(0).getBooking_id());
+                                    i.putExtra("vehicleId", updateVehicleResponse.getAvaliableTripDataList().get(0).getVehicle_id());
+                                    if (updateVehicleResponse.getAvaliableTripDataList().get(0).getDropLocationDataList().size() > 0) {
+                                        List<DropLocationData> dropLocationDataList = updateVehicleResponse.getAvaliableTripDataList().get(0).getDropLocationDataList();
+                                        Utils.saveStringToPrefs(this, "dropLat", dropLocationDataList.get(0).getDrop_lat());
+                                        Utils.saveStringToPrefs(this, "dropLng", dropLocationDataList.get(0).getDrop_lng());
+                                        i.putExtra("droplocation", utility.getCompleteAddressString(this, Double.parseDouble(dropLocationDataList.get(0).getDrop_lat()), Double.parseDouble(dropLocationDataList.get(0).getDrop_lng())));
+                                    }
+                                    startActivity(i);
+                                }
+                            }
+                        }
+                    }
+                }
+                break;
+            case ERROR:
+                break;
+        }
     }
 }

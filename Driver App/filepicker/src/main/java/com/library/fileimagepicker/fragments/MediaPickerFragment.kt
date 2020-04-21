@@ -2,8 +2,8 @@ package com.library.fileimagepicker.filepicker.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.view.ViewPager
+import com.google.android.material.tabs.TabLayout
+import androidx.viewpager.widget.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,7 +16,7 @@ class MediaPickerFragment : BaseFragment() {
 
     lateinit var tabLayout: TabLayout
 
-    lateinit var viewPager: ViewPager
+    lateinit var viewPager: androidx.viewpager.widget.ViewPager
 
     private var mListener: MediaPickerFragmentListener? = null
 

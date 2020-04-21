@@ -1,6 +1,6 @@
 package com.codesense.driverapp.localstoreage;
 
-import android.arch.persistence.room.Room;
+import androidx.room.Room;
 import android.content.Context;
 
 import com.codesense.driverapp.net.Constant;

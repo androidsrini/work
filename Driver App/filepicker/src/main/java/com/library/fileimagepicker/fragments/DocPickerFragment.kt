@@ -2,8 +2,8 @@ package com.library.fileimagepicker.filepicker.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.view.ViewPager
+import com.google.android.material.tabs.TabLayout
+import androidx.viewpager.widget.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -126,7 +126,7 @@ class DocPickerFragment : BaseFragment() {
 
         val mTabLayoutHelper = TabLayoutHelper(tabLayout, viewPager)
         mTabLayoutHelper.isAutoAdjustTabModeEnabled = true
-        viewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener{
+        viewPager.addOnPageChangeListener(object : androidx.viewpager.widget.ViewPager.OnPageChangeListener{
             override fun onPageScrollStateChanged(p0: Int) {
 
             }

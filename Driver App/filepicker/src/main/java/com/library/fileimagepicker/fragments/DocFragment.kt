@@ -2,10 +2,10 @@ package com.library.fileimagepicker.filepicker.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.SearchView
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.widget.SearchView
 import android.view.*
 import android.widget.TextView
 import com.library.fileimagepicker.R

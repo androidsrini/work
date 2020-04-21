@@ -5,6 +5,7 @@ import android.content.Context;
 import com.codesense.driverapp.base.BaseApplication;
 import com.codesense.driverapp.di.module.ActivityBindingModule;
 import com.codesense.driverapp.di.module.NetworkModule;
+import com.codesense.driverapp.ui.helper.LocationMonitoringService;
 
 import javax.inject.Singleton;
 
@@ -20,6 +21,7 @@ public interface ApplicationComponent extends AndroidInjector<DaggerApplication>
 
     void inject(BaseApplication application);
     void inject(Context context);
+    void inject(LocationMonitoringService service);
     //SharedPreferences getSharedPrefs();
 
     /*@Component.Builder

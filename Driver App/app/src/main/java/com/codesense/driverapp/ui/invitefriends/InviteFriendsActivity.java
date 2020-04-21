@@ -2,8 +2,8 @@ package com.codesense.driverapp.ui.invitefriends;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -86,8 +86,8 @@ public class InviteFriendsActivity extends BaseActivity {
     public void btnInviteCode(View v) {
         Intent sharingIntent = new Intent(Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, "Text");
-        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject");
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, "Text");
+        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, "Subject");
         startActivity(Intent.createChooser(sharingIntent, "Share using"));
     }
 }

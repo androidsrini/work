@@ -3,9 +3,9 @@ package com.codesense.driverapp.ui.history
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.TabLayout
-import android.support.v4.view.ViewPager
-import android.support.v7.app.AppCompatActivity
+import com.google.android.material.tabs.TabLayout
+import androidx.viewpager.widget.ViewPager
+import androidx.appcompat.app.AppCompatActivity
 import android.view.MenuItem
 import com.codesense.driverapp.R
 import kotlinx.android.synthetic.main.activity_ride_history.*

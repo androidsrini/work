@@ -1,11 +1,11 @@
 package com.library.fileimagepicker.filepicker.fragments
 
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 
 /**
  * A simple [Fragment] subclass.
  */
-abstract class BaseFragment : Fragment() {
+abstract class BaseFragment : androidx.fragment.app.Fragment() {
     companion object {
 
         val FILE_TYPE = "FILE_TYPE"

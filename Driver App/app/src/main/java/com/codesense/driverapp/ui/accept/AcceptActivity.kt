@@ -88,12 +88,12 @@ class AcceptActivity : DrawerActivity(), OnMapReadyCallback, View.OnTouchListene
         frameLayout.addView(view)
         titleTextView.text = getResources().getString(R.string.online_text)
         handler = Handler()
-        with(acceptMapView) {
+       /* with(acceptMapView) {
             acceptMapView.onCreate(savedInstanceState)
             acceptMapView.getMapAsync{
                 setMapLocation(it)
             }
-        }
+        }*/
         endTripImageView.setOnTouchListener(this)
         leftSideLinearLayout.setOnDragListener(this)
         rightSideLinearLayout.setOnDragListener(this)
@@ -104,24 +104,5 @@ class AcceptActivity : DrawerActivity(), OnMapReadyCallback, View.OnTouchListene
         //setContentView(R.layout.activity_accept)
     }
 
-    override fun onResume() {
-        super.onResume()
-        //Log.d(TAG, "On Resume acceptMapView: " + acceptMapView)
-        acceptMapView.onResume()
-    }
 
-    override fun onPause() {
-        super.onPause()
-        acceptMapView.onPause()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        acceptMapView.onDestroy()
-    }
-
-    override fun onLowMemory() {
-        super.onLowMemory()
-        acceptMapView.onLowMemory()
-    }
 }

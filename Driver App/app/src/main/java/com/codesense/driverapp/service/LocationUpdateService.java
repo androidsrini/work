@@ -26,7 +26,6 @@ public class LocationUpdateService extends Service {
     private Messenger messenger = null;
 
     @Nullable
-    @android.support.annotation.Nullable
     @Override
     public IBinder onBind(Intent intent) {
         messenger = new Messenger(new LocationHandler(this));

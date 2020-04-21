@@ -1,7 +1,7 @@
 package com.codesense.driverapp.ui.addvehicle;
 
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModel;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
 
 import com.codesense.driverapp.data.AddDriverRequest;
 import com.codesense.driverapp.data.AddVehicleRequest;

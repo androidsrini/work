@@ -49,6 +49,11 @@ public class WebserviceUrls {
     public static final String DRIVER_DETAILS = "driver_details";
     public static final String FORGOT_PASSWORD = "forgot_password";
     public static final String CHANGE_PASSWORD = "change_password";
+    public static final String ACCEPT_TRIP = "accept_trip";
+    public static final String CANCEL_TRIP = "cancel_trip";
+    public static final String START_TRIP = "start_trip";
+    public static final String COMPLETE_TRIP = "complete_trip";
+    public static final String ARRIVED_TRIP = "trip_location_arrived";
     //public static final String UPDATE_DRIVER_DOCUMENTS = "driver_details";
 
 }

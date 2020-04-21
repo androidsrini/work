@@ -39,17 +39,17 @@ public class AppSpinnerViewGroup<T> extends FrameLayout {
     private List<T> arrayList;
     private OnItemSelectListener onItemSelectListener;
 
-    public AppSpinnerViewGroup(@NonNull @android.support.annotation.NonNull Context context) {
+    public AppSpinnerViewGroup(@NonNull  Context context) {
         super(context);
         init();
     }
 
-    public AppSpinnerViewGroup(@NonNull @android.support.annotation.NonNull Context context, @Nullable @android.support.annotation.Nullable AttributeSet attrs) {
+    public AppSpinnerViewGroup(@NonNull Context context, @Nullable  AttributeSet attrs) {
         super(context, attrs);
         init();
     }
 
-    public AppSpinnerViewGroup(@NonNull @android.support.annotation.NonNull Context context, @Nullable @android.support.annotation.Nullable AttributeSet attrs, int defStyleAttr) {
+    public AppSpinnerViewGroup(@NonNull  Context context, @Nullable  AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
@@ -106,9 +106,9 @@ public class AppSpinnerViewGroup<T> extends FrameLayout {
         final PopupWindow popupWindow = new PopupWindow(customView, leftRightSpace * 58, ViewGroup.LayoutParams.WRAP_CONTENT);
         final ListView listView = customView.findViewById(R.id.listItemListView);
         ArrayAdapter<T> dataAdapter = new ArrayAdapter<T>(getContext(), R.layout.spinner_dropdown_textview, arrayList) {
-            @android.support.annotation.NonNull
+            @androidx.annotation.NonNull
             @Override
-            public View getView(int position, View convertView,@android.support.annotation.NonNull ViewGroup parent) {
+            public View getView(int position, View convertView,@androidx.annotation.NonNull ViewGroup parent) {
                 View v = null;
                 v = super.getView(position, null, parent);
                 TextView tv = (TextView) v;

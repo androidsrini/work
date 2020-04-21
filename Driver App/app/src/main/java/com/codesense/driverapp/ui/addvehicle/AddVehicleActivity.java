@@ -8,14 +8,14 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.widget.AppCompatAutoCompleteTextView;
-import android.support.v7.widget.AppCompatSpinner;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -631,7 +631,7 @@ public class AddVehicleActivity extends DrawerActivity implements View.OnClickLi
         vehicleDetailRequest.setVehicleTypeId(getVehicleTypeId());
         vehicleDetailRequest.setVehicleName(getEtVehicleName());
         vehicleDetailRequest.setVehicleNumber(getEtVehicleNumber());
-        vehicleDetailRequest.setVehicleId(getVehicleTypeId());
+//        vehicleDetailRequest.setVehicleId(getVehicleTypeId());
         if (isEditVehicle()) {
             vehicleDetailRequest.setVehicleId(vehiclesListItem.getVehicleId());
         }

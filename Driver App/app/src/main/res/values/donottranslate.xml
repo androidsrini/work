@@ -123,6 +123,7 @@
     <string name="payment_type_postpaid_des">Choose this option for final payment</string>
     <string name="paymentButton_text">Submit</string>
     <string name="online_pick_up_location_title">Pickup Location</string>
+    <string name="online_des_up_location_title">Destination Location</string>
 
 
     <!--Pick Up Location Accept-->
@@ -192,7 +193,7 @@
     <string name="distance_travel_label">Distance Travelled</string>
     <string name="time_taken_label">Time Taken</string>
     <string name="base_tare_label">Base Tare</string>
-    <string name="trans_waiting_fee_placeholder">In trans waiting fee(%1$d minute)</string>
+    <string name="trans_waiting_fee_placeholder">In trans waiting fee</string>
     <string name="tax_label">Tax</string>
     <string name="subtotal_label">Subtotal</string>
     <string name="discount_label">Discount</string>
@@ -217,6 +218,10 @@
     <string name="forgot_mobile_text">Enter your Mobile number</string>
     <string name="forgot_btn_submit">Submit</string>
     <string name="forgot_new_password_des">Please enter your new password to sign in</string>
+
+    <string name="confirm_screen_title">Enter Confirmation Code</string>
+    <string name="confirm_screen_des">Ask customer for Confirmation code received on phone</string>
+    <string name="ruppes_symbol">₹</string>
 
 <!--    Client-->
     <string name="api_key">AIzaSyAQcBRbd9d2mX5XCAjOBXO3wX8Uw17mSNk</string>

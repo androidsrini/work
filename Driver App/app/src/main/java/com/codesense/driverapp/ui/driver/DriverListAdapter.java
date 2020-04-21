@@ -1,9 +1,9 @@
 package com.codesense.driverapp.ui.driver;
 
 import android.app.Activity;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SwitchCompat;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SwitchCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +14,13 @@ import android.widget.TextView;
 
 import com.codesense.driverapp.R;
 import com.codesense.driverapp.data.DriversListItem;
+import com.codesense.driverapp.localstoreage.AppSharedPreference;
 import com.codesense.driverapp.net.Constant;
+import com.codesense.driverapp.ui.helper.Utils;
 
 import java.util.List;
+
+import javax.inject.Inject;
 
 public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.ViewHolder> {
 
@@ -26,6 +30,8 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
     private int width;
     private int height;
     private OnItemActionListener onItemActionListener;
+    @Inject
+    protected AppSharedPreference appSharedPreference;
 
     public DriverListAdapter(Activity activity, List<DriversListItem> driversListItemList,
                              int w, int h, OnItemActionListener onItemActionListener) {
@@ -59,6 +65,7 @@ public class DriverListAdapter extends RecyclerView.Adapter<DriverListAdapter.Vi
         }else{
             viewHolder.rlUserVehcleMain.setBackgroundResource(R.color.background_document_status_enable);
             viewHolder.activeSwitchCompat.setEnabled(true);
+            Utils.saveStringToPrefs(activity,"vehicleId",driversListItem.getVehicleId());
         }
         if (driversListItem.getDrivingActivation().equalsIgnoreCase("0")){
             viewHolder.activeSwitchCompat.setChecked(false);

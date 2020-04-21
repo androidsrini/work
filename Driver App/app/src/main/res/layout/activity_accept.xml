@@ -1,50 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.accept.AcceptActivity">
+    android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="1">
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar_lay"
+            android:layout_height="0dp"
+            android:layout_width="match_parent"
+            android:layout_weight="0.1"
+            />
 
     <RelativeLayout
         android:id="@+id/acceptStripRelativeLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="0.13"
         android:background="@color/secondary_color"
         android:padding="@dimen/padding_10"
-        app:layout_constraintTop_toTopOf="parent">
+       >
 
         <TextView
             android:id="@+id/pickupTitleTextView"
             style="@style/Fat.PickupLabelStyle"
             android:text="@string/online_pick_up_location_title" />
-    <TextView
-        style="@style/Fat.PickupAddressStyle"
-        android:text="@string/dummy_pickup_location"
-        />
-    <ImageView
-        android:id="@+id/pickupNavigationImageView"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_navigate"
-        android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true"
-        />
+
+        <TextView
+            android:id="@+id/tvPickLocation"
+            style="@style/Fat.PickupAddressStyle"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:text="@string/dummy_pickup_location" />
+
+        <ImageView
+            android:id="@+id/pickupNavigationImageView"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_navigate" />
     </RelativeLayout>
 
-    <com.google.android.gms.maps.MapView
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_height="0dp"
+        android:layout_weight="0.6"
+        android:layout_width="match_parent"
+        app:layout_constraintBottom_toTopOf="@+id/acceptPersonConstrainRelativeLayout"
+        app:layout_constraintTop_toBottomOf="@+id/acceptStripRelativeLayout" />
+   <!-- <com.google.android.gms.maps.MapView
         android:id="@+id/acceptMapView"
         style="@style/Fat"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/acceptStripRelativeLayout"
         app:layout_constraintBottom_toTopOf="@+id/acceptPersonConstrainRelativeLayout"
-        />
+        app:layout_constraintTop_toBottomOf="@+id/acceptStripRelativeLayout" />-->
 
     <RelativeLayout
         android:id="@+id/acceptPersonConstrainRelativeLayout"
-        style="@style/Fat"
-        android:padding="10dp"
         android:background="@color/secondary_color"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.15"
         app:layout_constraintBottom_toTopOf="@+id/acceptBottomConstrainLinearLayout">
 
         <ImageView
@@ -56,9 +81,9 @@
         <TextView
             android:id="@+id/UserName"
             style="@style/Wrap"
+            android:layout_marginTop="6dp"
             android:layout_toEndOf="@+id/imgProfile"
             android:text="Vijay"
-            android:layout_marginTop="6dp"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/background_color"
             android:textSize="23sp"
@@ -66,25 +91,26 @@
 
         <RatingBar
             android:id="@+id/ratingBar"
+            style="?attr/ratingBarStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="?attr/ratingBarStyleSmall"
             android:layout_below="@+id/UserName"
+            android:layout_marginTop="5dp"
             android:layout_toEndOf="@+id/imgProfile"
             android:numStars="5"
-            android:layout_marginTop="5dp"
             android:progressBackgroundTint="@color/background_color"
             android:progressTint="@color/primary_color"
             android:rating="3"
             android:transformPivotX="0dp" />
 
         <ImageView
+            android:id="@+id/imgCall"
             style="@style/Wrap"
-            android:layout_height="40dp"
             android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/phone_icon"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:src="@drawable/phone_icon" />
 
     </RelativeLayout>
 
@@ -92,71 +118,80 @@
     <FrameLayout
         android:id="@+id/acceptBottomConstrainLinearLayout"
         style="@style/OnlineFooterStyle"
-        app:layout_constraintBottom_toBottomOf="parent"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.12"
+        app:layout_constraintBottom_toBottomOf="parent">
+
         <LinearLayout
             android:id="@+id/startTripConstrainLinearLayout"
-            app:layout_constraintBottom_toBottomOf="parent"
             style="@style/OnlineFooterStyle"
-            android:visibility="gone">
+            android:visibility="visible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <Button
                 android:id="@+id/btnReject"
-                android:text="@string/cancel_button"
-                style="@style/OnlineFooterButtonStyle" />
+                style="@style/OnlineFooterButtonStyle"
+                android:text="@string/cancel_button" />
 
             <Button
                 android:id="@+id/btnAccept"
-                android:text="@string/arrived_button"
-                style="@style/OnlineFooterButtonStyle" />
+                style="@style/OnlineFooterButtonStyle"
+                android:text="@string/arrived_button" />
 
         </LinearLayout>
+
         <RelativeLayout
             android:id="@+id/endTripConstrainRelativeLayout"
             style="@style/Fat"
-            android:visibility="visible">
+            android:visibility="gone">
+
             <View
                 style="@style/Fat"
                 android:layout_height="40dp"
                 android:layout_centerVertical="true"
                 android:background="@color/transprent_black"
-                android:focusable="false"
-                />
+                android:focusable="false" />
 
             <TextView
                 style="@style/Fat"
                 android:layout_centerVertical="true"
-                android:gravity="center"
-                android:textColor="@color/background_color"
-                android:text="@string/slide_end_trip_txt"
-                android:textSize="20sp"
                 android:focusable="false"
-                />
+                android:gravity="center"
+                android:text="@string/slide_end_trip_txt"
+                android:textColor="@color/background_color"
+                android:textSize="20sp" />
 
             <LinearLayout
-            style="@style/Fat"
-            android:orientation="horizontal">
-                <LinearLayout
-                android:id="@+id/leftSideLinearLayout"
                 style="@style/Fat"
-                android:orientation="vertical"
-                android:layout_weight="1">
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/leftSideLinearLayout"
+                    style="@style/Fat"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
                     <ImageView
-                    android:id="@+id/endTripImageView"
-                    style="@style/Wrap"
-                    android:src="@drawable/ic_endtripicon"/>
+                        android:id="@+id/endTripImageView"
+                        style="@style/Wrap"
+                        android:src="@drawable/ic_endtripicon" />
 
                 </LinearLayout>
+
                 <LinearLayout
-                android:id="@+id/rightSideLinearLayout"
-                style="@style/Fat"
-                android:orientation="horizontal"
-                    android:layout_weight="1">
+                    android:id="@+id/rightSideLinearLayout"
+                    style="@style/Fat"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
 
                 </LinearLayout>
             </LinearLayout>
 
         </RelativeLayout>
     </FrameLayout>
+    </LinearLayout>
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

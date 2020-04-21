@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,18 +12,22 @@
         android:layout_margin="@dimen/margin_10"
         android:background="@drawable/yellow_button_drawable"
         android:text="@string/collect_payment_label"
+        android:layout_alignParentBottom="true"
         android:textColor="@color/secondary_color"
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <ScrollView
-        style="@style/Fat">
-    <android.support.constraint.ConstraintLayout
+        style="@style/Fat"
+        android:layout_marginBottom="50dp">
+    <androidx.constraintlayout.widget.ConstraintLayout
         style="@style/Fat">
 
     <RelativeLayout
         android:id="@+id/addressContainerRelativeLayout"
         android:layout_width="match_parent"
         android:layout_height="150dp"
+        android:gravity="center"
+        android:layout_marginTop="5dp"
         android:background="@drawable/white_card"
         app:layout_constraintTop_toBottomOf="@+id/paymentSummeryBackgroundView">
 
@@ -77,7 +81,7 @@
             android:id="@+id/locationDividerLineView"
             style="@style/Wrap"
             android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_height="25dp"
             android:layout_below="@+id/pickupConstrainLinearLayout"
             android:layout_marginStart="-10dp"
             android:background="@drawable/landscap_dotted_line"
@@ -86,7 +90,7 @@
 
     </RelativeLayout>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         style="@style/Fat"
         android:padding="20dp"
         android:background="@drawable/white_card"
@@ -128,6 +132,7 @@
         android:id="@+id/baseTareLabelTextView"
         style="@style/Wrap.SummaryLabelStyle"
         android:text="@string/base_tare_label"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/timeTakenLabelTextView"
         app:layout_constraintEnd_toStartOf="@+id/baseTareValueTextView"
         app:layout_constraintStart_toStartOf="parent"
@@ -137,6 +142,7 @@
         android:id="@+id/baseTareValueTextView"
         style="@style/Wrap.SummeryValue"
         android:text="@string/base_tare_label"
+        android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@+id/timeTakenValueTextView"
         app:layout_constraintEnd_toEndOf="parent"
         />
@@ -153,7 +159,6 @@
     <TextView
         android:id="@+id/transWaitingValueTextView"
         style="@style/Wrap.SummeryValue"
-        android:text="@string/trans_waiting_fee_placeholder"
         app:layout_constraintTop_toBottomOf="@+id/baseTareValueTextView"
         app:layout_constraintEnd_toEndOf="parent"
         />
@@ -240,6 +245,7 @@
         android:id="@+id/totalValueTextView"
         style="@style/Wrap.SummeryValue"
         android:text="@string/total_label"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@+id/discountValueTextView"
         app:layout_constraintEnd_toEndOf="parent"
         />
@@ -262,7 +268,7 @@
             app:layout_constraintTop_toBottomOf="@+id/discountDividerView"
             app:layout_constraintEnd_toEndOf="parent"
             />
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <RelativeLayout
         android:id="@+id/paymentSummeryBackgroundView"
@@ -272,9 +278,17 @@
         android:padding="@dimen/padding_10">
 
         <TextView
+            android:id="@+id/paymentSummeryTitle"
+            style="@style/Wrap.PaymentSummeryHeader"
+            android:text="@string/payment_summary_title_label" />
+
+
+        <TextView
             android:id="@+id/paymentSummeryHeaderTextView"
             style="@style/Wrap.PaymentSummeryHeader"
-            android:text="@string/total_fare_label" />
+            android:text="@string/total_fare_label"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/paymentSummeryTitle"/>
 
         <TextView
             android:id="@+id/paymentTextView"
@@ -284,18 +298,20 @@
             android:textSize="25sp" />
 
         <TextView
+            android:id="@+id/tvTripStatus"
             style="@style/Wrap.PaymentDetailsStyle"
             android:layout_alignParentBottom="true"
             android:text="@string/dummy_transaction_id"
             android:textColor="@color/secondary_color" />
 
         <TextView
+            android:id="@+id/tvDate"
             style="@style/Wrap.PaymentDetailsStyle"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:text="@string/dummy_transaction_date" />
     </RelativeLayout>
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

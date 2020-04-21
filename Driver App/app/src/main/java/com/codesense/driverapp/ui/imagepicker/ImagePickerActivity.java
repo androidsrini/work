@@ -4,22 +4,19 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
-import android.widget.GridView;
 
+import com.codesense.driverapp.R;
 import com.codesense.driverapp.base.BaseActivity;
 import com.codesense.driverapp.ui.imagepicker.adapter.ImageAdapter;
-import com.google.android.gms.cast.framework.media.ImagePicker;
-import com.product.process.annotation.Initialize;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.GridLayoutManager;
-import com.codesense.driverapp.R;
 import com.product.annotationbuilder.ProductBindView;
+import com.product.process.annotation.Initialize;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 
 public class ImagePickerActivity extends BaseActivity {

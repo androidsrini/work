@@ -6,12 +6,12 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
-import android.support.constraint.ConstraintLayout;
-import android.support.design.widget.BottomSheetDialog;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -42,6 +42,7 @@ import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
 import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
 import com.codesense.driverapp.ui.documentstatus.DocumentStatusActivity;
+import com.codesense.driverapp.ui.helper.Utils;
 import com.codesense.driverapp.ui.legalagreement.LegalAgreementActivity;
 import com.codesense.driverapp.ui.online.OnlineActivity;
 import com.codesense.driverapp.ui.selecttype.SelectTypeActivity;
@@ -279,9 +280,13 @@ public class LoginActivity extends BaseActivity {
                             VerifyMobileActivity.start(this, appSharedPreference.getUserID(), appSharedPreference.getMobileNumberKey(),
                                     ApiResponse.OTP_VALIDATION != apiResponse.getResponseStatus());
                         } else if (-1 == appSharedPreference.getOwnerTypeId() || 0 == appSharedPreference.getOwnerTypeId()) {
-                            SelectTypeActivity.start(this);
-                            //TO kill this activity class from backstack
-                            finish();
+                            if (Constant.OWNER_TYPE.equals(String.valueOf(appSharedPreference.getOwnerType()))) {
+                                SelectTypeActivity.start(this);
+                                finish();
+                            } else {
+                                OnlineActivity.start(this);
+                                finish();
+                            }
                         } else if (-1 == appSharedPreference.getAgreementAccept() || 0 == appSharedPreference.getAgreementAccept()) {
                             LegalAgreementActivity.start(this, "" + appSharedPreference.getOwnerTypeId());
                             //TO kill this activity class from backstack
@@ -364,6 +369,9 @@ public class LoginActivity extends BaseActivity {
             appSharedPreference.saveIsLive(signinOwnerResponse.getLiveStatus());
             appSharedPreference.saveIsAgreement(signinOwnerResponse.getAgreementAccept());
             appSharedPreference.setDisplayName(signinOwnerResponse.getDisplayName());
+
+            Utils.saveStringToPrefs(LoginActivity.this,"vehicleId",signinOwnerResponse.getVehicleId());
+
         }
     }
 
@@ -749,10 +757,10 @@ public class LoginActivity extends BaseActivity {
 
 
     private void clearClipboard() {
-        android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipboardManager clipboard = (ClipboardManager) getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
         // you can set an empty string or set to null, same result
         //android.content.ClipData clip = android.content.ClipData.newPlainText("", "");
-        android.content.ClipData clip = android.content.ClipData.newPlainText(null, null);
+        ClipData clip = ClipData.newPlainText(null, null);
         clipboard.setPrimaryClip(clip);
 
     }

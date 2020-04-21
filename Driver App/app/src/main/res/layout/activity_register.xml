@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -8,7 +8,7 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar_lay" />-->
 
-    <android.support.v7.widget.Toolbar
+    <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
@@ -28,7 +28,7 @@
             />
 
 
-    </android.support.v7.widget.Toolbar>
+    </androidx.appcompat.widget.Toolbar>
 
     <ScrollView
         android:id="@+id/scrollView"
@@ -39,7 +39,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-        <android.support.constraint.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -118,7 +118,7 @@
                 android:textColor="@color/secondary_color"
                 app:layout_constraintTop_toBottomOf="@+id/etEmail"/>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/passwordTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -140,9 +140,9 @@
                 android:textColorHint="@color/secondary_color"
                 android:textColor="@color/secondary_color" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/confirmpasswordTextInputLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -164,7 +164,7 @@
                     android:textColorHint="@color/secondary_color"
                     android:textColor="@color/secondary_color" />
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
                 android:id="@+id/addressContainerLinearLayout"
@@ -260,11 +260,11 @@
                 android:text="@string/register_policy_text_second"
                 app:layout_constraintTop_toBottomOf="@+id/tvPrivacyPolicy"
                 app:layout_constraintStart_toStartOf="parent" />
-        </android.support.constraint.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fbNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -276,4 +276,4 @@
         android:tint="@color/secondary_color"
         app:backgroundTint="@color/primary_color"
         app:layout_anchorGravity="bottom|right|end" />
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

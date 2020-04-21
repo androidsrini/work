@@ -13,11 +13,11 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.SwitchCompat;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.Nullable;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
@@ -187,13 +187,16 @@ public abstract class DrawerActivity extends DaggerAppCompatActivity {
             if (appSharedPreference.getIsLive()==1){
                 autoReloadEnableDisableSwitchCompat.setChecked(true);
                 tvStatus.setText("Online");
+                titleTextView.setText("Online");
             }else{
                 autoReloadEnableDisableSwitchCompat.setChecked(false);
                 tvStatus.setText("Offline");
+                titleTextView.setText("Offline");
             }
         }else{
             autoReloadEnableDisableSwitchCompat.setEnabled(false);
             tvStatus.setText("Offline");
+            titleTextView.setText("Offline");
         }
 
         if (Constant.OWNER_ID.equals(String.valueOf(appSharedPreference.getOwnerTypeId()))) {

@@ -1,7 +1,7 @@
 package com.codesense.driverapp.localstoreage;
 
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.RoomDatabase;
+import androidx.room.Database;
+import androidx.room.RoomDatabase;
 
 import com.codesense.driverapp.data.CitiesItem;
 import com.codesense.driverapp.data.CountriesItem;

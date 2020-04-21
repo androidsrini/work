@@ -61,10 +61,17 @@ public final class Constant {
     public static final String LIVE_STATUS = "live_status" ;
     public static final String AVAILABLE_DRIVER_ID = "available_driver_id" ;
     public static final String LATITUDE = "latitude" ;
+    public static final String LATITUDE_PARAM = "lat" ;
     public static final String LONGITUDE = "longitude" ;
+    public static final String LONGITUDE_PARAM = "lng" ;
     public static final String SPEED_PER_MINUTE = "speed_per_minute" ;
     public static final String VEHICLE_ID = "vehicle_id" ;
+    public static final String BOOKING_ID = "booking_id" ;
     public static final String DRIVING_STATUS = "driving_status" ;
+    public static final String CONFIRMATION_CODE = "confirmation_code" ;
+    public static final String TOTAL_KM = "total_travelled_km" ;
+    public static final String TOTAL_FARE = "total_fare" ;
+    public static final String WAYPOINTS = "waypoints" ;
     public static final String FILE_PREFIX = "file://" ;
     public static final String CONTENT_PREFIX = "content://" ;
     public static final int OWNER_CUM_DRIVER_TYPE = 1;

@@ -2,50 +2,47 @@ package com.codesense.driverapp.ui.online;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
-import android.os.RemoteException;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AlertDialog;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+import androidx.appcompat.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import androidx.work.Constraints;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
+
 import com.codesense.driverapp.R;
+import com.codesense.driverapp.data.DropLocationData;
 import com.codesense.driverapp.data.SetOnlineStatusResponse;
+import com.codesense.driverapp.data.UpdateVehicleResponse;
 import com.codesense.driverapp.di.utils.ApiUtility;
 import com.codesense.driverapp.net.ApiResponse;
 import com.codesense.driverapp.net.RequestHandler;
 import com.codesense.driverapp.net.ServiceType;
-import com.codesense.driverapp.service.LocationUpdateService;
 import com.codesense.driverapp.ui.drawer.DrawerActivity;
 import com.codesense.driverapp.ui.helper.CrashlyticsHelper;
 import com.codesense.driverapp.ui.helper.LocationMonitoringService;
 import com.codesense.driverapp.ui.helper.OnSwipeTouchListener;
 import com.codesense.driverapp.ui.helper.Utils;
 import com.codesense.driverapp.ui.paymentType.PaymentActivity;
+import com.codesense.driverapp.ui.pickuplocationaccept.PickUpLocationAcceptActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -56,22 +53,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
-
-import androidx.work.Constraints;
-import androidx.work.NetworkType;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkManager;
 
 public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback {
 
 
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-    private static final String ACTION_LOCATION_UPDATE = "LocationUpdate";
-    private static final int SECONDS = 1000;
-    private static final int LOCATION_UPDATE_TIME = 2 * SECONDS;
 
     private static int TIME_OUT = 30000; //Time to launch the another activity
 
@@ -84,33 +76,21 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
     protected RequestHandler requestHandler;
     @Inject
     protected OnlineViewModel onlineViewModel;
-    private static Messenger messenger;
-    static boolean doesLocationServiceConnected;
-    private LocationUpdateBroadcastReceiver locationUpdateBroadcastReceiver;
-    private AlarmManager alarm;
-    private PendingIntent alarmPintent;
+
+    ScheduledExecutorService scheduleTaskExecutor;
+
+    Intent intentService;
+
+
 
     /**
      * This method to start this activity
+     *
      * @param context
      */
     public static void start(Context context) {
         context.startActivity(new Intent(context, OnlineActivity.class));
     }
-
-    private ServiceConnection serviceConnection = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            doesLocationServiceConnected = true;
-            messenger = new Messenger(service);
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            messenger = null;
-            doesLocationServiceConnected = false;
-        }
-    };
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -124,12 +104,16 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
         rlEndTrip = findViewById(R.id.rlEndTrip);
         titleTextView.setText(getResources().getString(R.string.online_text));
 
+        Utils.saveIntegerToPrefs(OnlineActivity.this,"acceptDrive",0);
+        Utils.saveStringToPrefs(OnlineActivity.this,"showAccept","false");
         onlineViewModel.getApiResponseMutableLiveData().observe(this, this::apiResponseHandler);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         assert mapFragment != null;
         mapFragment.getMapAsync(this);
+
+
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -140,14 +124,7 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
                 }
             }
         };
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                broadcastReceiver, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST)
-        );
-        locationUpdateBroadcastReceiver  = new LocationUpdateBroadcastReceiver();
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                locationUpdateBroadcastReceiver, new IntentFilter(ACTION_LOCATION_UPDATE)
-        );
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter(LocationMonitoringService.ACTION_LOCATION_BROADCAST));
 
        /* new Handler().postDelayed(() -> {
             Intent i = new Intent(OnlineActivity.this, PickUpLocationAcceptActivity.class);
@@ -195,8 +172,6 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
 
             }
         });
-        //Store switch status in preference
-        appSharedPreference.setUserStatusOnline(autoReloadEnableDisableSwitchCompat.isChecked());
     }
 
     @Override
@@ -207,35 +182,7 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
         CrashlyticsHelper.d("App internet enabled: " + onlineStatus);
         CrashlyticsHelper.d("App user status enabled: " + isUserStatus);
         //String status = onlineStatus ? Constant.ONLINE_STATUS : Constant.OFFLINE_STATUS;
-        if (utility.isOnline(this) && isUserStatus) {
-            //refreshLocation();
-            if (!doesLocationServiceConnected) {
-                registerLocationUpdateBroadcast();
-                startLocationService();
-                startAleramManager();
-            }
-        }
-    }
 
-    private void registerLocationUpdateBroadcast() {
-        locationUpdateBroadcastReceiver = new LocationUpdateBroadcastReceiver();
-        LocalBroadcastManager.getInstance(this).registerReceiver(
-                locationUpdateBroadcastReceiver, new IntentFilter(ACTION_LOCATION_UPDATE)
-        );
-    }
-
-    private void startAleramManager() {
-        Intent ishintent = new Intent(this, LocationUpdateBroadcastReceiver.class);
-        alarmPintent = PendingIntent.getBroadcast(this, 0, ishintent, 0);
-        alarm = (AlarmManager)getSystemService(Context.ALARM_SERVICE);
-        alarm.cancel(alarmPintent);
-        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(),LOCATION_UPDATE_TIME, alarmPintent);
-    }
-
-    private void stopAlarm() {
-        if (null != alarm && null != alarmPintent) {
-            alarm.cancel(alarmPintent);
-        }
     }
 
     private void apiResponseHandler(ApiResponse apiResponse) {
@@ -246,85 +193,67 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
                 CrashlyticsHelper.d("Online status api loading");
                 break;
             case SUCCESS:
-                if (ServiceType.VEHICLE_LIVE_STATUS== serviceType){
+                if (ServiceType.VEHICLE_LIVE_STATUS == serviceType) {
 
 
-                    if (apiResponse.isValidResponse()){
+                    if (apiResponse.isValidResponse()) {
                         SetOnlineStatusResponse setOnlineStatusResponse = new Gson().fromJson(apiResponse.data, SetOnlineStatusResponse.class);
 
-                        if (setOnlineStatusResponse.getMessage().contains("Offline")){
+                        if (setOnlineStatusResponse.getMessage().contains("Offline")) {
                             autoReloadEnableDisableSwitchCompat.setChecked(false);
                             tvStatus.setText("Offline");
                             appSharedPreference.saveIsLive(0);
-                        }else {
+                        } else {
                             autoReloadEnableDisableSwitchCompat.setChecked(true);
                             tvStatus.setText("Online");
                             appSharedPreference.saveIsLive(1);
                         }
-                        if (autoReloadEnableDisableSwitchCompat.isChecked()){
-                            //refreshLocation();
-                            registerLocationUpdateBroadcast();
-                            startAleramManager();
-                            /*if (!doesLocationServiceConnected) {
-                                startLocationService();
-                            }*/
-                        }else{
-                            //stopLocation();
-                            stopAlarm();
-                            //stopLocationService();
-                            LocalBroadcastManager.getInstance(this).unregisterReceiver(locationUpdateBroadcastReceiver);
+                        if (autoReloadEnableDisableSwitchCompat.isChecked()) {
+                            startServices();
+                        } else {
+                            stopServices();
                         }
-                    }else{
-                        if (autoReloadEnableDisableSwitchCompat.isChecked()){
-                            //refreshLocation();
-                            registerLocationUpdateBroadcast();
-                            startAleramManager();
-                            /*if (!doesLocationServiceConnected) {
-                                startLocationService();
-                            }*/
-                        }else{
-                            //stopLocation();
-                            stopAlarm();
-                            //stopLocationService();
-                            LocalBroadcastManager.getInstance(this).unregisterReceiver(locationUpdateBroadcastReceiver);
+                    } else {
+                        if (autoReloadEnableDisableSwitchCompat.isChecked()) {
+                            startServices();
+                        } else {
+                            stopServices();
                         }
                         autoReloadEnableDisableSwitchCompat.setChecked(false);
                         tvStatus.setText("Offline");
                         utility.showToastMsg(apiResponse.getResponseMessage());
                         appSharedPreference.saveIsLive(0);
                     }
+                } else if (ServiceType.UPDATE_VEHICLE_LIVE_LOCATION == serviceType) {
+
+                    if (apiResponse.isValidResponse()) {
+                        UpdateVehicleResponse updateVehicleResponse = new Gson().fromJson(apiResponse.data, UpdateVehicleResponse.class);
+                       if (updateVehicleResponse.getAvaliableTripDataList().size()>0){
+                           if (Utils.getIntegerToPrefs(OnlineActivity.this,"acceptDrive") == 0 && Utils.getStringToPrefs(OnlineActivity.this,"showAccept").equalsIgnoreCase("false")) {
+                               if (updateVehicleResponse.getAvaliableTripDataList().size() > 0) {
+                                   Intent i = new Intent(OnlineActivity.this, PickUpLocationAcceptActivity.class);
+
+                                  i.putExtra("picklocation",utility.getCompleteAddressString(this, Double.parseDouble(updateVehicleResponse.getAvaliableTripDataList().get(0).getPickup_lat()), Double.parseDouble(updateVehicleResponse.getAvaliableTripDataList().get(0).getPickup_lng())));
+                                   i.putExtra("customerNum",updateVehicleResponse.getAvaliableTripDataList().get(0).getCustomer_contact());
+                                   i.putExtra("customerName",updateVehicleResponse.getAvaliableTripDataList().get(0).getCustomer_name());
+                                   i.putExtra("bookingId",updateVehicleResponse.getAvaliableTripDataList().get(0).getBooking_id());
+                                   i.putExtra("vehicleId",updateVehicleResponse.getAvaliableTripDataList().get(0).getVehicle_id());
+                                   if (updateVehicleResponse.getAvaliableTripDataList().get(0).getDropLocationDataList().size() > 0) {
+                                       List<DropLocationData> dropLocationDataList = updateVehicleResponse.getAvaliableTripDataList().get(0).getDropLocationDataList();
+                                       Utils.saveStringToPrefs(this,"dropLat",dropLocationDataList.get(0).getDrop_lat());
+                                       Utils.saveStringToPrefs(this,"dropLng",dropLocationDataList.get(0).getDrop_lng());
+                                       i.putExtra("droplocation",utility.getCompleteAddressString(this, Double.parseDouble(dropLocationDataList.get(0).getDrop_lat()), Double.parseDouble(dropLocationDataList.get(0).getDrop_lng())));
+                                   }
+                                   startActivity(i);
+                               }
+                           }
+                       }
+                    }
                 }
-                CrashlyticsHelper.d("Online status api success" + apiResponse.data);
                 break;
             case ERROR:
                 CrashlyticsHelper.d("Online status api error" + apiResponse.error);
                 break;
-        }
-    }
-
-    private void refreshLocation() {
-        //define constraints
-        Constraints myConstraints = new Constraints.Builder()
-                .setRequiresDeviceIdle(false)
-                .setRequiresCharging(false)
-                .setRequiredNetworkType(NetworkType.CONNECTED)
-                .setRequiresBatteryNotLow(true)
-                .setRequiresStorageNotLow(true)
-                .build();
-        PeriodicWorkRequest refreshCpnWork =
-                new PeriodicWorkRequest.Builder(LocationWorker.class, 2, TimeUnit.SECONDS)
-                        .setConstraints(myConstraints)
-                        .build();
-        WorkManager.getInstance().enqueue(refreshCpnWork);
-    }
-
-    private void startLocationService() {
-        bindService(new Intent(this, LocationUpdateService.class), serviceConnection, Service.BIND_AUTO_CREATE);
-    }
-
-    private void stopLocationService() {
-        if (doesLocationServiceConnected && null != messenger) {
-            unbindService(serviceConnection);
         }
     }
 
@@ -344,6 +273,7 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
     @Override
     protected void onResume() {
         super.onResume();
+        Utils.saveStringToPrefs(this, "showAccept", "false");
         startStep1();
         checkAcceptable();
         loadMenu();
@@ -431,28 +361,20 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
         //And it will be keep running until you close the entire application from task manager.
         //This method will executed only once.
 
-        if (!mAlreadyStartedService) {
-            if (isLocationEnabled(this)) {
+
+        startServices();
+            /*if (isLocationEnabled(this)) {
 
                 //Start location sharing service to app server.........
                 Intent intent = new Intent(this, LocationMonitoringService.class);
                 startService(intent);
-            } else {
+            }else{
                 createLocationServiceError(OnlineActivity.this);
             }
-            mAlreadyStartedService = true;
-            //Ends................................................
-        } else {
-            Intent intent = new Intent(this, LocationMonitoringService.class);
-            stopService(intent);
-            if (isLocationEnabled(this)) {
-                //Start location sharing service to app server.........
-                Intent intent1 = new Intent(this, LocationMonitoringService.class);
-                startService(intent1);
-            } else {
-                createLocationServiceError(OnlineActivity.this);
-            }
-        }
+
+            mAlreadyStartedService = true;*/
+        //Ends................................................
+
     }
 
     /**
@@ -476,7 +398,7 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
      */
     private boolean checkPermissions() {
         int permissionState1 = ActivityCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION);
+                Manifest.permission.ACCESS_FINE_LOCATION);
         int permissionState2 = ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION);
         return permissionState1 == PackageManager.PERMISSION_GRANTED && permissionState2 == PackageManager.PERMISSION_GRANTED;
@@ -488,7 +410,7 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
     private void requestPermissions() {
         boolean shouldProvideRationale =
                 ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        android.Manifest.permission.ACCESS_FINE_LOCATION);
+                        Manifest.permission.ACCESS_FINE_LOCATION);
         boolean shouldProvideRationale2 =
                 ActivityCompat.shouldShowRequestPermissionRationale(this,
                         Manifest.permission.ACCESS_COARSE_LOCATION);
@@ -496,7 +418,7 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
         // request previously, but didn't check the "Don't ask again" checkbox.
         if (!shouldProvideRationale || !shouldProvideRationale2) {
             ActivityCompat.requestPermissions(OnlineActivity.this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                     REQUEST_PERMISSIONS_REQUEST_CODE);
 
         }
@@ -517,38 +439,19 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
         }
     }
 
-    public void createLocationServiceError(final Activity activityObj) {
-        AlertDialog alert;
-        // show alert dialog if Internet is not connected
-        AlertDialog.Builder builder = new AlertDialog.Builder(activityObj);
-        builder.setMessage(
-                "You need to activate location service to use this feature. Please turn on network or GPS mode in location settings")
-                .setTitle("Need to enable location")
-                .setCancelable(false)
-                .setPositiveButton("Settings",
-                        (dialog, id) -> {
-                            Intent intent = new Intent(
-                                    Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                            activityObj.startActivity(intent);
-                            dialog.dismiss();
-                        })
-                .setNegativeButton("Cancel",
-                        (dialog, id) -> dialog.dismiss());
-        alert = builder.create();
-        alert.show();
-    }
 
 
     @Override
     public void onDestroy() {
-        stopAlarm();
-        stopLocationService();
         updateSwitchUI(false);
+        stopServices();
+        if (intentService!=null){
+            stopService(intentService);
+        }
         //Stop location sharing service to app server.........
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(locationUpdateBroadcastReceiver);
-        stopService(new Intent(OnlineActivity.this, LocationMonitoringService.class));
-        mAlreadyStartedService = false;
+//        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
+//        stopService(new Intent(OnlineActivity.this, LocationMonitoringService.class));
+//        mAlreadyStartedService = false;
         //Ends................................................
         super.onDestroy();
     }
@@ -598,21 +501,28 @@ public class OnlineActivity extends DrawerActivity implements OnMapReadyCallback
         map.getUiSettings().setCompassEnabled(false);
         map.addMarker(markerOptions);
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(loc, 15));
+       /* if (appSharedPreference.getIsActivate()==1) {
+            onlineViewModel.updateVehicleLiveLocationRequest(ApiUtility.getInstance().getApiKeyMetaData(), appSharedPreference.getUserType(), currentLat, currentLng, appSharedPreference.getSpeed());
+        }*/
     }
 
-    public static class LocationUpdateBroadcastReceiver extends BroadcastReceiver {
+    public void startServices() {
+        scheduleTaskExecutor = Executors.newScheduledThreadPool(5);
 
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            //To trigger location service
-            if (doesLocationServiceConnected) {
-                try {
-                    Message message = Message.obtain(null, LocationUpdateService.UPDATE_LOCATION, 0, 0);
-                    messenger.send(message);
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+        scheduleTaskExecutor.scheduleAtFixedRate(new Runnable() {
+            public void run() {
+                 intentService = new Intent(OnlineActivity.this, LocationMonitoringService.class);
+                startService(intentService);
             }
-        }
+        }, 0, 10, TimeUnit.SECONDS);
+
     }
+
+    public void stopServices() {
+        scheduleTaskExecutor.shutdown();
+        stopService(intentService);
+    }
+
+
+
 }

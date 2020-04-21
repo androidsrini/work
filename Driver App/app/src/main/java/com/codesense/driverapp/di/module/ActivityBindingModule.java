@@ -1,7 +1,7 @@
 package com.codesense.driverapp.di.module;
 
 
-import com.codesense.driverapp.ui.accept.AcceptActivity;
+import com.codesense.driverapp.ui.accept.StartActivity;
 import com.codesense.driverapp.ui.adddriver.AddDriverActivity;
 import com.codesense.driverapp.ui.addvehicle.AddVehicleActivity;
 import com.codesense.driverapp.ui.documentstatus.DocumentStatusActivity;
@@ -14,6 +14,7 @@ import com.codesense.driverapp.ui.legalagreement.LegalAgreementActivity;
 import com.codesense.driverapp.ui.online.OnlineActivity;
 import com.codesense.driverapp.ui.paymentType.PaymentActivity;
 import com.codesense.driverapp.ui.paymentsummary.PaymentSummaryActivity;
+import com.codesense.driverapp.ui.paymentsummary.PaymentSummaryNewActivity;
 import com.codesense.driverapp.ui.pickuplocationaccept.PickUpLocationAcceptActivity;
 import com.codesense.driverapp.ui.referalprogram.ReferalProgramActivity;
 import com.codesense.driverapp.ui.register.RegisterActivity;
@@ -94,8 +95,6 @@ public abstract class ActivityBindingModule {
     @ContributesAndroidInjector
     abstract ImagePickerActivity bindImagePickerActivity();
 
-    @ContributesAndroidInjector
-    abstract AcceptActivity bindAcceptActivity();
 
     @ContributesAndroidInjector
     abstract PaymentSummaryActivity bindPaymentSummaryActivity();
@@ -111,6 +110,10 @@ public abstract class ActivityBindingModule {
 
     @ContributesAndroidInjector
     abstract UploadDocumentDriverActivity bindUploadDocumentDriverActivity();
+ @ContributesAndroidInjector
+    abstract StartActivity bindStartActivity();
+ @ContributesAndroidInjector
+    abstract PaymentSummaryNewActivity bindPaymentSummaryNewActivity();
 
     /*@ContributesAndroidInjector
     abstract AddDriverActivity.AddDriverFragment bindAddDriverFragment();*/
